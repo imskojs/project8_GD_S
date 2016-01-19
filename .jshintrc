@@ -1,0 +1,34 @@
+{
+  "undef": true,
+  "unused": true,
+  "eqnull": true,
+  "loopfunc": true,
+  "newcap": false,
+  "esnext": true,
+  "globalstrict": true,
+  "predef": [
+
+    "ionic",
+    "angular",
+    "console",
+
+    "sails",
+    "process",
+    "exports",
+    "require",
+    "module",
+    "__dirname",
+    "Buffer",
+
+    "User", "Post", "Comment", "Like", "Place", "Review", "Photo",
+    "Event", "Role", "RoyaltyPoint", "Product",
+    "Passport",
+    "UtilService",
+    "ImageService",
+    "QueryService",
+    "MailService",
+
+    "GoogleMapLoaded"
+
+  ]
+}
