@@ -46,6 +46,11 @@ module.exports.routes = {
   'POST /like/create': 'LikeController.create',
   'DELETE /like/destroy': 'LikeController.destroy',
 
+  //====================================================
+  //  QuestionAnswer
+  //====================================================
+  'POST /questionAnswer/createAnswers': 'QuestionAnswerController.createAnswers',
+  'PUT /questionAnswer/updateAnswers': 'QuestionAnswerController.updateAnswers',
 
 
 

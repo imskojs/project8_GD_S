@@ -12,6 +12,9 @@ module.exports = {
       type: 'INTEGER',
       index: true
     },
+    type: { // FIELD CLUB BALL
+      type: 'STRING'
+    },
     //====================================================
     //  Association
     //====================================================
