@@ -12,6 +12,7 @@ module.exports = {
   //  App Specific
   //====================================================
   withQuestionnaires: withQuestionnaires,
+  hasQuestionnaireAnswers: hasQuestionnaireAnswers,
   updatePhoto: updatePhoto,
   updateThumbnail: updateThumbnail,
 
@@ -193,6 +194,26 @@ function withQuestionnaires(req, res) {
       product = product.toObject();
       product.questionnaires = questionnaires;
       return res.ok(product);
+    })
+    .catch((err) => {
+      return res.negotiate(err);
+    });
+}
+
+function hasQuestionnaireAnswers(req, res) {
+  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  let query = queryWrapper.query;
+  // only check one questionnaire answer to determine whether user has it.
+  return QuestionnaireAnswer.findOne({
+      product: query.where.product,
+      createdBy: req.user.id
+    })
+    .then((questionnaireAnswer) => {
+      if (!questionnaireAnswer) {
+        return res.ok(true);
+      } else {
+        return res.ok(false);
+      }
     })
     .catch((err) => {
       return res.negotiate(err);

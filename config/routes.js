@@ -37,6 +37,7 @@ module.exports.routes = {
   'GET /product/withQuestionnaires': 'ProductController.withQuestionnaires',
   'PUT /product/updatePhoto': 'ProductController.updatePhoto',
   'PUT /product/updateThumbnail': 'ProductController.updateThumbnail',
+  'GET /product/hasQuestionnaireAnswer': 'ProductController.hasQuestionnaireAnswer',
   // One off
   'GET /product/getCategories': 'ProductController.getCategories',
 

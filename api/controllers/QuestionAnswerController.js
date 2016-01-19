@@ -67,19 +67,33 @@ function updateAnswers(req, res) {
         createdBy: req.user.id,
         product: product
       }, query);
-      return [updatedQuestionAnswers, notePromise];
+      return [product, notePromise];
     })
-    .spread((updatedQuestionAnswers, updatedNoteInArray) => {
-      let updatedNote = updatedNoteInArray[0];
+    .spread((product) => {
+      // sanity check;
+      let questionnairePromise = QuestionnaireAnswer.find({
+        product: product,
+        createdBy: req.user.id
+      }).populate('questionAnswers');
+
+      let notePromise = Note.findOne({
+        createdBy: req.user.id,
+        product: product
+      });
+
+      return [questionnairePromise, notePromise];
+    })
+    .spread((questionnaireAnswers, note) => {
       return res.ok({
-        questionAnswers: updatedQuestionAnswers,
-        note: updatedNote
+        questionnaireAnswers: questionnaireAnswers,
+        note: note
       });
     })
     .catch((err) => {
       return res.negotiate(err);
     });
 }
+
 
 function createAnswers(req, res) {
   let queryWrapper = QueryService.buildQuery({}, req.allParams());

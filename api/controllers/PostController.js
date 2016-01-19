@@ -9,6 +9,9 @@ module.exports = {
   update: update,
   destroy: destroy,
 
+  //====================================================
+  //  Not used
+  //====================================================
   findNative: findNative
 };
 
