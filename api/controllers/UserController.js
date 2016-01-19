@@ -58,8 +58,10 @@ function updateMyInfo(req, res) {
     return;
   }
 
-  User.findOne({id: id})
-    .then(function (updatedUser) {
+  User.findOne({
+      id: id
+    })
+    .then(function(updatedUser) {
 
       _.extend(updatedUser, userToUpdate);
 
@@ -69,8 +71,11 @@ function updateMyInfo(req, res) {
 
       if (updatedUser) {
         if (password) {
-          Passport.find({user: id, protocol: 'local'})
-            .then(function (passports) {
+          Passport.find({
+              user: id,
+              protocol: 'local'
+            })
+            .then(function(passports) {
               sails.log(passports);
               passports[0].password = password;
               passports[0].save();
@@ -78,9 +83,11 @@ function updateMyInfo(req, res) {
               res.send(200, updatedUser[0]);
 
             })
-            .catch(function (err) {
+            .catch(function(err) {
               if (err) {
-                res.send(400, {message: "맞는 권한 찾기를 실패 했습니다."});
+                res.send(400, {
+                  message: "맞는 권한 찾기를 실패 했습니다."
+                });
                 return;
               }
             });
@@ -93,7 +100,7 @@ function updateMyInfo(req, res) {
         });
       }
     })
-    .catch(function (err) {
+    .catch(function(err) {
       sails.log.error(err);
       res.send(500, {
         message: "사용 업데이트를 실패 했습니다. 서버에러 code: 001"
@@ -121,16 +128,20 @@ function find(req, res) {
   var countPromise = User.count(query);
 
   Promise.all([userPromise, countPromise])
-    .spread(function (users, count) {
+    .spread(function(users, count) {
 
       // See if there's more
       var more = (users[query.limit - 1]) ? true : false;
       // Remove item over 20 (only for check purpose)
-      if (more)users.splice(query.limit - 1, 1);
+      if (more) users.splice(query.limit - 1, 1);
 
-      res.ok({users: users, more: more, total: count});
+      res.ok({
+        users: users,
+        more: more,
+        total: count
+      });
     })
-    .catch(function (err) {
+    .catch(function(err) {
       sails.log.error(err);
       res.send(500, {
         message: "장소 로딩을 실패 했습니다. 서버에러 code: 001"
@@ -143,10 +154,14 @@ function findNative(req, res) {
   var queryWrapper = QueryService.buildQuery({}, req.allParams());
 
   Promise.resolve(QueryService.executeNative(User, queryWrapper))
-    .spread(function (users, more, count) {
-      res.ok({users: users, more: more, total: count});
+    .spread(function(users, more, count) {
+      res.ok({
+        users: users,
+        more: more,
+        total: count
+      });
     })
-    .catch(function (err) {
+    .catch(function(err) {
       sails.log.error(err);
       res.send(500, {
         message: "장소 로딩을 실패 했습니다. 서버에러 code: 001"
@@ -164,31 +179,21 @@ function findOne(req, res) {
   var populate = queryWrapper.populate;
 
   if (!QueryService.checkParamPassed(query.where.id)) {
-    res.send(400, {
+    return res.send(400, {
       message: "모든 매개 변수를 입력해주세요 code: 003"
     });
-    return;
   }
 
-  var userPromise = User.find(query);
+  var userPromise = User.findOne(query);
 
   QueryService.applyPopulate(userPromise, populate);
 
-  userPromise
-    .then(function (user) {
-      if (user && user[0]) {
-        res.send(200, {user: user[0]});
-      } else {
-        res.send(500, {
-          message: "존재하지 않는 게시글 입니다. 서버에러 code: 001"
-        });
-      }
+  return userPromise
+    .then(function(user) {
+      return res.ok(user);
     })
-    .catch(function (err) {
-      sails.log.error(err);
-      res.send(500, {
-        message: "게시물 로딩을 실패 했습니다. 서버에러 code: 001"
-      });
+    .catch(function(err) {
+      return res.negotiate(err);
     });
 }
 
@@ -208,7 +213,7 @@ function create(req, res) {
   user.roles = [user.role];
   delete user.role;
 
-  sails.services.passport.protocols.local.register(req.body, function (err, user) {
+  sails.services.passport.protocols.local.register(req.body, function(err, user) {
     if (err) {
       sails.log.error(err);
       res.send(500, {
@@ -224,62 +229,30 @@ function create(req, res) {
 }
 
 function update(req, res) {
-  var userToUpdate = QueryService.buildQuery({}, req.allParams()).query;
-
-  var id = userToUpdate.id;
-
-  if (userToUpdate.roles) {
-    var roleToAssign = [];
-    _.each(userToUpdate.roles, function (role) {
-      roleToAssign.push(role.id);
-    });
-  }
-
-
-  userToUpdate.updatedBy = req.user.id;
-
-  delete userToUpdate.id;
-  delete userToUpdate.application;
-  delete userToUpdate.activation_code;
-  delete userToUpdate.password_reset_code;
-  delete userToUpdate.password_reset_time;
-  delete userToUpdate.accesscount;
-  delete userToUpdate.royaltyPoints;
-  delete userToUpdate.role;
-  delete userToUpdate.roles;
-  delete userToUpdate.passports;
-  delete userToUpdate.permissions;
-  delete userToUpdate.royaltyPoints;
-  delete userToUpdate.devices;
-  delete userToUpdate.createdBy;
-
-
-  if (!QueryService.checkParamPassed(id)) {
-    res.send(400, {
-      message: "모든 매개 변수를 입력해주세요 code: 003"
-    });
-    return;
-  }
-
-  User.findOne({id: id})
-    .populate('roles')
-    .then(function (user) {
-
-
-      userToUpdate.roles = roleToAssign;
-
-      sails.log(userToUpdate);
-
-      User.update({id: id}, userToUpdate)
-        .then(function (updatedUser) {
-          res.send(200, updatedUser);
-        });
+  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  sails.log(queryWrapper);
+  let query = queryWrapper.query;
+  var id = query.id;
+  var params = {};
+  params.updatedBy = req.user.id;
+  var propertiesAllowedToUpdate = [
+    'nickname', 'phone', 'gender', 'height', 'weight', 'age',
+    'averageHit', 'playYear', 'strength'
+  ];
+  _.forEach(propertiesAllowedToUpdate, function(property) {
+    if (query[property]) {
+      params[property] = query[property];
+    }
+  });
+  return User.update({
+      id: id
+    }, params)
+    .then((inArray) => {
+      let user = inArray[0];
+      return res.ok(user);
     })
-    .catch(function (err) {
-      sails.log.error(err);
-      res.send(500, {
-        message: "게시물 로딩을 실패 했습니다. 서버에러 code: 001"
-      });
+    .catch((err) => {
+      return res.negotiate(err);
     });
 }
 
@@ -294,9 +267,11 @@ function destroy(req, res) {
   }
 
 
-  User.findOne({id: id})
+  User.findOne({
+      id: id
+    })
     .populateAll()
-    .then(function (user) {
+    .then(function(user) {
       if (user) {
         sails.log.debug("removing:" + JSON.stringify(user.email));
 
@@ -304,19 +279,23 @@ function destroy(req, res) {
         if (user.profilePhoto && user.profilePhoto.id) {
           ImageService.deletePhoto(user.profilePhoto.id);
         }
-        return User.destroy({id: id});
+        return User.destroy({
+          id: id
+        });
       } else {
         return null;
       }
     })
-    .then(function (user) {
+    .then(function(user) {
       if (user) {
         res.send(200, user);
       } else {
-        res.send(400, {message: "user does not exist"});
+        res.send(400, {
+          message: "user does not exist"
+        });
       }
     })
-    .catch(function (err) {
+    .catch(function(err) {
       if (err) {
         sails.log.error(err);
         res.send(500, {
@@ -336,8 +315,10 @@ function contactAdmin(req, res) {
     return;
   }
 
-  User.findOne({role: 'ADMIN'})
-    .exec(function (err, userInfos) {
+  User.findOne({
+      role: 'ADMIN'
+    })
+    .exec(function(err, userInfos) {
 
       if (err) {
         return res.send(500, {
@@ -348,10 +329,10 @@ function contactAdmin(req, res) {
       var counter = 0;
       var mailError = false;
 
-      async.whilst(function () {
+      async.whilst(function() {
           return (counter < userInfos.length && !mailError);
         },
-        function (callback) {
+        function(callback) {
 
           var user = userInfos[counter];
           counter++;
@@ -360,7 +341,7 @@ function contactAdmin(req, res) {
             MailService.sendEmail("admin", "kr", {
               user: req.user,
               content: mail.content
-            }, "admin@applicat.co.kr", user.email, function (err) {
+            }, "admin@applicat.co.kr", user.email, function(err) {
               if (err) {
                 callback(err);
               } else {
@@ -371,8 +352,8 @@ function contactAdmin(req, res) {
             callback();
           }
 
-        }
-        , function (err) {
+        },
+        function(err) {
           // Stop uploading to cloudinary
           if (err) {
             mailError = true;

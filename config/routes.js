@@ -53,8 +53,13 @@ module.exports.routes = {
   'POST /questionAnswer/createAnswers': 'QuestionAnswerController.createAnswers',
   'PUT /questionAnswer/updateAnswers': 'QuestionAnswerController.updateAnswers',
 
-
-
+  //====================================================
+  //  User
+  //====================================================
+  'GET /user/findOne': 'UserController.findOne',
+  'PUT /user/update': 'UserController.update',
+  'PUT /user/updatePassword': 'AuthController.changePassword',
+  'POST /user/register': 'AuthController.register',
 
 
 
@@ -196,7 +201,6 @@ module.exports.routes = {
   // 'POST /user/login': 'AuthController.login',
   'GET /user/logout': 'AuthController.logout',
 
-  'POST /user/register': 'AuthController.register',
   'POST /user/loginWithOauth': 'AuthController.registerPassport',
 
   'POST /forgotpassword': 'AuthController.forgotPasswordStart',
@@ -215,7 +219,6 @@ module.exports.routes = {
   // User authentication service
   'GET /user/find': 'UserController.find',
   'GET /user/findNative': 'UserController.findNative',
-  'GET /user/findOne': 'UserController.findOne',
 
   'POST /user/create': 'UserController.create',
   'PUT /user/update': 'UserController.update',

@@ -1,6 +1,7 @@
 // api/controllers/AuthController.js
 
-'use strict';
+'
+use strict';
 var _ = require('lodash');
 var _super = require('sails-permissions/api/controllers/AuthController');
 var request = require('request');
@@ -593,11 +594,14 @@ function forgotPasswordComplete(req, res) {
 
 
 function changePassword(req, res) {
+  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  sails.log(queryWrapper);
+  let query = queryWrapper.query;
 
   // Get current logged in user
 
-  var oldPassword = req.param("oldPassword");
-  var newPassword = req.param("newPassword");
+  var oldPassword = query.oldPassword;
+  var newPassword = query.newPassword;
 
   if (!QueryService.checkParamPassed(newPassword, oldPassword)) {
     res.send(400, {
@@ -630,7 +634,7 @@ function changePassword(req, res) {
           return;
         }
 
-      })
+      });
     })
     .catch(function(err) {
       if (err) {
