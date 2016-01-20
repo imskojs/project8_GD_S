@@ -61,6 +61,9 @@ module.exports = {
     place: {
       model: 'Place'
     },
+    poll: {
+      model: 'Poll'
+    },
     post: {
       model: 'Post'
     },

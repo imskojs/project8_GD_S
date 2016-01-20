@@ -130,6 +130,15 @@ module.exports.users = {
       {"name": 'QuestionAnswer Update', "model": 'QuestionAnswer', "action": 'update', "relation": 'role'},
       {"name": 'QuestionAnswer Delete', "model": 'QuestionAnswer', "action": 'delete', "relation": 'role'},
 
+      {"name": 'Poll Read', "model": 'Poll', "action": 'read', "relation": 'role'},
+      {"name": 'Poll Create', "model": 'Poll', "action": 'create', "relation": 'role'},
+      {"name": 'Poll Update', "model": 'Poll', "action": 'update', "relation": 'role'},
+      {"name": 'Poll Delete', "model": 'Poll', "action": 'delete', "relation": 'role'},
+
+      {"name": 'PollAnswer Read', "model": 'PollAnswer', "action": 'read', "relation": 'role'},
+      {"name": 'PollAnswer Create', "model": 'PollAnswer', "action": 'create', "relation": 'role'},
+      {"name": 'PollAnswer Update', "model": 'PollAnswer', "action": 'update', "relation": 'role'},
+      {"name": 'PollAnswer Delete', "model": 'PollAnswer', "action": 'delete', "relation": 'role'},
     ],
     OWNER: [
       // Model
@@ -227,6 +236,16 @@ module.exports.users = {
       {"name": 'QuestionAnswer Create', "model": 'QuestionAnswer', "action": 'create', "relation": 'role'},
       {"name": 'QuestionAnswer Update', "model": 'QuestionAnswer', "action": 'update', "relation": 'role'},
       {"name": 'QuestionAnswer Delete', "model": 'QuestionAnswer', "action": 'delete', "relation": 'role'},
+
+      {"name": 'Poll Read', "model": 'Poll', "action": 'read', "relation": 'role'},
+      {"name": 'Poll Create', "model": 'Poll', "action": 'create', "relation": 'role'},
+      {"name": 'Poll Update', "model": 'Poll', "action": 'update', "relation": 'role'},
+      {"name": 'Poll Delete', "model": 'Poll', "action": 'delete', "relation": 'role'},
+
+      {"name": 'PollAnswer Read', "model": 'PollAnswer', "action": 'read', "relation": 'role'},
+      {"name": 'PollAnswer Create', "model": 'PollAnswer', "action": 'create', "relation": 'role'},
+      {"name": 'PollAnswer Update', "model": 'PollAnswer', "action": 'update', "relation": 'role'},
+      {"name": 'PollAnswer Delete', "model": 'PollAnswer', "action": 'delete', "relation": 'role'},
     ],
     USER: [
       // Model
@@ -332,6 +351,16 @@ module.exports.users = {
       {"name": 'QuestionAnswer Create', "model": 'QuestionAnswer', "action": 'create', "relation": 'role'},
       {"name": 'QuestionAnswer Update', "model": 'QuestionAnswer', "action": 'update', "relation": 'role'},
       {"name": 'QuestionAnswer Delete', "model": 'QuestionAnswer', "action": 'delete', "relation": 'role'},
+
+      {"name": 'Poll Read', "model": 'Poll', "action": 'read', "relation": 'role'},
+      {"name": 'Poll Create', "model": 'Poll', "action": 'create', "relation": 'role'},
+      {"name": 'Poll Update', "model": 'Poll', "action": 'update', "relation": 'role'},
+      {"name": 'Poll Delete', "model": 'Poll', "action": 'delete', "relation": 'role'},
+
+      {"name": 'PollAnswer Read', "model": 'PollAnswer', "action": 'read', "relation": 'role'},
+      {"name": 'PollAnswer Create', "model": 'PollAnswer', "action": 'create', "relation": 'role'},
+      {"name": 'PollAnswer Update', "model": 'PollAnswer', "action": 'update', "relation": 'role'},
+      {"name": 'PollAnswer Delete', "model": 'PollAnswer', "action": 'delete', "relation": 'role'},
     ]
   },
 

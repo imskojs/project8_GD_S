@@ -1,36 +1,20 @@
-/**
- * Route Mappings
- * (sails.config.routes)
- *
- * Your routes map URLs to views and controllers.
- *
- * If Sails receives a URL that doesn't match any of the routes below,
- * it will check for matching files (images, scripts, stylesheets, etc.)
- * in your assets directory.  e.g. `http://localhost:1337/images/foo.jpg`
- * might match an image file: `/assets/images/foo.jpg`
- *
- * Finally, if those don't match either, the default 404 handler is triggered.
- * See `api/responses/notFound.js` to adjust your app's 404 logic.
- *
- * Note: Sails doesn't ACTUALLY serve stuff from `assets`-- the default Gruntfile in Sails copies
- * flat files from `assets` to `.tmp/public`.  This allows you to do things like compile LESS or
- * CoffeeScript for the front-end.
- *
- * For more information on configuring custom routes, check out:
- * http://sailsjs.org/#!/documentation/concepts/Routes/RouteTargetSyntax.html
- */
-
 module.exports.routes = {
-
-  // Home angular
+  //====================================================
+  //  Home
+  //====================================================
   '/': {
     assets: 'index.html'
   },
   //====================================================
   //  Product
   //====================================================
+  'GET /product/find': 'ProductController.find',
+  'GET /product/findOne': 'ProductController.findOne',
   'GET /product/withQuestionnaires': 'ProductController.withQuestionnaires',
   'GET /product/hasQuestionnaireAnswer': 'ProductController.hasQuestionnaireAnswer',
+  'GET /product/findWithAverage': 'ProductController.findWithAverage',
+  'GET /product/findOneWithAverage': 'ProductController.findOneWithAverage',
+  'POST /product/create': 'ProductController.create',
   'PUT /product/updatePhoto': 'ProductController.updatePhoto',
   'PUT /product/updateThumbnail': 'ProductController.updateThumbnail',
   'DELETE /product/destroy': 'ProductController.destroy',
@@ -40,6 +24,7 @@ module.exports.routes = {
   //====================================================
   //  Like
   //====================================================
+  'GET /like/finOne': 'LikeController.findOne',
   'POST /like/create': 'LikeController.create',
   'DELETE /like/destroy': 'LikeController.destroy',
 
@@ -73,6 +58,17 @@ module.exports.routes = {
   'GET /post/findOne': 'PostController.findOne',
   'POST /post/create': 'PostController.create',
 
+  //====================================================
+  //  Poll
+  //====================================================
+  'GET /poll/findLatest': 'PollController.findLatest',
+  'POST /poll/create': 'PollController.create',
+
+  //====================================================
+  //  PollAnswer
+  //====================================================
+  'GET /pollAnswer/hasPollAnswer': 'PollAnswerController.hasPollAnswer',
+  'POST /pollAnswer/create': 'PollAnswerController.create',
 
 
 
@@ -80,8 +76,9 @@ module.exports.routes = {
 
 
 
-
-
+  //====================================================
+  //  NOT USED
+  //====================================================
   /**************************************
    *               LIKE
    *************************************/
@@ -135,11 +132,8 @@ module.exports.routes = {
    *               Product
    *************************************/
 
-  'GET /product/find': 'ProductController.find',
   'GET /product/findNative': 'ProductController.findNative',
-  'GET /product/findOne': 'ProductController.findOne',
 
-  'POST /product/create': 'ProductController.create',
   'PUT /product/update': 'ProductController.update',
 
   'POST /product/like': 'LikeController.productLike',
@@ -229,7 +223,7 @@ module.exports.routes = {
   'GET /user/findNative': 'UserController.findNative',
 
   'POST /user/create': 'UserController.create',
-  'PUT /user/update': 'UserController.update',
+  // 'PUT /user/update': 'UserController.update',
   'DELETE /user/destroy': 'UserController.destroy',
 
   'POST /email/admin': 'UserController.contactAdmin',

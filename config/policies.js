@@ -44,6 +44,13 @@ module.exports.policies = {
       'sessionAuth'
     ]
   },
+  UserController: {
+    'create': ['passport'],
+    'checknickname': true,
+    'checkemail': true,
+    'contactAdmin': true
+      //'*': true
+  },
 
 
   DeviceController: {
@@ -70,28 +77,28 @@ module.exports.policies = {
   //  'sessionAuth'
   //],
 
-  DataController: [
-    'BearerAdmin',
-    'sessionAuth'
-  ],
+  // DataController: [
+  //   'BearerAdmin',
+  //   'sessionAuth'
+  // ],
 
-  PostController: {
-    find: true,
-    findNative: true,
-    findOne: true,
-  },
+  // PostController: {
+  //   find: true,
+  //   findNative: true,
+  //   findOne: true,
+  // },
 
-  PlaceController: {
-    find: true,
-    findNative: true,
-    findOne: true,
-  },
+  // PlaceController: {
+  //   find: true,
+  //   findNative: true,
+  //   findOne: true,
+  // },
 
-  ProductController: {
-    find: true,
-    findNative: true,
-    findOne: true,
-  },
+  // ProductController: {
+  //   find: true,
+  //   findNative: true,
+  //   findOne: true,
+  // },
 
   /**************************************
    *               For dev only

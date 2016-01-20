@@ -7,6 +7,7 @@ _.merge(exports, _super);
 _.merge(exports, {
 
   attributes: {
+
     email: {
       type: 'email',
       unique: true,
@@ -76,7 +77,9 @@ _.merge(exports, {
   },
   afterCreate: function setOwner(user, next) {
 
-    sails.log('User.afterCreate.setOwner', user);
+    sails.log("-----------  user  -------------");
+    sails.log(user);
+    // sails.log('User.afterCreate.setOwner', user);
 
     User
       .update({

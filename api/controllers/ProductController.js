@@ -206,16 +206,23 @@ function withQuestionnaires(req, res) {
 function hasQuestionnaireAnswer(req, res) {
   let queryWrapper = QueryService.buildQuery({}, req.allParams());
   let query = queryWrapper.query;
+  sails.log("-----------  query  -------------");
+  sails.log(query);
   // only check one questionnaire answer to determine whether user has it.
   return QuestionnaireAnswer.findOne({
       product: query.where.product,
       createdBy: req.user.id
     })
     .then((questionnaireAnswer) => {
-      if (!questionnaireAnswer) {
-        return res.ok(true);
+
+      if (questionnaireAnswer) {
+        return res.ok({
+          hasAnswered: true
+        });
       } else {
-        return res.ok(false);
+        return res.ok({
+          hasAnswered: false
+        });
       }
     })
     .catch((err) => {
@@ -296,14 +303,23 @@ function findWithAverage(req, res) {
               createdBy: qna0CreatedByIds[i]
             },
             sort: 'position ASC'
-          }).populate('questionAnswers')
+          })
+          .populate('questionAnswers')
+          .populate('createdBy')
           .then((questionnaireAnswers) => {
             // questionAnswers sort by position by default created from 0 to 4 in order.
+            tempProduct = tempProduct.toObject();
             tempProduct.questionnaireAnswers = questionnaireAnswers;
             let averageScores = _.map(questionnaireAnswers, (questionnareAnswer) => {
               let questionAnswers = questionnareAnswer.questionAnswers;
               let scores = _.pluck(questionAnswers, 'score');
-              let averageScore = _.mean(scores);
+              let totalAverageScore = _.reduce(scores, (mem, score) => {
+                return mem + score;
+              }, 0);
+              let averageScore = totalAverageScore / scores.length;
+
+
+              // let averageScore = _.mean(scores);
               return averageScore;
             });
             _.forEach(averageScores, (averageScore, i) => {
@@ -364,12 +380,15 @@ function findOneWithAverage(req, res) {
       let qna0CreatedByIds = _.pluck(qna0s, 'createdBy');
 
       let myQnasPromise = QuestionnaireAnswer.find({
-        where: {
-          product: query.where.product,
-          owner: owner
-        },
-        sort: 'position ASC'
-      }).populate('questionAnswers').populate('product');
+          where: {
+            product: query.where.product,
+            owner: owner
+          },
+          sort: 'position ASC'
+        })
+        .populate('questionAnswers')
+        .populate('product')
+        .populate('createdBy');
 
       let tempProduct = qna0s[0].product;
 
@@ -381,11 +400,16 @@ function findOneWithAverage(req, res) {
           tempProduct['myAverage' + i] = null;
         });
       } else {
+        tempProduct = tempProduct.toObject();
         tempProduct.questionnaireAnswers = myQnas;
         let myAverageScores = _.map(myQnas, (myQna) => {
           let myQuestionAnswers = myQna.questionAnswers;
           let scores = _.pluck(myQuestionAnswers, 'score');
-          let myAverageScore = _.mean(scores);
+          let totalMyAverageScore = _.reduce(scores, (mem, score) => {
+            return mem + score;
+          }, 0);
+          let myAverageScore = totalMyAverageScore / scores.length;
+          // let myAverageScore = _.mean(scores);
           return myAverageScore;
         });
         _.forEach(myAverageScores, (myAverageScore, i) => {
@@ -405,7 +429,12 @@ function findOneWithAverage(req, res) {
           .then((questionAnswers) => {
 
             let scores = _.pluck(questionAnswers, 'score');
-            let totalAverage = _.mean(scores);
+            let totalAverageScore = _.reduce(scores, (mem, score) => {
+              return mem + score;
+            }, 0);
+            let totalAverage = totalAverageScore / scores.length;
+
+            // let totalAverage = _.mean(scores);
             return totalAverage;
           });
       });

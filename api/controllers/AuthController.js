@@ -133,7 +133,13 @@ function checkEmail(req, res) {
 function login(req, res) {
 
   sails.services.passport.callback(req, res, (err, user) => {
+    sails.log("-----------  req.allParams()  -------------");
+    sails.log(req.allParams());
+    sails.log("-----------  err  -------------");
+    sails.log(err);
 
+    sails.log("-----------  user  -------------");
+    sails.log(user);
     if (err || !user) {
       return res.forbidden();
     }
@@ -178,7 +184,10 @@ function logout(req, res) {
 
 function register(req, res) {
 
-  var user = QueryService.buildQuery({}, req.allParams()).query;
+  sails.log("-----------  req.allParams()  -------------");
+  sails.log(req.allParams());
+  // var user = QueryService.buildQuery({}, req.allParams()).query;
+  var user = req.body;
 
   //password:
   //email:

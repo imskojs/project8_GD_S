@@ -6,6 +6,7 @@ module.exports = {
   //====================================================
   //  App specific
   //====================================================
+  findOne: findOne,
   create: create,
   destroy: destroy,
 
@@ -21,6 +22,30 @@ module.exports = {
   productLike: productLike,
   productUnlike: productUnlike
 };
+
+function findOne(req, res) {
+  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  sails.log(queryWrapper);
+  let query = queryWrapper.query;
+  return Like.findOne({
+      product: query.where.product,
+      owner: query.where.owner || req.user.id
+    })
+    .then((like) => {
+      if (like) {
+        return res.ok({
+          hasLiked: true
+        });
+      } else {
+        return res.ok({
+          hasLiked: false
+        });
+      }
+    })
+    .catch((err) => {
+      return res.negotiate(err);
+    });
+}
 
 function create(req, res) {
   let queryWrapper = QueryService.buildQuery({}, req.allParams());
