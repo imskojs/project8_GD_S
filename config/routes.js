@@ -30,9 +30,10 @@ module.exports.routes = {
   //  Product
   //====================================================
   'GET /product/withQuestionnaires': 'ProductController.withQuestionnaires',
+  'GET /product/hasQuestionnaireAnswer': 'ProductController.hasQuestionnaireAnswer',
   'PUT /product/updatePhoto': 'ProductController.updatePhoto',
   'PUT /product/updateThumbnail': 'ProductController.updateThumbnail',
-  'GET /product/hasQuestionnaireAnswer': 'ProductController.hasQuestionnaireAnswer',
+  'DELETE /product/destroy': 'ProductController.destroy',
   // One off
   'GET /product/getCategories': 'ProductController.getCategories',
 
@@ -46,23 +47,31 @@ module.exports.routes = {
   //  QuestionAnswer
   //====================================================
   'POST /questionAnswer/createAnswers': 'QuestionAnswerController.createAnswers',
-  'PUT /questionAnswer/updateAnswers': 'QuestionAnswerController.updateAnswers',
   'POST /questionAnswer/createScreenshot': 'QuestionAnswerController.createScreenshot',
-
-  //====================================================
-  //  User
-  //====================================================
-  'POST /user/login': 'AuthController.login',
-  'GET /user/findOne': 'UserController.findOne',
-  'PUT /user/update': 'UserController.update',
-  'PUT /user/updatePassword': 'AuthController.changePassword',
-  'POST /user/register': 'AuthController.register',
+  'PUT /questionAnswer/updateAnswers': 'QuestionAnswerController.updateAnswers',
 
   //====================================================
   //  Note
   //====================================================
   'GET /note/find': 'NoteController.find',
   'GET /note/getMaxScoreNote': 'NoteController.getMaxScoreNote',
+  'GET /note/myHandicap': 'NoteController.myHandicap',
+
+  //====================================================
+  //  User
+  //====================================================
+  'GET /user/findOne': 'UserController.findOne',
+  'POST /user/login': 'AuthController.login',
+  'POST /user/register': 'AuthController.register',
+  'PUT /user/update': 'UserController.update',
+  'PUT /user/updatePassword': 'AuthController.changePassword',
+
+  //====================================================
+  //  Post
+  //====================================================
+  'GET /post/find': 'PostController.find',
+  'GET /post/findOne': 'PostController.findOne',
+  'POST /post/create': 'PostController.create',
 
 
 
@@ -83,11 +92,8 @@ module.exports.routes = {
    *               Post
    *************************************/
 
-  'GET /post/find': 'PostController.find',
   'GET /post/findNative': 'PostController.findNative',
-  'GET /post/findOne': 'PostController.findOne',
 
-  'POST /post/create': 'PostController.create',
   'PUT /post/update': 'PostController.update',
   'DELETE /post/destroy': 'PostController.destroy',
 
@@ -135,7 +141,6 @@ module.exports.routes = {
 
   'POST /product/create': 'ProductController.create',
   'PUT /product/update': 'ProductController.update',
-  'DELETE /product/destroy': 'ProductController.destroy',
 
   'POST /product/like': 'LikeController.productLike',
   'DELETE /product/unlike': 'LikeController.productUnlike',

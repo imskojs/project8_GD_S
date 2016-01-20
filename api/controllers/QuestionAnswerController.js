@@ -100,7 +100,8 @@ function updateAnswers(req, res) {
 
 
 function createAnswers(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  // let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  let queryWrapper = req.allParams();
   sails.log(queryWrapper);
   let query = queryWrapper.query;
   let questionAnswers = query.answers;

@@ -230,14 +230,199 @@ function hasQuestionnaireAnswer(req, res) {
 function findWithAverage(req, res) {
   let queryWrapper = QueryService.buildQuery({}, req.allParams());
   let query = queryWrapper.query;
-  // product
-  // questionnaireAnswer
-  // questionAnswer
+  // for load more
+  let qaUpdatedAt = query.where.questionnaireAnswer;
+  delete query.where.questionnaireAnswer;
+  let qaLimit = query.limit;
+  delete query.limit;
+  let qaSort = query.sort;
+  delete query.sort;
+  let qaSkip = query.skip;
+  delete query.skip;
+  let qaOwner = query.where.owner;
+  delete query.where.owner;
+
+  return Product.find(query)
+    .then((products) => {
+      // pluck product Ids
+      let productIds = _.pluck(products, 'id');
+      // find questionnaireAnswers with productIds and position 0 sort by updatedAt DESC
+      let tempQuery = {
+        where: {
+          product: productIds,
+          position: 0
+        }
+      };
+      if (qaLimit) {
+        tempQuery.limit = qaLimit;
+      }
+      if (qaUpdatedAt) {
+        tempQuery.where.updatedAt = qaUpdatedAt;
+      }
+      if (qaOwner) {
+        tempQuery.where.owner = qaOwner;
+      }
+      if (qaSort) {
+        tempQuery.sort = qaSort;
+      } else {
+        tempQuery.sort = 'updatedAt DESC';
+      }
+      if (qaSkip) {
+        tempQuery.skip = qaSkip;
+      }
+      return QuestionnaireAnswer
+        .find(tempQuery)
+        .populate('product');
+    })
+    .then((qna0s) => {
+      if (!qna0s) {
+        return Promise.reject({
+          message: "0 questionnaireAnswers found"
+        });
+      } else if (qna0s.length === 0) {
+        return Promise.reject({
+          message: "0 questionnaireAnswers found"
+        });
+      }
+      // get CreatedByIds of questionnaireAnswers
+      let qna0CreatedByIds = _.pluck(qna0s, 'createdBy');
+      let tempProducts = _.pluck(qna0s, 'product');
+      // forEach createdByIds create tempResult tempProduct, and find questionnaireAnswers sortBy position and populate questionAnswers
+      let tempResultsPromise = _.map(tempProducts, (tempProduct, i) => {
+        return QuestionnaireAnswer
+          .find({
+            where: {
+              product: tempProduct.id,
+              createdBy: qna0CreatedByIds[i]
+            },
+            sort: 'position ASC'
+          }).populate('questionAnswers')
+          .then((questionnaireAnswers) => {
+            // questionAnswers sort by position by default created from 0 to 4 in order.
+            tempProduct.questionnaireAnswers = questionnaireAnswers;
+            let averageScores = _.map(questionnaireAnswers, (questionnareAnswer) => {
+              let questionAnswers = questionnareAnswer.questionAnswers;
+              let scores = _.pluck(questionAnswers, 'score');
+              let averageScore = _.mean(scores);
+              return averageScore;
+            });
+            _.forEach(averageScores, (averageScore, i) => {
+              tempProduct['average' + i] = averageScore;
+            });
+            return tempProduct;
+          });
+      });
+      return Promise.all(tempResultsPromise);
+    })
+    .then((results) => {
+      return res.ok({
+        products: results
+      });
+    })
+    .catch((err) => {
+      return res.negotiate(err);
+    });
 }
 
 function findOneWithAverage(req, res) {
   let queryWrapper = QueryService.buildQuery({}, req.allParams());
   let query = queryWrapper.query;
+  let owner = query.where.owner;
+  delete query.where.owner;
+  return Product.findOne(query)
+    .then((product) => {
+      // pluck product Ids
+      if (!product) {
+        return res.send(400, {
+          message: "no product found"
+        });
+      }
+      let productId = product.id;
+      // find questionnaireAnswers with productIds and position 0 sort by updatedAt DESC
+      let tempQuery = {
+        where: {
+          product: productId,
+          position: 0
+        }
+      };
+      return QuestionnaireAnswer
+        .find(tempQuery)
+        .populate('product');
+    })
+    .then((qna0s) => {
+      // get CreatedByIds of questionnaireAnswers
+      if (!qna0s) {
+        return Promise.reject({
+          message: "0 questionnaireAnswers found"
+        });
+      } else if (qna0s.length === 0) {
+        return Promise.reject({
+          message: "0 questionnaireAnswers found"
+        });
+      }
+
+      let qna0CreatedByIds = _.pluck(qna0s, 'createdBy');
+
+      let myQnasPromise = QuestionnaireAnswer.find({
+        where: {
+          product: query.where.product,
+          owner: owner
+        },
+        sort: 'position ASC'
+      }).populate('questionAnswers').populate('product');
+
+      let tempProduct = qna0s[0].product;
+
+      return [qna0CreatedByIds, myQnasPromise, tempProduct];
+    })
+    .spread((qna0CreatedByIds, myQnas, tempProduct) => {
+      if (myQnas.length === 0) {
+        _.forEach([0, 1, 2, 3, 4], (myAverageScore, i) => {
+          tempProduct['myAverage' + i] = null;
+        });
+      } else {
+        tempProduct.questionnaireAnswers = myQnas;
+        let myAverageScores = _.map(myQnas, (myQna) => {
+          let myQuestionAnswers = myQna.questionAnswers;
+          let scores = _.pluck(myQuestionAnswers, 'score');
+          let myAverageScore = _.mean(scores);
+          return myAverageScore;
+        });
+        _.forEach(myAverageScores, (myAverageScore, i) => {
+          tempProduct['myAverage' + i] = myAverageScore;
+        });
+      }
+
+      let tempTotalAveragesPromise = _.map([0, 1, 2, 3, 4], (position) => {
+        return QuestionAnswer
+          .find({
+            where: {
+              product: tempProduct.id,
+              position: position
+            },
+            sort: 'position ASC'
+          })
+          .then((questionAnswers) => {
+
+            let scores = _.pluck(questionAnswers, 'score');
+            let totalAverage = _.mean(scores);
+            return totalAverage;
+          });
+      });
+      return [tempProduct, Promise.all(tempTotalAveragesPromise)];
+    })
+    .spread((tempProduct, tempTotalAverages) => {
+      _.forEach(tempTotalAverages, (tempTotalAverage, i) => {
+        tempProduct['totalAverage' + i] = tempTotalAverage;
+      });
+      return tempProduct;
+    })
+    .then((product) => {
+      return res.ok(product);
+    })
+    .catch((err) => {
+      return res.negotiate(err);
+    });
 }
 
 
