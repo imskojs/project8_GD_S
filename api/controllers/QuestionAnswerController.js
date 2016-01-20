@@ -3,8 +3,12 @@ var Promise = require('bluebird');
 var _ = require('lodash');
 
 module.exports = {
+  //====================================================
+  //  App Specific
+  //====================================================
   updateAnswers: updateAnswers,
-  createAnswers: createAnswers
+  createAnswers: createAnswers,
+  createScreenshot: createScreenshot
 };
 
 function updateAnswers(req, res) {
@@ -202,6 +206,34 @@ function createAnswers(req, res) {
         note: note,
         questionnaireAnswers: questionnaireAnswers
       });
+    })
+    .catch((err) => {
+      return res.negotiate(err);
+    });
+}
+
+function createScreenshot(req, res) {
+  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  let query = queryWrapper.query;
+  query.owner = req.user.id;
+  query.createdBy = req.user.id;
+  query.updatedBy = req.user.id;
+  return ImageService
+    .createPhotos(req, [])
+    .then((createdPhotos) => {
+      let createdPhotoId = createdPhotos[0] && createdPhotos[0].id;
+      if (!createdPhotoId) {
+        return Promise.reject({
+          message: 'no photo created cloudinary/server error'
+        });
+      } else {
+        return Photo.findOne({
+          id: createdPhotoId
+        });
+      }
+    })
+    .then((photo) => {
+      return res.ok(photo); // photo.url only?
     })
     .catch((err) => {
       return res.negotiate(err);

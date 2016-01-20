@@ -12,7 +12,10 @@ module.exports = {
   //  App Specific
   //====================================================
   withQuestionnaires: withQuestionnaires,
-  hasQuestionnaireAnswers: hasQuestionnaireAnswers,
+  hasQuestionnaireAnswer: hasQuestionnaireAnswer,
+  findWithAverage: findWithAverage,
+  findOneWithAverage: findOneWithAverage,
+
   updatePhoto: updatePhoto,
   updateThumbnail: updateThumbnail,
 
@@ -200,7 +203,7 @@ function withQuestionnaires(req, res) {
     });
 }
 
-function hasQuestionnaireAnswers(req, res) {
+function hasQuestionnaireAnswer(req, res) {
   let queryWrapper = QueryService.buildQuery({}, req.allParams());
   let query = queryWrapper.query;
   // only check one questionnaire answer to determine whether user has it.
@@ -219,6 +222,25 @@ function hasQuestionnaireAnswers(req, res) {
       return res.negotiate(err);
     });
 }
+
+
+// findWithAverage: findWithAverage,
+// findOneWithAverage: findOneWithAverage,
+
+function findWithAverage(req, res) {
+  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  let query = queryWrapper.query;
+  // product
+  // questionnaireAnswer
+  // questionAnswer
+}
+
+function findOneWithAverage(req, res) {
+  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  let query = queryWrapper.query;
+}
+
+
 
 function updatePhoto(req, res) { // queryWrapper{query:{id}}, req.files();
   let queryWrapper = QueryService.buildQuery({}, req.allParams());

@@ -23,13 +23,14 @@ module.exports = {
       type: 'STRING'
     },
     myScore1: {
-      type: 'integer'
+      type: 'INTEGER'
     },
     myScore2: {
-      type: 'integer'
+      type: 'INTEGER'
     },
     myScoreTotal: {
-      type: 'integer'
+      type: 'INTEGER',
+      index: true
     },
     //====================================================
     //  type: CLUB only

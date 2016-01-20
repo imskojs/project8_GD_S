@@ -27,11 +27,6 @@ module.exports.routes = {
     assets: 'index.html'
   },
   //====================================================
-  // User 
-  //====================================================
-  'POST /user/login': 'AuthController.login',
-
-  //====================================================
   //  Product
   //====================================================
   'GET /product/withQuestionnaires': 'ProductController.withQuestionnaires',
@@ -52,14 +47,22 @@ module.exports.routes = {
   //====================================================
   'POST /questionAnswer/createAnswers': 'QuestionAnswerController.createAnswers',
   'PUT /questionAnswer/updateAnswers': 'QuestionAnswerController.updateAnswers',
+  'POST /questionAnswer/createScreenshot': 'QuestionAnswerController.createScreenshot',
 
   //====================================================
   //  User
   //====================================================
+  'POST /user/login': 'AuthController.login',
   'GET /user/findOne': 'UserController.findOne',
   'PUT /user/update': 'UserController.update',
   'PUT /user/updatePassword': 'AuthController.changePassword',
   'POST /user/register': 'AuthController.register',
+
+  //====================================================
+  //  Note
+  //====================================================
+  'GET /note/find': 'NoteController.find',
+  'GET /note/getMaxScoreNote': 'NoteController.getMaxScoreNote',
 
 
 

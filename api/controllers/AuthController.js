@@ -1,7 +1,6 @@
 // api/controllers/AuthController.js
 
-'
-use strict';
+'use strict';
 var _ = require('lodash');
 var _super = require('sails-permissions/api/controllers/AuthController');
 var request = require('request');
