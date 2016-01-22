@@ -232,7 +232,7 @@ function create(req, res) {
 function update(req, res) {
   sails.log("-----------  req.allParams()  -------------");
   sails.log(req.allParams());
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  let queryWrapper = req.allParams();
   sails.log('----update----');
   sails.log(queryWrapper);
   let query = queryWrapper.query;
