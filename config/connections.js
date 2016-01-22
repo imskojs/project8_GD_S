@@ -11,8 +11,8 @@ module.exports.connections = {
 
   someMongodbServer: {
     adapter: 'sails-mongo',
-    // url: "mongodb://localhost:27017/golfdic"
-    url: "mongodb://golfdicDbUser:applicat88@SG-Applicat-5222.servers.mongodirector.com:27017/golfdic"
+    url: "mongodb://localhost:27017/golfdic"
+      // url: "mongodb://golfdicDbUser:applicat88@SG-Applicat-5222.servers.mongodirector.com:27017/golfdic"
   },
 
   gcm: gcm.gcm({

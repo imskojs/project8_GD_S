@@ -112,6 +112,17 @@ function myHandicap(req, res) {
     .then((array) => {
       let specificNote = array[0];
       let allMyNotes = array[1];
+      if (allMyNotes.length === 0) {
+        return Promise.reject({
+          message: '0 notes found'
+        });
+      }
+      if (!specificNote) {
+        return Promise.reject({
+          message: '0 note found'
+        });
+      }
+
       let allMyScores = _.pluck(allMyNotes, 'myScoreTotal');
       let myTotalScore = _.reduce(allMyScores, (mem, myScore) => {
         return mem + myScore;
