@@ -1,7 +1,7 @@
 // api/hooks/sails-permissions.js
 
 
-module.exports = function (sails) {
+module.exports = function(sails) {
   return {
     identity: 'permissions',
 
@@ -10,25 +10,27 @@ module.exports = function (sails) {
      */
     _modelCache: {},
 
-    initialize: function (next) {
+    initialize: function(next) {
 
-      sails.after(sails.config.permissions.afterEvent, function () {
+      sails.after(sails.config.permissions.afterEvent, function() {
+        // set createdBy, and ownership
         installModelOwnership(sails);
       });
 
-      sails.after('hook:orm:loaded', function () {
+      sails.after('hook:orm:loaded', function() {
 
         Model.count()
-          .then(function (count) {
+          .then(function(count) {
+            // ensure models are in Model
             if (count == sails.models.length) return next();
-
+            // if not create them
             return initializeFixtures(sails)
-              .then(function () {
+              .then(function() {
                 sails.emit('hook:permissions:loaded');
                 next();
               });
           })
-          .catch(function (error) {
+          .catch(function(error) {
             sails.log.error(error);
             next(error);
           });
@@ -42,26 +44,30 @@ module.exports = function (sails) {
 function initializeFixtures(sails) {
   return require('sails-permissions/config/fixtures/model').createModels()
     .bind({})
-    .then(function (models) {
+    .then(function(models) {
       this.models = models;
 
+      // create key with identiy from models, and value is model
       sails.hooks['sails-permissions']._modelCache = _.indexBy(models, 'identity');
 
       return "temp";
     })
-    .catch(function (error) {
+    .catch(function(error) {
       sails.log.error(error);
     });
 }
 
 function installModelOwnership(sails) {
+  // get models folder as an object with property as file name
   var models = sails.models;
+  // if models.js file does not have autoCraete option true return false
   if (sails.config.models.autoCreatedBy === false) return;
 
-  _.each(models, function (model) {
+  // else if each model definition does not have autoCreatedBy true return false.
+  _.each(models, function(model) {
     if (model.autoCreatedBy === false) return;
-
-
+    // else add createdBy and owner to specific model definition.
+    // note if it already has it it doesn't create it (_.defaults)
     _.defaults(model.attributes, {
       createdBy: {
         model: 'User',
@@ -74,5 +80,3 @@ function installModelOwnership(sails) {
     });
   });
 }
-
-

@@ -602,7 +602,11 @@ function forgotPasswordComplete(req, res) {
 
 
 function changePassword(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  // let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  console.log("---------- req.allParams() ----------");
+  console.log(req.allParams());
+  let queryWrapper = req.allParams();
+
   sails.log(queryWrapper);
   let query = queryWrapper.query;
 
