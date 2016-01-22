@@ -1,4 +1,4 @@
-'user strict'
+'use strict';
 
 /**
  * Created by Andy on 6/5/2015
@@ -21,7 +21,7 @@
 
 
 
-module.exports = function (req, res, next) {
+module.exports = function(req, res, next) {
 
   var token;
 
@@ -30,7 +30,8 @@ module.exports = function (req, res, next) {
   if (req.headers && req.headers.authorization) {
     var parts = req.headers.authorization.split(' ');
     if (parts.length == 2) {
-      var scheme = parts[0], credentials = parts[1];
+      var scheme = parts[0],
+        credentials = parts[1];
 
       if (/^Bearer$/i.test(scheme)) {
         token = credentials;
@@ -39,7 +40,9 @@ module.exports = function (req, res, next) {
       next();
     }
 
-    Passport.findOne({accessToken: token}, function (err, passport) {
+    Passport.findOne({
+      accessToken: token
+    }, function(err, passport) {
       if (err) {
         return next();
       }
@@ -48,9 +51,11 @@ module.exports = function (req, res, next) {
         return next();
       }
 
-      User.findOne({id: passport.user})
+      User.findOne({
+          id: passport.user
+        })
         .populate('roles')
-        .exec(function (err, user) {
+        .exec(function(err, user) {
           if (err) {
             return next();
           }

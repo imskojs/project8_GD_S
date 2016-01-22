@@ -45,6 +45,20 @@ module.exports.policies = {
     ]
   },
   UserController: {
+    '*': [
+      'basicAuth',
+      'bearerAuth',
+      'passportBearerAuth',
+      'passport',
+      'sessionAuth',
+      'ModelPolicy',
+      'AuditPolicy',
+      'OwnerPolicy',
+      'PermissionPolicy',
+      'RolePolicy',
+      'CriteriaPolicy'
+    ],
+
     'create': ['passport'],
     'checknickname': true,
     'checkemail': true,
