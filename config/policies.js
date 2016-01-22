@@ -31,7 +31,7 @@ module.exports.policies = {
     // 'OwnerPolicy',
     'PermissionPolicy',
     'RolePolicy',
-    'CriteriaPolicy'
+    // 'CriteriaPolicy'
   ],
 
   AuthController: {
@@ -56,7 +56,7 @@ module.exports.policies = {
       // 'OwnerPolicy',
       'PermissionPolicy',
       'RolePolicy',
-      'CriteriaPolicy'
+      // 'CriteriaPolicy'
     ],
 
     'create': ['passport'],
