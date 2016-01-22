@@ -180,6 +180,11 @@ function withQuestionnaires(req, res) {
   sails.log(queryWrapper);
   let query = queryWrapper.query;
 
+  if (!QueryService.checkParamPassed(query.where.id)) {
+    return res.send(400, {
+      message: "no id sent"
+    });
+  }
   let productPromise = Product.findOne(query)
     .populate('questionnaires');
 
@@ -238,7 +243,7 @@ function findWithAverage(req, res) {
   let queryWrapper = QueryService.buildQuery({}, req.allParams());
   let query = queryWrapper.query;
   // for load more
-  let qaUpdatedAt = query.where.questionnaireAnswer;
+  let qaUpdatedAt = query.where.id;
   delete query.where.questionnaireAnswer;
   let qaLimit = query.limit;
   delete query.limit;
@@ -248,6 +253,7 @@ function findWithAverage(req, res) {
   delete query.skip;
   let qaOwner = query.where.owner;
   delete query.where.owner;
+  let more;
 
   return Product.find(query)
     .then((products) => {
@@ -264,7 +270,7 @@ function findWithAverage(req, res) {
         tempQuery.limit = qaLimit;
       }
       if (qaUpdatedAt) {
-        tempQuery.where.updatedAt = qaUpdatedAt;
+        tempQuery.where.id = qaUpdatedAt;
       }
       if (qaOwner) {
         tempQuery.where.owner = qaOwner;
@@ -277,11 +283,14 @@ function findWithAverage(req, res) {
       if (qaSkip) {
         tempQuery.skip = qaSkip;
       }
-      return QuestionnaireAnswer
+      sails.log("-----------  tempQuery  -------------");
+      sails.log(tempQuery);
+      return [QuestionnaireAnswer
         .find(tempQuery)
-        .populate('product');
+        .populate('product'), tempQuery.limit
+      ];
     })
-    .then((qna0s) => {
+    .spread((qna0s, limit) => {
       if (!qna0s) {
         return Promise.reject({
           message: "0 questionnaireAnswers found"
@@ -290,6 +299,11 @@ function findWithAverage(req, res) {
         return Promise.reject({
           message: "0 questionnaireAnswers found"
         });
+      }
+      if (qna0s.length === limit) {
+        more = true;
+      } else {
+        more = false;
       }
       // get CreatedByIds of questionnaireAnswers
       let qna0CreatedByIds = _.pluck(qna0s, 'createdBy');
@@ -332,7 +346,8 @@ function findWithAverage(req, res) {
     })
     .then((results) => {
       return res.ok({
-        products: results
+        products: results,
+        more: more
       });
     })
     .catch((err) => {
@@ -340,16 +355,21 @@ function findWithAverage(req, res) {
     });
 }
 
+
 function findOneWithAverage(req, res) {
   let queryWrapper = QueryService.buildQuery({}, req.allParams());
   let query = queryWrapper.query;
   let owner = query.where.owner;
+  sails.log("-----------  query  -------------");
+  sails.log(query);
   delete query.where.owner;
-  return Product.findOne(query)
+  return Product.findOne({
+      id: query.where.product
+    })
     .then((product) => {
       // pluck product Ids
       if (!product) {
-        return res.send(400, {
+        return Promise.reject({
           message: "no product found"
         });
       }
@@ -382,7 +402,7 @@ function findOneWithAverage(req, res) {
       let myQnasPromise = QuestionnaireAnswer.find({
           where: {
             product: query.where.product,
-            owner: owner
+            owner: owner || req.user.id
           },
           sort: 'position ASC'
         })
@@ -391,6 +411,7 @@ function findOneWithAverage(req, res) {
         .populate('createdBy');
 
       let tempProduct = qna0s[0].product;
+      tempProduct = tempProduct.toObject();
 
       return [qna0CreatedByIds, myQnasPromise, tempProduct];
     })
@@ -400,7 +421,6 @@ function findOneWithAverage(req, res) {
           tempProduct['myAverage' + i] = null;
         });
       } else {
-        tempProduct = tempProduct.toObject();
         tempProduct.questionnaireAnswers = myQnas;
         let myAverageScores = _.map(myQnas, (myQna) => {
           let myQuestionAnswers = myQna.questionAnswers;
@@ -453,8 +473,6 @@ function findOneWithAverage(req, res) {
       return res.negotiate(err);
     });
 }
-
-
 
 function updatePhoto(req, res) { // queryWrapper{query:{id}}, req.files();
   let queryWrapper = QueryService.buildQuery({}, req.allParams());

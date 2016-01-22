@@ -7,6 +7,10 @@ module.exports = {
       index: true
     },
 
+    title: {
+      type: 'STRING',
+    },
+
     answer: { //0,1,2,3,4 // question.options[1]
       type: 'INTEGER'
     },

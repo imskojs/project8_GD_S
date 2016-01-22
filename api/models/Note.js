@@ -7,6 +7,10 @@ module.exports = {
     myComment: { //common
       type: 'STRING'
     },
+    views: {
+      type: 'INTEGER',
+      defaultsTo: 0
+    },
     //====================================================
     //  type: Field only
     //====================================================

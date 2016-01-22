@@ -39,6 +39,7 @@ module.exports.routes = {
   //  Note
   //====================================================
   'GET /note/find': 'NoteController.find',
+  'GET /note/findOne': 'NoteController.findOne',
   'GET /note/getMaxScoreNote': 'NoteController.getMaxScoreNote',
   'GET /note/myHandicap': 'NoteController.myHandicap',
 

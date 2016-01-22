@@ -4,6 +4,7 @@ var _ = require('lodash');
 
 module.exports = {
   find: find,
+  findOne: findOne,
   //====================================================
   //  App specific
   //====================================================
@@ -40,6 +41,37 @@ function find(req, res) {
     });
 }
 
+function findOne(req, res) {
+  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  sails.log(queryWrapper);
+  let query = queryWrapper.query;
+  let populate = queryWrapper.populate;
+  let notePromise = Note.findOne(query);
+  QueryService.applyPopulate(notePromise, populate);
+  return notePromise
+    .then((note) => {
+      if (note.views === undefined) {
+        note.views = 0;
+      }
+      note.views = note.views + 1;
+      let pendingSave = Promise.pending();
+      note.save((err, savedNote) => {
+        if (err) {
+          pendingSave.reject(err);
+        } else {
+          pendingSave.resolve(savedNote);
+        }
+      });
+      return pendingSave.promise;
+    })
+    .then((savedNote) => {
+      return res.ok(savedNote);
+    })
+    .catch((err) => {
+      return res.negotiate(err);
+    });
+}
+
 function getMaxScoreNote(req, res) {
   let queryWrapper = QueryService.buildQuery({}, req.allParams());
   sails.log(queryWrapper);
@@ -60,27 +92,36 @@ function getMaxScoreNote(req, res) {
     });
 }
 
+
 function myHandicap(req, res) {
   let queryWrapper = QueryService.buildQuery({}, req.allParams());
-  sails.log(queryWrapper);
   let query = queryWrapper.query;
-  // find all note with productId
-  return Note.find({
-      product: query.where.product
-    })
-    .then((allNotes) => {
-      let allScores = _.pluck(allNotes, 'myScoreTotal');
-      let averageScore = _.mean(allScores);
-      let myNotePromise = Note.findOne({
-        product: query.where.product,
-        owner: req.user.id
+  sails.log("-----------  query  -------------");
+  sails.log(query);
+  delete query.where.owner;
+
+  let specificNotePromise = Note.findOne({
+    product: query.where.product,
+    owner: query.where.owner || req.user.id
+  });
+
+  let allMyNotesPromise = Note.find({
+    owner: query.where.owner || req.user.id
+  });
+
+  return Promise.all([specificNotePromise, allMyNotesPromise])
+    .then((array) => {
+      let specificNote = array[0];
+      let allMyNotes = array[1];
+      let allMyScores = _.pluck(allMyNotes, 'myScoreTotal');
+      let myTotalScore = _.reduce(allMyScores, (mem, myScore) => {
+        return mem + myScore;
+      }, 0);
+      let myAverage = myTotalScore / allMyScores.length;
+      let diff = specificNote.myScoreTotal - myAverage;
+      return res.ok({
+        myHandicap: diff
       });
-      return [averageScore, myNotePromise];
-    })
-    .spread((averageScore, myNote) => {
-      let myScore = myNote.myScoreTotal;
-      let diff = myScore - averageScore;
-      return res.ok(diff);
     })
     .catch((err) => {
       return res.negotiate(err);
