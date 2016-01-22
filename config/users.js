@@ -155,62 +155,62 @@ module.exports.users = {
 
       // User
       {"name": 'OWNER 사용자 읽기', "model": 'User', "action": 'read', "relation": 'role'},
-      {"name": 'OWNER 사용자 수정', "model": 'User', "action": 'update', "relation": 'owner'},
-      {"name": 'OWNER 사용자 지우기', "model": 'User', "action": 'delete', "relation": 'owner'},
+      {"name": 'OWNER 사용자 수정', "model": 'User', "action": 'update', "relation": 'role'},
+      {"name": 'OWNER 사용자 지우기', "model": 'User', "action": 'delete', "relation": 'role'},
 
       // Photo
       {"name": 'OWNER 사진 읽기', "model": 'Photo', "action": 'read', "relation": 'role'},
       {"name": 'OWNER 사진 쓰기', "model": 'Photo', "action": 'create', "relation": 'role'},
-      {"name": 'OWNER 사진 수정', "model": 'Photo', "action": 'update', "relation": 'owner'},
-      {"name": 'OWNER 사진 지우기', "model": 'Photo', "action": 'delete', "relation": 'owner'},
+      {"name": 'OWNER 사진 수정', "model": 'Photo', "action": 'update', "relation": 'role'},
+      {"name": 'OWNER 사진 지우기', "model": 'Photo', "action": 'delete', "relation": 'role'},
 
       // Post
       {"name": 'OWNER 글 읽기', "model": 'Post', "action": 'read', "relation": 'role'},
       {"name": 'OWNER 글 쓰기', "model": 'Post', "action": 'create', "relation": 'role'},
-      {"name": 'OWNER 글 수정', "model": 'Post', "action": 'update', "relation": 'owner'},
-      {"name": 'OWNER 글 지우기', "model": 'Post', "action": 'delete', "relation": 'owner'},
+      {"name": 'OWNER 글 수정', "model": 'Post', "action": 'update', "relation": 'role'},
+      {"name": 'OWNER 글 지우기', "model": 'Post', "action": 'delete', "relation": 'role'},
 
       // Comment
       {"name": 'OWNER 댓글 읽기', "model": 'Comment', "action": 'read', "relation": 'role'},
       {"name": 'OWNER 댓글 쓰기', "model": 'Comment', "action": 'create', "relation": 'role'},
-      {"name": 'OWNER 댓글 수정', "model": 'Comment', "action": 'update', "relation": 'owner'},
-      {"name": 'OWNER 댓글 지우기', "model": 'Comment', "action": 'delete', "relation": 'owner'},
+      {"name": 'OWNER 댓글 수정', "model": 'Comment', "action": 'update', "relation": 'role'},
+      {"name": 'OWNER 댓글 지우기', "model": 'Comment', "action": 'delete', "relation": 'role'},
 
       // Like
       {"name": 'OWNER 좋아요 읽기', "model": 'Like', "action": 'read', "relation": 'role'},
       {"name": 'OWNER 좋아요 만들기', "model": 'Like', "action": 'create', "relation": 'role'},
-      {"name": 'OWNER 좋아요 수정', "model": 'Like', "action": 'update', "relation": 'owner'},
-      {"name": 'OWNER 좋아요 지우기', "model": 'Like', "action": 'delete', "relation": 'owner'},
+      {"name": 'OWNER 좋아요 수정', "model": 'Like', "action": 'update', "relation": 'role'},
+      {"name": 'OWNER 좋아요 지우기', "model": 'Like', "action": 'delete', "relation": 'role'},
 
       // Place
       {"name": 'OWNER 장소 읽기', "model": 'Place', "action": 'read', "relation": 'role'},
       {"name": 'OWNER 장소 만들기', "model": 'Place', "action": 'create', "relation": 'role'},
-      {"name": 'OWNER 장소 수정', "model": 'Place', "action": 'update', "relation": 'owner'},
-      {"name": 'OWNER 장소 지우기', "model": 'Place', "action": 'delete', "relation": 'owner'},
+      {"name": 'OWNER 장소 수정', "model": 'Place', "action": 'update', "relation": 'role'},
+      {"name": 'OWNER 장소 지우기', "model": 'Place', "action": 'delete', "relation": 'role'},
 
       // Product
       {"name": 'OWNER 상품 읽기', "model": 'Product', "action": 'read', "relation": 'role'},
       {"name": 'OWNER 상품 만들기', "model": 'Product', "action": 'create', "relation": 'role'},
-      {"name": 'OWNER 상품 수정', "model": 'Product', "action": 'update', "relation": 'owner'},
-      {"name": 'OWNER 상품 지우기', "model": 'Product', "action": 'delete', "relation": 'owner'},
+      {"name": 'OWNER 상품 수정', "model": 'Product', "action": 'update', "relation": 'role'},
+      {"name": 'OWNER 상품 지우기', "model": 'Product', "action": 'delete', "relation": 'role'},
 
       // Booking
       {"name": 'OWNER 예약 읽기', "model": 'Booking', "action": 'read', "relation": 'role'},
       {"name": 'OWNER 예약 만들기', "model": 'Booking', "action": 'create', "relation": 'role'},
-      {"name": 'OWNER 예약 수정', "model": 'Booking', "action": 'update', "relation": 'owner'},
-      {"name": 'OWNER 예약 지우기', "model": 'Booking', "action": 'delete', "relation": 'owner'},
+      {"name": 'OWNER 예약 수정', "model": 'Booking', "action": 'update', "relation": 'role'},
+      {"name": 'OWNER 예약 지우기', "model": 'Booking', "action": 'delete', "relation": 'role'},
 
       // 큐폰
       {"name": 'OWNER 큐폰 읽기', "model": 'RoyaltyPoint', "action": 'read', "relation": 'role'},
       {"name": 'OWNER 큐폰 만들기', "model": 'RoyaltyPoint', "action": 'create', "relation": 'role'},
-      {"name": 'OWNER 큐폰 수정', "model": 'RoyaltyPoint', "action": 'update', "relation": 'owner'},
-      {"name": 'OWNER 큐폰 지우기', "model": 'RoyaltyPoint', "action": 'delete', "relation": 'owner'},
+      {"name": 'OWNER 큐폰 수정', "model": 'RoyaltyPoint', "action": 'update', "relation": 'role'},
+      {"name": 'OWNER 큐폰 지우기', "model": 'RoyaltyPoint', "action": 'delete', "relation": 'role'},
 
       // Review
       {"name": 'OWNER 리뷰 읽기', "model": 'Review', "action": 'read', "relation": 'role'},
       {"name": 'OWNER 리뷰 만들기', "model": 'Review', "action": 'create', "relation": 'role'},
-      {"name": 'OWNER 리뷰 수정', "model": 'Review', "action": 'update', "relation": 'owner'},
-      {"name": 'OWNER 리뷰 지우기', "model": 'Review', "action": 'delete', "relation": 'owner'},
+      {"name": 'OWNER 리뷰 수정', "model": 'Review', "action": 'update', "relation": 'role'},
+      {"name": 'OWNER 리뷰 지우기', "model": 'Review', "action": 'delete', "relation": 'role'},
 
       {"name": 'Questionnaire Read', "model": 'Questionnaire', "action": 'read', "relation": 'role'},
       {"name": 'Questionnaire Create', "model": 'Questionnaire', "action": 'create', "relation": 'role'},
@@ -265,28 +265,28 @@ module.exports.users = {
       // Place
       {"name": 'USER 장소 읽기', "model": 'Place', "action": 'read', "relation": 'role'},
       //{"name": 'USER 장소 만들기', "model": 'Place', "action": 'create', "relation": 'role'},
-      {"name": 'USER 장소 수정', "model": 'Place', "action": 'update', "relation": 'owner'},
-      {"name": 'USER 장소 지우기', "model": 'Place', "action": 'delete', "relation": 'owner'},
+      {"name": 'USER 장소 수정', "model": 'Place', "action": 'update', "relation": 'role'},
+      {"name": 'USER 장소 지우기', "model": 'Place', "action": 'delete', "relation": 'role'},
 
 
       // Booking
       {"name": 'USER 예약 읽기', "model": 'Booking', "action": 'read', "relation": 'role'},
       {"name": 'USER 예약 만들기', "model": 'Booking', "action": 'create', "relation": 'role'},
-      {"name": 'USER 예약 수정', "model": 'Booking', "action": 'update', "relation": 'owner'},
-      {"name": 'USER 예약 지우기', "model": 'Booking', "action": 'delete', "relation": 'owner'},
+      {"name": 'USER 예약 수정', "model": 'Booking', "action": 'update', "relation": 'role'},
+      {"name": 'USER 예약 지우기', "model": 'Booking', "action": 'delete', "relation": 'role'},
 
       // 큐폰
       {"name": 'USER 큐폰 읽기', "model": 'RoyaltyPoint', "action": 'read', "relation": 'role'},
       //TODO: Need to restrict user from entering point
       {"name": 'USER 큐폰 만들기', "model": 'RoyaltyPoint', "action": 'create', "relation": 'role'},
-      {"name": 'USER 큐폰 수정', "model": 'RoyaltyPoint', "action": 'update', "relation": 'owner'},
-      {"name": 'USER 큐폰 지우기', "model": 'RoyaltyPoint', "action": 'delete', "relation": 'owner'},
+      {"name": 'USER 큐폰 수정', "model": 'RoyaltyPoint', "action": 'update', "relation": 'role'},
+      {"name": 'USER 큐폰 지우기', "model": 'RoyaltyPoint', "action": 'delete', "relation": 'role'},
 
       // Review
       {"name": 'USER 리뷰 읽기', "model": 'Review', "action": 'read', "relation": 'role'},
       {"name": 'USER 리뷰 만들기', "model": 'Review', "action": 'create', "relation": 'role'},
-      {"name": 'USER 리뷰 수정', "model": 'Review', "action": 'update', "relation": 'owner'},
-      {"name": 'USER 리뷰 지우기', "model": 'Review', "action": 'delete', "relation": 'owner'},
+      {"name": 'USER 리뷰 수정', "model": 'Review', "action": 'update', "relation": 'role'},
+      {"name": 'USER 리뷰 지우기', "model": 'Review', "action": 'delete', "relation": 'role'},
 
 
 
@@ -303,8 +303,8 @@ module.exports.users = {
       // User
       {"name": 'USER 사용자 읽기', "model": 'User', "action": 'read', "relation": 'role'},
       {"name": 'USER 사용자 쓰기', "model": 'User', "action": 'create', "relation": 'role'},
-      {"name": 'USER 사용자 수정', "model": 'User', "action": 'update', "relation": 'owner'},
-      {"name": 'USER 사용자 지우기', "model": 'User', "action": 'delete', "relation": 'owner'},
+      {"name": 'USER 사용자 수정', "model": 'User', "action": 'update', "relation": 'role'},
+      {"name": 'USER 사용자 지우기', "model": 'User', "action": 'delete', "relation": 'role'},
 
       // Photo
       {"name": 'USER 사진 읽기', "model": 'Photo', "action": 'read', "relation": 'role'},
