@@ -8,6 +8,14 @@ _.merge(exports, {
 
   attributes: {
 
+    username: {
+      type: 'string',
+      unique: true,
+      index: true,
+      required: true,
+      notNull: true
+    },
+
     email: {
       type: 'email',
       unique: true,

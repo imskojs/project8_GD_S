@@ -303,8 +303,8 @@ module.exports.users = {
       // User
       {"name": 'USER 사용자 읽기', "model": 'User', "action": 'read', "relation": 'role'},
       {"name": 'USER 사용자 쓰기', "model": 'User', "action": 'create', "relation": 'role'},
-      {"name": 'USER 사용자 수정', "model": 'User', "action": 'update', "relation": 'role'},
-      {"name": 'USER 사용자 지우기', "model": 'User', "action": 'delete', "relation": 'role'},
+      {"name": 'USER 사용자 수정', "model": 'User', "action": 'update', "relation": 'owner'},
+      {"name": 'USER 사용자 지우기', "model": 'User', "action": 'delete', "relation": 'owner'},
 
       // Photo
       {"name": 'USER 사진 읽기', "model": 'Photo', "action": 'read', "relation": 'role'},

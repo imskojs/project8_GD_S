@@ -202,7 +202,7 @@ function register(req, res) {
       });
     }
 
-    res.ok(user);
+    return res.ok(user);
   });
 }
 

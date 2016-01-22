@@ -5,7 +5,7 @@ module.exports.bootstrap = function(cb) {
   ImageService.init();
   //MailService.init();
 
-  Place.native((err, placeColl) => {
+  return Place.native((err, placeColl) => {
     placeColl.ensureIndex({
       geoJSON: '2dsphere'
     }, () => {
