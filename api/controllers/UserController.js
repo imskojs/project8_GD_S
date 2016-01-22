@@ -231,6 +231,7 @@ function create(req, res) {
 
 function update(req, res) {
   let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  sails.log('----update----');
   sails.log(queryWrapper);
   let query = queryWrapper.query;
   var id = query.id;
