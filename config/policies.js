@@ -28,7 +28,7 @@ module.exports.policies = {
     'sessionAuth',
     'ModelPolicy',
     'AuditPolicy',
-    'OwnerPolicy',
+    // 'OwnerPolicy',
     'PermissionPolicy',
     'RolePolicy',
     'CriteriaPolicy'
@@ -53,7 +53,7 @@ module.exports.policies = {
       'sessionAuth',
       'ModelPolicy',
       'AuditPolicy',
-      'OwnerPolicy',
+      // 'OwnerPolicy',
       'PermissionPolicy',
       'RolePolicy',
       'CriteriaPolicy'
