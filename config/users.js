@@ -261,11 +261,6 @@ module.exports.users = {
       {"name": 'USER 기준 읽기', "model": 'Criteria', "action": 'read', "relation": 'role'},
 
 
-      // Like
-      {"name": 'USER 좋아요 읽기', "model": 'Like', "action": 'read', "relation": 'role'},
-      {"name": 'USER 좋아요 만들기', "model": 'Like', "action": 'create', "relation": 'role'},
-      {"name": 'USER 좋아요 수정', "model": 'Like', "action": 'update', "relation": 'owner'},
-      {"name": 'USER 좋아요 지우기', "model": 'Like', "action": 'delete', "relation": 'owner'},
 
       // Place
       {"name": 'USER 장소 읽기', "model": 'Place', "action": 'read', "relation": 'role'},
@@ -273,11 +268,6 @@ module.exports.users = {
       {"name": 'USER 장소 수정', "model": 'Place', "action": 'update', "relation": 'owner'},
       {"name": 'USER 장소 지우기', "model": 'Place', "action": 'delete', "relation": 'owner'},
 
-      // Product
-      {"name": 'USER 상품 읽기', "model": 'Product', "action": 'read', "relation": 'role'},
-      //{"name": 'USER 상품 만들기', "model": 'Product', "action": 'create', "relation": 'role'},
-      {"name": 'USER 상품 수정', "model": 'Product', "action": 'update', "relation": 'owner'},
-      {"name": 'USER 상품 지우기', "model": 'Product', "action": 'delete', "relation": 'owner'},
 
       // Booking
       {"name": 'USER 예약 읽기', "model": 'Booking', "action": 'read', "relation": 'role'},
@@ -304,28 +294,41 @@ module.exports.users = {
       //====================================================
       //  Used in GolfDic
       //====================================================
+      // Like
+      {"name": 'USER 좋아요 읽기', "model": 'Like', "action": 'read', "relation": 'role'},
+      {"name": 'USER 좋아요 만들기', "model": 'Like', "action": 'create', "relation": 'role'},
+      {"name": 'USER 좋아요 수정', "model": 'Like', "action": 'update', "relation": 'role'},
+      {"name": 'USER 좋아요 지우기', "model": 'Like', "action": 'delete', "relation": 'role'},
+
       // User
       {"name": 'USER 사용자 읽기', "model": 'User', "action": 'read', "relation": 'role'},
-      {"name": 'USER 사용자 수정', "model": 'User', "action": 'update', "relation": 'owner'},
-      {"name": 'USER 사용자 지우기', "model": 'User', "action": 'delete', "relation": 'owner'},
+      {"name": 'USER 사용자 쓰기', "model": 'User', "action": 'create', "relation": 'role'},
+      {"name": 'USER 사용자 수정', "model": 'User', "action": 'update', "relation": 'role'},
+      {"name": 'USER 사용자 지우기', "model": 'User', "action": 'delete', "relation": 'role'},
 
       // Photo
       {"name": 'USER 사진 읽기', "model": 'Photo', "action": 'read', "relation": 'role'},
       {"name": 'USER 사진 쓰기', "model": 'Photo', "action": 'create', "relation": 'role'},
-      {"name": 'USER 사진 수정', "model": 'Photo', "action": 'update', "relation": 'owner'},
-      {"name": 'USER 사진 지우기', "model": 'Photo', "action": 'delete', "relation": 'owner'},
+      {"name": 'USER 사진 수정', "model": 'Photo', "action": 'update', "relation": 'role'},
+      {"name": 'USER 사진 지우기', "model": 'Photo', "action": 'delete', "relation": 'role'},
+
+      // Product
+      {"name": 'USER 상품 읽기', "model": 'Product', "action": 'read', "relation": 'role'},
+      {"name": 'USER 상품 만들기', "model": 'Product', "action": 'create', "relation": 'role'},
+      {"name": 'USER 상품 수정', "model": 'Product', "action": 'update', "relation": 'role'},
+      {"name": 'USER 상품 지우기', "model": 'Product', "action": 'delete', "relation": 'role'},
 
       // Post
       {"name": 'USER 글 읽기', "model": 'Post', "action": 'read', "relation": 'role'},
       {"name": 'USER 글 쓰기', "model": 'Post', "action": 'create', "relation": 'role'},
-      {"name": 'USER 글 수정', "model": 'Post', "action": 'update', "relation": 'owner'},
-      {"name": 'USER 글 지우기', "model": 'Post', "action": 'delete', "relation": 'owner'},
+      {"name": 'USER 글 수정', "model": 'Post', "action": 'update', "relation": 'role'},
+      {"name": 'USER 글 지우기', "model": 'Post', "action": 'delete', "relation": 'role'},
 
       // Comment
       {"name": 'USER 댓글 읽기', "model": 'Comment', "action": 'read', "relation": 'role'},
       {"name": 'USER 댓글 쓰기', "model": 'Comment', "action": 'create', "relation": 'role'},
-      {"name": 'USER 댓글 수정', "model": 'Comment', "action": 'update', "relation": 'owner'},
-      {"name": 'USER 댓글 지우기', "model": 'Comment', "action": 'delete', "relation": 'owner'},
+      {"name": 'USER 댓글 수정', "model": 'Comment', "action": 'update', "relation": 'role'},
+      {"name": 'USER 댓글 지우기', "model": 'Comment', "action": 'delete', "relation": 'role'},
 
       {"name": 'Questionnaire Read', "model": 'Questionnaire', "action": 'read', "relation": 'role'},
       {"name": 'Questionnaire Create', "model": 'Questionnaire', "action": 'create', "relation": 'role'},

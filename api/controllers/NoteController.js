@@ -82,7 +82,7 @@ function getMaxScoreNote(req, res) {
       },
       sort: 'myScoreTotal DESC',
       limit: 1
-    })
+    }).populate('product')
     .then((inArray) => {
       let maxNote = inArray[0];
       return res.ok(maxNote);

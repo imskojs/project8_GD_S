@@ -67,6 +67,11 @@ function findOne(req, res) {
   QueryService.applyPopulate(productPromise, populate);
   return productPromise
     .then((product) => {
+      if (!product) {
+        return Promise.reject({
+          message: 'no post found'
+        });
+      }
       if (product.views === undefined) {
         product.views = 0;
       }
