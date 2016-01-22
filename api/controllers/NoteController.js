@@ -98,7 +98,6 @@ function myHandicap(req, res) {
   let query = queryWrapper.query;
   sails.log("-----------  query  -------------");
   sails.log(query);
-  delete query.where.owner;
 
   let specificNotePromise = Note.findOne({
     product: query.where.product,
