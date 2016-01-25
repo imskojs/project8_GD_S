@@ -30,7 +30,7 @@ module.exports.policies = {
     'AuditPolicy',
     // 'OwnerPolicy',
     'PermissionPolicy',
-    'RolePolicy',
+    'RolePolicy', // empty
     // 'CriteriaPolicy'
   ],
 
