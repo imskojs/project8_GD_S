@@ -27,6 +27,7 @@ module.exports.routes = {
   'GET /like/finOne': 'LikeController.findOne',
   'POST /like/create': 'LikeController.create',
   'DELETE /like/destroy': 'LikeController.destroy',
+  'DELETE /like/destroyLikes': 'LikeController.destroyLikes',
 
   //====================================================
   //  QuestionAnswer

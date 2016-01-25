@@ -32,7 +32,7 @@ module.exports.models = {
   // migrate: 'drop',
   schema: false,
 
-  autoCreatedBy: false,
+  autoCreatedBy: true,
   dynamicFinders: false,
 
 };

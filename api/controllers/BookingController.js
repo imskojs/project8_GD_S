@@ -1,15 +1,3 @@
-/**
- * Created by Andy on 7/7/2015
- * As part of applicatplatform
- *
- * Copyright (C) Applicat (www.applicat.co.kr) & Andy Yoon Yong Shin - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Andy Yoon Yong Shin <andy.shin@applicat.co.kr>, 7/7/2015
- *
- */
-
-
 var Promise = require('bluebird');
 var _ = require('lodash');
 
@@ -44,16 +32,20 @@ function find(req, res) {
   var countPromise = Booking.count(query);
 
   Promise.all([bookingPromise, countPromise])
-    .spread(function (bookings, count) {
+    .spread(function(bookings, count) {
 
       // See if there's more
       var more = (bookings[query.limit - 1]) ? true : false;
       // Remove item over 20 (only for check purpose)
-      if (more)bookings.splice(query.limit - 1, 1);
+      if (more) bookings.splice(query.limit - 1, 1);
 
-      res.ok({bookings: bookings, more: more, total: count});
+      res.ok({
+        bookings: bookings,
+        more: more,
+        total: count
+      });
     })
-    .catch(function (err) {
+    .catch(function(err) {
       sails.log.error(err);
       res.send(500, {
         message: "장소 로딩을 실패 했습니다. 서버에러 code: 001"
@@ -66,10 +58,14 @@ function findNative(req, res) {
   var queryWrapper = QueryService.buildQuery({}, req.allParams());
 
   Promise.resolve(QueryService.executeNative(Booking, queryWrapper))
-    .spread(function (bookings, more, count) {
-      res.ok({bookings: bookings, more: more, total: count});
+    .spread(function(bookings, more, count) {
+      res.ok({
+        bookings: bookings,
+        more: more,
+        total: count
+      });
     })
-    .catch(function (err) {
+    .catch(function(err) {
       sails.log.error(err);
       res.send(500, {
         message: "장소 로딩을 실패 했습니다. 서버에러 code: 001"
@@ -98,9 +94,11 @@ function findOne(req, res) {
   QueryService.applyPopulate(bookingPromise, populate);
 
   bookingPromise
-    .then(function (booking) {
+    .then(function(booking) {
       if (booking && booking[0]) {
-        res.send(200, {booking: booking[0]});
+        res.send(200, {
+          booking: booking[0]
+        });
       } else {
         res.send(500, {
           message: "존재하지 않는 게시글 입니다. 서버에러 code: 001"
@@ -108,7 +106,7 @@ function findOne(req, res) {
       }
 
     })
-    .catch(function (err) {
+    .catch(function(err) {
       sails.log.error(err);
       res.send(500, {
         message: "게시물 로딩을 실패 했습니다. 서버에러 code: 001"
@@ -129,10 +127,10 @@ function create(req, res) {
   sails.log.debug(booking);
 
   Booking.create(booking)
-    .then(function (booking) {
+    .then(function(booking) {
       res.send(200, booking);
     })
-    .catch(function (err) {
+    .catch(function(err) {
       res.send(500, {
         message: "게시물 로딩을 실패 했습니다. 서버에러 code: 001"
       });
@@ -153,11 +151,13 @@ function update(req, res) {
     return;
   }
 
-  Booking.update({id: id}, booking)
-    .then(function (booking) {
+  Booking.update({
+      id: id
+    }, booking)
+    .then(function(booking) {
       res.send(200, booking);
     })
-    .catch(function (err) {
+    .catch(function(err) {
       sails.log.error(err);
       res.send(500, {
         message: "Failed to update code: 001"
@@ -178,11 +178,13 @@ function destroy(req, res) {
     return;
   }
 
-  Booking.destroy({id: id})
-    .then(function (removedBookings) {
+  Booking.destroy({
+      id: id
+    })
+    .then(function(removedBookings) {
       res.send(200, removedBookings);
     })
-    .catch(function (err) {
+    .catch(function(err) {
       sails.log.error(err);
       res.send(500, {
         message: "게시물 로딩을 실패 했습니다. 서버에러 code: 001"

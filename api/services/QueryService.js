@@ -11,7 +11,8 @@
 
 
 'use strict';
-var Promise = require('bluebird');
+var Promise
+ = require('bluebird');
 var ObjectID = require('mongodb').ObjectID;
 var _ = require('lodash');
 
@@ -51,6 +52,37 @@ function buildQuery(query, params) {
   //=====================================================
   if (params && params.query && typeof params.query === 'string') {
     query = JSON.parse(params.query);
+  } else if (params && params.query) {
+    query = params.query;
+  } else {
+    sails.log("---'queryWrapper does not have query -- QueryService.buildQuery'---");
+    sails.log('queryWrapper does not have query');
+  }
+
+  var populate = _.clone(query.populate);
+  delete query.populate;
+
+  return {
+    query: query,
+    populate: populate
+  };
+}
+
+function buildQuery2(req) {
+  var query = {};
+  var params = req.allParams();
+  if (params && params.query && typeof params.query === 'string') {
+    query = JSON.parse(params.query);
+    if(req.method === 'POST'){
+      query.createdBy = req.user.id;
+      query.updatedBy = req.user.id;
+      query.owner = req.user.id;
+    }
+  } else if (params && params.query) {
+    query = params.query;
+  } else {
+    sails.log("---'queryWrapper does not have query -- QueryService.buildQuery'---");
+    sails.log('queryWrapper does not have query');
   }
 
   var populate = _.clone(query.populate);

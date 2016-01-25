@@ -1,5 +1,6 @@
 // api/models/Model.js
 
+'use strict';
 var _ = require('lodash');
 var _super = require('sails-permissions/api/models/Model');
 

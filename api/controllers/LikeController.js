@@ -9,6 +9,7 @@ module.exports = {
   findOne: findOne,
   create: create,
   destroy: destroy,
+  destroyLikes: destroyLikes,
 
   //====================================================
   //  Not Used
@@ -25,7 +26,9 @@ module.exports = {
 
 function findOne(req, res) {
   let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  sails.log("-----------  queryWrapper -- Like.findOne  -------------");
   sails.log(queryWrapper);
+
   let query = queryWrapper.query;
   return Like.findOne({
       product: query.where.product,
@@ -49,11 +52,12 @@ function findOne(req, res) {
 
 function create(req, res) {
   let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  sails.log("-----------  queryWrapper -- Like.create  -------------");
   sails.log(queryWrapper);
   let query = queryWrapper.query;
   return Like.findOne({
       product: query.product,
-      owner: query.owner
+      owner: query.owner || req.user.id
     })
     .then((like) => {
       if (!like) {
@@ -150,6 +154,58 @@ function destroy(req, res) {
 
 
 
+function destroyLikes(req, res) {
+  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  sails.log(queryWrapper);
+  let query = queryWrapper.query;
+  return Like.findOne({
+      product: query.where.product,
+      owner: query.where.owner || req.user.id
+    })
+    .then((like) => {
+      if (!like) {
+        return Promise.reject({
+          message: 'no like to destroy'
+        });
+      } else {
+        return Like.destroy({
+          product: like.product,
+          owner: query.where.owner || req.user.id
+        });
+      }
+    })
+    .then((destroyedLikeInArray) => {
+      return Product.findOne({
+        id: destroyedLikeInArray[0].product
+      });
+    })
+    .then((product) => {
+      if (!product.like) {
+        product.like = 0;
+      }
+      if (product.like < 1) {
+        return false;
+      }
+      product.like = product.like - 1;
+      let savePending = Promise.pending();
+      product.save((err, savedProduct) => {
+        if (err) {
+          savePending.reject(err);
+        } else {
+          savePending.resolve(savedProduct);
+        }
+      });
+      return savePending.promise;
+    })
+    .then(() => {
+      return res.ok({
+        message: 'like destroyed'
+      });
+    })
+    .catch((err) => {
+      return res.negotiate(err);
+    });
+}
 
 
 

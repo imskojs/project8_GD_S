@@ -1,9 +1,10 @@
 // api/services/PermissionService.js
 
+'use strict';
 var _ = require('lodash');
 var _super = require('sails-permissions/api/services/PermissionService');
 
-function PermissionService () { }
+function PermissionService() {}
 
 PermissionService.prototype = Object.create(_super);
 _.extend(PermissionService.prototype, {

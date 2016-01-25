@@ -1,24 +1,30 @@
 // api/models/Passport.js
 
+'use strict';
 var _ = require('lodash');
 var _super = require('sails-permissions/api/models/Passport');
 
 _.merge(exports, _super);
 _.merge(exports, {
 
-    // Extend with custom logic here by adding additional fields, methods, etc.
-    attributes: {
-        password: {type: 'STRING', minLength: 4},
-        accessToken: {type: 'STRING'}
+  // Extend with custom logic here by adding additional fields, methods, etc.
+  attributes: {
+    password: {
+      type: 'STRING',
+      minLength: 4
+    },
+    accessToken: {
+      type: 'STRING'
     }
+  }
 
-    /**
-     * For example:
-     *
-     * foo: function (bar) {
+  /**
+   * For example:
+   *
+   * foo: function (bar) {
    *   bar.x = 1;
    *   bar.y = 2;
    *   return _super.foo(bar);
    * }
-     */
+   */
 });

@@ -1,7 +1,4 @@
-'user strict'
-
-/**
- * Created by Andy on 6/5/2015
+/** * Created by Andy on 6/5/2015
  * As part of MyFitMate
  *
  * Copyright (C) Applicat (www.applicat.co.kr) & Andy Yoon Yong Shin - All Rights Reserved
@@ -21,7 +18,8 @@
 
 
 
-module.exports = function (req, res, next) {
+'use strict';
+module.exports = function(req, res, next) {
 
   var auth = req.headers.authorization;
   if (!auth || auth.search('Bearer ') !== 0) {
@@ -33,7 +31,8 @@ module.exports = function (req, res, next) {
   if (req.headers && req.headers.authorization) {
     var parts = req.headers.authorization.split(' ');
     if (parts.length == 2) {
-      var scheme = parts[0], credentials = parts[1];
+      var scheme = parts[0],
+        credentials = parts[1];
 
       if (/^Bearer$/i.test(scheme)) {
         token = credentials;
@@ -42,14 +41,16 @@ module.exports = function (req, res, next) {
       next();
     }
 
-    UtilService.verifyToken(token, function (err, userInfo) {
+    UtilService.verifyToken(token, function(err, userInfo) {
 
       if (err)
         return next();
 
-      User.findOne({id: userInfo.id})
+      User.findOne({
+          id: userInfo.id
+        })
         .populate('roles')
-        .exec(function (err, user) {
+        .exec(function(err, user) {
 
           if (!user) {
             next();

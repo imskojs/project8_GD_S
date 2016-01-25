@@ -1,5 +1,6 @@
 // api/models/User.js
 
+'use strict';
 var _ = require('lodash');
 var _super = require('sails-permissions/api/models/User');
 
@@ -71,6 +72,16 @@ _.merge(exports, {
       via: 'user'
     },
 
+    owner: {
+      model: 'User'
+    },
+    createdBy: {
+      model: 'User'
+    },
+    updatedBy: {
+      model: 'User'
+    },
+
 
     // Auth properties
     password_reset_code: {
@@ -89,7 +100,7 @@ _.merge(exports, {
     sails.log(user);
     // sails.log('User.afterCreate.setOwner', user);
 
-    User
+    return User
       .update({
         id: user.id
       }, {
@@ -99,13 +110,14 @@ _.merge(exports, {
 
         sails.log.debug("User update assign owner: " + users[0].toJSON());
 
-        return [User.findOne({
-            id: users[0].id
-          }).populate('roles'),
-          Role.find({
-            name: 'USER'
-          })
-        ];
+        var userPromise = User.findOne({
+          id: users[0].id
+        }).populate('roles');
+        var rolePromise = Role.find({
+          name: 'USER'
+        });
+
+        return [userPromise, rolePromise];
       })
       .spread(function(user, roles) {
 
