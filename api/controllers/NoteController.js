@@ -69,7 +69,7 @@ function findOne(req, res) {
       return pendingSave.promise;
     })
     .then((savedNote) => {
-      var product = Product.finOne({
+      var product = Product.findOne({
         id: savedNote.product && savedNote.product.id
       }).populate('thumbnail');
       return [savedNote, product];
