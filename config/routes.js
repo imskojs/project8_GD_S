@@ -60,6 +60,7 @@ module.exports.routes = {
   'GET /post/findLatest': 'PostController.findLatest',
   'GET /post/findOne': 'PostController.findOne',
   'POST /post/create': 'PostController.create',
+  'PUT /post/update': 'PostController.update',
 
   //====================================================
   //  Comment
@@ -95,7 +96,6 @@ module.exports.routes = {
 
   'GET /post/findNative': 'PostController.findNative',
 
-  'PUT /post/update': 'PostController.update',
   'DELETE /post/destroy': 'PostController.destroy',
 
   'POST /post/like': 'LikeController.postLike',
