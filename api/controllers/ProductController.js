@@ -197,7 +197,9 @@ function withQuestionnaires(req, res) {
     });
   }
   let productPromise = Product.findOne(query)
-    .populate('questionnaires');
+    .populate('questionnaires', {
+      sort: 'position ASC'
+    });
 
   return productPromise
     .then((product) => {
@@ -205,7 +207,9 @@ function withQuestionnaires(req, res) {
       let questionnairesPromise = _.map(questionnaires, (questionnaire) => {
         return Questionnaire.findOne({
           id: questionnaire.id
-        }).populate('questions');
+        }).populate('questions', {
+          sort: 'id ASC'
+        });
       });
       return [product, Promise.all(questionnairesPromise)];
     })
