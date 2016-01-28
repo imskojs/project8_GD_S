@@ -26,12 +26,14 @@ _.merge(exports, {
 
 
 function getMyUserInfo(req, res) {
-  res.send(200, req.user)
+  return res.send(200, req.user);
 }
 
 function updateMyInfo(req, res) {
-  var userToUpdate = req.allParams();
-
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: User.updateMyInfo  -------------");
+  sails.log(queryWrapper);
+  var userToUpdate = queryWrapper.query;
   var id = userToUpdate.id;
 
   var password = userToUpdate.password;
@@ -111,40 +113,34 @@ function updateMyInfo(req, res) {
 
 function find(req, res) {
 
-  var queryWrapper = QueryService.buildQuery({}, req.allParams());
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: User.find  -------------");
   sails.log(queryWrapper);
-
   var query = queryWrapper.query;
   var populate = queryWrapper.populate;
-
-  if (!query.limit || query.limit > 100)
+  if (!query.limit || query.limit > 100) {
     query.limit = 100;
-
+  }
   query.limit++;
-
   var userPromise = User.find(query);
-
   QueryService.applyPopulate(userPromise, populate);
-
   var countPromise = User.count(query);
 
-  Promise.all([userPromise, countPromise])
+  return Promise.all([userPromise, countPromise])
     .spread(function(users, count) {
-
-      // See if there's more
       var more = (users[query.limit - 1]) ? true : false;
-      // Remove item over 20 (only for check purpose)
-      if (more) users.splice(query.limit - 1, 1);
+      if (more) {
+        users.splice(query.limit - 1, 1);
+      }
 
-      res.ok({
+      return res.ok({
         users: users,
         more: more,
         total: count
       });
     })
-    .catch(function(err) {
-      sails.log.error(err);
-      res.send(500, {
+    .catch(function() {
+      return res.send(500, {
         message: "장소 로딩을 실패 했습니다. 서버에러 code: 001"
       });
     });
@@ -152,19 +148,20 @@ function find(req, res) {
 
 function findNative(req, res) {
 
-  var queryWrapper = QueryService.buildQuery({}, req.allParams());
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: User.findNative  -------------");
+  sails.log(queryWrapper);
 
-  Promise.resolve(QueryService.executeNative(User, queryWrapper))
+  return Promise.resolve(QueryService.executeNative(User, queryWrapper))
     .spread(function(users, more, count) {
-      res.ok({
+      return res.ok({
         users: users,
         more: more,
         total: count
       });
     })
-    .catch(function(err) {
-      sails.log.error(err);
-      res.send(500, {
+    .catch(function() {
+      return res.send(500, {
         message: "장소 로딩을 실패 했습니다. 서버에러 code: 001"
       });
     });
@@ -173,9 +170,9 @@ function findNative(req, res) {
 
 function findOne(req, res) {
 
-  var queryWrapper = QueryService.buildQuery({}, req.allParams());
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: User.findOne  -------------");
   sails.log(queryWrapper);
-
   var query = queryWrapper.query;
   var populate = queryWrapper.populate;
 
@@ -200,11 +197,10 @@ function findOne(req, res) {
 
 
 function create(req, res) {
-
-  var user = QueryService.buildQuery({}, req.allParams()).query;
-
-  sails.log.debug(JSON.stringify(user));
-
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: User.create  -------------");
+  sails.log(queryWrapper);
+  var user = queryWrapper.query;
   // Remove id
   if (user.id) {
     delete user.id;
@@ -214,28 +210,25 @@ function create(req, res) {
   user.roles = [user.role];
   delete user.role;
 
-  sails.services.passport.protocols.local.register(req.body, function(err, user) {
+  sails.services.passport.protocols.local.register(user, function(err, createdUser) {
     if (err) {
-      sails.log.error(err);
-      res.send(500, {
+      return res.send(500, {
         message: "유저 가입하기를 실패 하엿습니다. 서버에러 code: 001"
       });
     }
-
-    res.ok({
-      user: user,
+    return res.ok({
+      user: createdUser,
       message: '가입 완료'
     });
+
   });
 }
 
 function update(req, res) {
-  sails.log("-----------  req.allParams()  -------------");
-  sails.log(req.allParams());
-  let queryWrapper = req.allParams();
-  sails.log('----update----');
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: User.update  -------------");
   sails.log(queryWrapper);
-  let query = queryWrapper.query;
+  var query = queryWrapper.query;
   var id = query.id;
   var params = {};
   params.updatedBy = req.user.id;
@@ -261,17 +254,19 @@ function update(req, res) {
 }
 
 function destroy(req, res) {
-  var id = req.param("id");
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: User.destroy  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
+  var id = query.where.id;
 
   if (!QueryService.checkParamPassed(id)) {
-    res.send(400, {
+    return res.send(400, {
       message: "모든 매개 변수를 입력해주세요 code: 003"
     });
-    return;
   }
 
-
-  User.findOne({
+  return User.findOne({
       id: id
     })
     .populateAll()
@@ -310,7 +305,10 @@ function destroy(req, res) {
 }
 
 function contactAdmin(req, res) {
-  var mail = req.body;
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: User.contactAdmin  -------------");
+  sails.log(queryWrapper);
+  var mail = queryWrapper.query;
 
   if (!QueryService.checkParamPassed(mail.title, mail.content)) {
     res.send(400, {
@@ -319,7 +317,7 @@ function contactAdmin(req, res) {
     return;
   }
 
-  User.findOne({
+  return User.findOne({
       role: 'ADMIN'
     })
     .exec(function(err, userInfos) {

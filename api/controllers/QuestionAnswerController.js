@@ -12,10 +12,12 @@ module.exports = {
 };
 
 function updateAnswers(req, res) {
-  // let queryWrapper = QueryService.buildQuery({}, req.allParams());
-  let queryWrapper = req.allParams();
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: QuestionAnswer.updateAnswers  -------------");
   sails.log(queryWrapper);
-  let query = queryWrapper.query;
+  var query = queryWrapper.query;
+  // let queryWrapper = req.allParams();
+  // let query = queryWrapper.query;
   delete query.id;
   delete query.createdBy;
   delete query.updatedBy;
@@ -26,7 +28,17 @@ function updateAnswers(req, res) {
       message: "no type/product/answers sent"
     });
   }
+  sails.log("-----------  query.answers.length  -------------");
+  sails.log(query.answers.length);
+
+  sails.log("-----------  _.pluck(query.answers, 'id')  -------------");
+  sails.log(_.pluck(query.answers, 'id').length);
+
   let checkArray = _.uniq(_.pluck(query.answers, 'id'));
+
+  sails.log("-----------  checkArray.length  -------------");
+  sails.log(checkArray.length);
+
   if (query.answers.length !== checkArray.length) {
     return res.send(400, {
       message: "one or more id is not sent for query.answers"
@@ -102,9 +114,11 @@ function updateAnswers(req, res) {
 
 function createAnswers(req, res) {
   // let queryWrapper = QueryService.buildQuery({}, req.allParams());
-  let queryWrapper = req.allParams();
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: QuestionAnswer.createAnswers  -------------");
   sails.log(queryWrapper);
-  let query = queryWrapper.query;
+  // let queryWrapper = req.allParams();
+  var query = queryWrapper.query;
   let questionAnswers = query.answers;
   if (!QueryService.checkParamPassed(query.type, query.product, query.answers)) {
     return res.send(400, {
@@ -123,8 +137,6 @@ function createAnswers(req, res) {
       message: "id exists in question answers"
     });
   }
-
-
   // checks only one questionnaire to determine whether it's the first time creating.
   return QuestionnaireAnswer.findOne({
       product: query.product,
@@ -215,11 +227,9 @@ function createAnswers(req, res) {
 }
 
 function createScreenshot(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
-  let query = queryWrapper.query;
-  query.owner = req.user.id;
-  query.createdBy = req.user.id;
-  query.updatedBy = req.user.id;
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: QuestionAnswer.createScreenshot, has req.file()  -------------");
+  sails.log(queryWrapper);
   return ImageService
     .createPhotos(req, [])
     .then((createdPhotos) => {

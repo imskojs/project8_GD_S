@@ -1,15 +1,3 @@
-/**
- * Created by andy on 26/05/15
- * As part of beigintongserver
- *
- * Copyright (C) Applicat (www.applicat.co.kr) & Andy Yoon Yong Shin - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Andy Yoon Yong Shin <andy.shin@applicat.co.kr>, 26/05/15
- *
- */
-
-
 'use strict';
 var Promise = require('bluebird');
 var _ = require('lodash');
@@ -27,8 +15,10 @@ module.exports = {
   init: init,
   getService: getService,
   uploadPhoto: uploadPhoto,
+  // Old
+  createPhoto: createPhoto,
+  deletePhoto: deletePhoto
 };
-
 
 // (req: requestObject, photoTags: string[])
 // => createdPhotos: iPhoto[] | []
@@ -64,6 +54,13 @@ function createPhotos(req, photoTags) {
     .then(function(imagesInCloudinary) {
       sails.log("-----------  imagesInCloudinary  -------------");
       sails.log(imagesInCloudinary);
+      _.forEach(imagesInCloudinary, function(cloudinaryObj) {
+        if (req.user && req.user.id) {
+          cloudinaryObj.createdBy = req.user.id;
+          cloudinaryObj.updatedBy = req.user.id;
+          cloudinaryObj.owner = req.user.id;
+        }
+      });
 
       if (imagesInCloudinary.length > 0) {
         return Photo.create(imagesInCloudinary /*: CloudinaryImage[] */ );
@@ -165,6 +162,9 @@ function getService() {
   return cloudinary;
 }
 
+//====================================================
+//  Old
+//====================================================
 function uploadPhoto(req, photoTags, data, callback) {
   req.file('file').upload(function(err, imagesInServer) {
     if (err) {
@@ -196,4 +196,108 @@ function uploadPhoto(req, photoTags, data, callback) {
         callback(err);
       });
   });
+}
+
+function createPhoto(req, photoTags, data, callback) {
+  sails.log.debug("ImageService: createPhoto");
+  // Upload to server with skipper
+  req.file('file').upload(function(err, imagesInServer) {
+
+    sails.log.debug("ImageService: upload done");
+
+    if (err) {
+      sails.log.error(err);
+      callback(err);
+      return;
+    }
+
+    // Adds tag to specific to application domain
+    var tags = appTags;
+    var i = 0;
+    if (photoTags) {
+      for (i = 0; i < photoTags.length; i++) {
+        tags.push(photoTags[i]);
+      }
+    }
+
+    // Collection promise
+    var ImagePromises = [];
+    for (i = 0; i < imagesInServer.length; ++i) {
+      ImagePromises.push(cloudinary.uploader.upload(imagesInServer[i].fd, null, {
+        tags: tags
+      }));
+    }
+
+    // Upload to cloudinary
+    Promise.all(ImagePromises)
+      .then(function(imagesInCloudinary) {
+
+        sails.log.debug("ImageService: upload done to cloudinary");
+
+        // Remove temp file
+        var i = 0;
+        for (i = 0; i < imagesInServer.length; ++i) {
+          sails.log.debug("Removing file: " + imagesInServer[i].fd);
+          fs.unlink(imagesInServer[i].fd);
+        }
+
+        sails.log.debug("ImageService: image in server removed");
+
+        if (data) {
+          for (i = 0; i < imagesInCloudinary.length; i++) {
+            if (data.tags) {
+              if (!imagesInCloudinary[i].tags)
+                imagesInCloudinary[i].tags = [];
+              imagesInCloudinary[i].tags = _.union(imagesInCloudinary[i].tags, tags);
+            }
+
+            delete data.tags;
+            imagesInCloudinary[i] = _.extend(imagesInCloudinary[i], data);
+          }
+        }
+
+        sails.log.debug("ImageService: createPhoto - " + imagesInCloudinary);
+
+
+        //save uploaded photo to database.
+        return Photo.create(imagesInCloudinary);
+      })
+      .then(function(imagesInDb) {
+        callback(null, imagesInDb);
+      })
+      .catch(function(err) {
+        callback(err);
+      });
+  });
+}
+
+function deletePhoto(id, callback) {
+
+  // Find photo metadata first
+  Photo.findOne({
+      id: id
+    })
+    .then(function(photo) {
+
+      sails.log.debug("removing photo:" + photo.id);
+
+      // If exist delete from cloud
+      return cloudinary.uploader.destroy(photo.public_id, null);
+    })
+    .then(function(photo) {
+
+      sails.log.debug('after: ' + JSON.stringify(photo));
+      // On success delete metadata from out db
+      return Photo.destroy({
+        id: id
+      });
+    })
+    .then(function(photos) {
+      if (callback)
+        callback(null, photos);
+    })
+    .catch(function(err) {
+      if (callback)
+        callback(err);
+    });
 }

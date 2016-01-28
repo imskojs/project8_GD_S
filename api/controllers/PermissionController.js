@@ -1,5 +1,6 @@
 // api/controllers/PermissionController.js
 
+'use strict';
 var _ = require('lodash');
 var _super = require('sails-permissions/api/controllers/PermissionController');
 
@@ -41,20 +42,30 @@ function getPermissions(req, res) {
   }
 
   var query = {};
-  query.where = {role: roleId};
+  query.where = {
+    role: roleId
+  };
 
   if (filter)
-    query.where.or = [{'name': {'contains': filter}}];
+    query.where.or = [{
+      'name': {
+        'contains': filter
+      }
+    }];
 
 
   if (olderThan)
-    query.where.id = {'<': olderThan};
+    query.where.id = {
+      '<': olderThan
+    };
 
   if (newerThan)
     if (query.where.id)
       query.where.id['>'] = newerThan;
     else
-      query.where.id = {'>': newerThan};
+      query.where.id = {
+        '>': newerThan
+      };
 
   if (skip)
     query.skip = skip;
@@ -83,16 +94,19 @@ function getPermissions(req, res) {
   //Model.find({ where: { name: 'foo' }, skip: 20, limit: 10, sort: 'name DESC' });
   Permission.find(query)
     .populateAll()
-    .then(function (permissions) {
+    .then(function(permissions) {
 
       // See if there's more
       var more = (permissions[limit - 1]) ? true : false;
       // Remove item over 20 (only for check purpose)
-      if (more)permissions.splice(limit - 1, 1);
+      if (more) permissions.splice(limit - 1, 1);
 
-      res.ok({permissions: permissions, more: more});
+      res.ok({
+        permissions: permissions,
+        more: more
+      });
     })
-    .catch(function (err) {
+    .catch(function(err) {
       sails.log.error(err);
       res.send(500, {
         message: "예약 로딩을 실패 했습니다. 서버에러 code: 001"
@@ -112,14 +126,16 @@ function findById(req, res) {
     return;
   }
 
-  Permission.findOne({id: id})
+  Permission.findOne({
+      id: id
+    })
     .populateAll()
-    .then(function (permission) {
+    .then(function(permission) {
 
       res.send(200, permission);
 
     })
-    .catch(function (err) {
+    .catch(function(err) {
       sails.log.error(err);
       res.send(500, {
         message: "예약 로딩을 실패 했습니다. 서버에러 code: 001"
@@ -141,7 +157,7 @@ function createPermission(req, res) {
   permission.createdBy = req.user;
 
   Permission.create(permission)
-    .exec(function (err, permission) {
+    .exec(function(err, permission) {
       if (err) {
         sails.log.error(err);
         res.send(500, {
@@ -181,8 +197,10 @@ function updatePermission(req, res) {
 
   // needs to check whether user is owner
 
-  Permission.update({id: id}, permission)
-    .exec(function (err, updatedPermission) {
+  Permission.update({
+      id: id
+    }, permission)
+    .exec(function(err, updatedPermission) {
 
       if (err) {
         sails.log.error(err);
@@ -207,24 +225,28 @@ function removePermission(req, res) {
     return;
   }
 
-  Permission.findOne({id: id})
+  Permission.findOne({
+      id: id
+    })
     .populateAll()
-    .then(function (permission) {
+    .then(function(permission) {
 
       sails.log.debug("removing:" + JSON.stringify(permission));
 
       // Remove photos associated with permission
-      _.forEach(permission.photos, function (photo) {
+      _.forEach(permission.photos, function(photo) {
         sails.log.debug(photo);
         ImageService.deletePhoto(photo.id);
       });
 
-      return Permission.destroy({id: id});
+      return Permission.destroy({
+        id: id
+      });
     })
-    .then(function (permissions) {
+    .then(function(permissions) {
       res.send(200, permissions);
     })
-    .catch(function (err) {
+    .catch(function(err) {
       if (err) {
         sails.log.error(err);
         res.send(500, {
@@ -233,6 +255,3 @@ function removePermission(req, res) {
       }
     });
 }
-
-
-

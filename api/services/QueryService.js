@@ -1,26 +1,8 @@
-/**
- * Created by andy on 14/12/15
- * As part of boilerplate
- *
- * Copyright (C) Applicat (www.applicat.co.kr) & Andy Yoon Yong Shin - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Andy Yoon Yong Shin <andy.shin@applicat.co.kr>, 14/12/15
- *
- */
-
-
 'use strict';
-var Promise
- = require('bluebird');
-var ObjectID = require('mongodb').ObjectID;
+var Promise = require('bluebird');
 var _ = require('lodash');
-
+var ObjectID = require('mongodb').ObjectID;
 var OBJID_REGEXP = /ObjectId\(/;
-
-/**************************
- *     Public Interface
- **************************/
 
 module.exports = {
   checkParamPassed: checkParamPassed,
@@ -30,12 +12,36 @@ module.exports = {
   executeInsertNative: executeInsertNative
 };
 
-/********************************************************
- *                      Public Methods
- ********************************************************/
+function buildQuery(req) {
+  var query = {};
+  var params = req.allParams();
+  if (params && params.query && typeof params.query === 'string') {
+    query = JSON.parse(params.query);
+    if (req.method === 'POST') {
+      query.createdBy = req.user && req.user.id;
+      query.updatedBy = req.user && req.user.id;
+      query.owner = req.user && req.user.id;
+    } else if (req.method === 'PUT') {
+      query.updatedBy = req.user && req.user.id;
+    }
+  } else if (params && params.query) {
+    query = params.query;
+    if (req.method === 'PUT') {
+      query.updatedBy = req.user && req.user.id;
+    }
+  } else {
+    sails.log("--queryWrapper does not have query property --QueryService.buildQuery--");
+  }
 
+  var populate = _.clone(query.populate);
+  delete query.populate;
 
-// General
+  return {
+    query: query,
+    populate: populate
+  };
+}
+
 function checkParamPassed() {
   for (var i = 0; i < arguments.length; i++) {
     if (arguments[i] == null) {
@@ -45,64 +51,13 @@ function checkParamPassed() {
   return true;
 }
 
-function buildQuery(query, params) {
-
-  //=====================================================
-  //                    Parse JSON
-  //=====================================================
-  if (params && params.query && typeof params.query === 'string') {
-    query = JSON.parse(params.query);
-  } else if (params && params.query) {
-    query = params.query;
-  } else {
-    sails.log("---'queryWrapper does not have query -- QueryService.buildQuery'---");
-    sails.log('queryWrapper does not have query');
-  }
-
-  var populate = _.clone(query.populate);
-  delete query.populate;
-
-  return {
-    query: query,
-    populate: populate
-  };
-}
-
-function buildQuery2(req) {
-  var query = {};
-  var params = req.allParams();
-  if (params && params.query && typeof params.query === 'string') {
-    query = JSON.parse(params.query);
-    if(req.method === 'POST'){
-      query.createdBy = req.user.id;
-      query.updatedBy = req.user.id;
-      query.owner = req.user.id;
-    }
-  } else if (params && params.query) {
-    query = params.query;
-  } else {
-    sails.log("---'queryWrapper does not have query -- QueryService.buildQuery'---");
-    sails.log('queryWrapper does not have query');
-  }
-
-  var populate = _.clone(query.populate);
-  delete query.populate;
-
-  return {
-    query: query,
-    populate: populate
-  };
-}
-
 function applyPopulate(queryPromise, populate) {
   if (!populate) {
     return false;
   }
-
   _.each(populate, function(populateProp) {
     queryPromise = queryPromise.populate(populateProp);
   });
-
 }
 
 
@@ -110,8 +65,7 @@ function executeNative(Model, queryWrapper, projection) {
 
   //====================================================
   //                   Native Find
-  //
-  //              [sort, skip, limit]
+  //               [sort, skip, limit]
   //====================================================
 
   var query = queryWrapper.query;
@@ -183,7 +137,6 @@ function executeInsertNative(Model, data, options) {
 
   //====================================================
   //                   Native Find
-  //
   //              [sort, skip, limit]
   //====================================================
 
@@ -262,3 +215,21 @@ function populateNativeCollection(Model, collection, populates) {
   return deferred.promise;
 
 }
+// function buildQuery(query, params) {
+//   if (params && params.query && typeof params.query === 'string') {
+//     query = JSON.parse(params.query);
+//   } else if (params && params.query) {
+//     query = params.query;
+//   } else {
+//     sails.log("---'queryWrapper does not have query -- QueryService.buildQuery'---");
+//     sails.log('queryWrapper does not have query');
+//   }
+
+//   var populate = _.clone(query.populate);
+//   delete query.populate;
+
+//   return {
+//     query: query,
+//     populate: populate
+//   };
+// }

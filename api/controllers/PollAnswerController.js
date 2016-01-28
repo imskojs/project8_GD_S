@@ -1,6 +1,5 @@
 'use strict';
 var Promise = require('bluebird');
-var _ = require('lodash');
 
 module.exports = {
   hasPollAnswer: hasPollAnswer,
@@ -8,10 +7,10 @@ module.exports = {
 };
 
 function hasPollAnswer(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
-  let query = queryWrapper.query;
-  sails.log("-----------  query  -------------");
-  sails.log(query);
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: PollAnswer.find  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
   // only check one poll answer to determine whether user has it.
   return PollAnswer.findOne({
       poll: query.where.poll,
@@ -34,12 +33,10 @@ function hasPollAnswer(req, res) {
 }
 
 function create(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
-  let query = queryWrapper.query;
-  query.owner = req.user.id;
-  query.createdBy = req.user.id;
-  query.updatedBy = req.user.id;
-
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: PollAnswer.create  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
   if (!QueryService.checkParamPassed(query.answer)) {
     return res.send(400, {
       message: "no answer sent"

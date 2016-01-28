@@ -13,10 +13,12 @@ module.exports = {
 };
 
 function find(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Note.find  -------------");
   sails.log(queryWrapper);
-  let query = queryWrapper.query;
+  var query = queryWrapper.query;
   let populate = queryWrapper.populate;
+
   if (!query.limit) {
     query.limit = 100;
   }
@@ -42,10 +44,12 @@ function find(req, res) {
 }
 
 function findOne(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Note.findOne  -------------");
   sails.log(queryWrapper);
-  let query = queryWrapper.query;
+  var query = queryWrapper.query;
   let populate = queryWrapper.populate;
+
   let notePromise = Note.findOne(query);
   QueryService.applyPopulate(notePromise, populate);
   return notePromise
@@ -73,16 +77,30 @@ function findOne(req, res) {
 }
 
 function getMaxScoreNote(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Note.getMaxScoreNote  -------------");
   sails.log(queryWrapper);
 
-  return Note.find({
+  return Note.findOne({
       where: {
-        owner: req.user.id,
-      },
-      sort: 'myScoreTotal DESC',
-      limit: 1
-    }).populate('product')
+        owner: req.user.id
+      }
+    })
+    .then(function(note) {
+      if (!note) {
+        return Promise.reject({
+          message: 'no notes'
+        });
+      } else {
+        return Note.find({
+          where: {
+            owner: req.user.id,
+          },
+          sort: 'myScoreTotal DESC',
+          limit: 1
+        }).populate('product');
+      }
+    })
     .then((inArray) => {
       let maxNote = inArray[0];
       return res.ok(maxNote);
@@ -94,10 +112,10 @@ function getMaxScoreNote(req, res) {
 
 
 function myHandicap(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
-  let query = queryWrapper.query;
-  sails.log("-----------  query  -------------");
-  sails.log(query);
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Note.myHandicap  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
 
   let specificNotePromise = Note.findOne({
     product: query.where.product,
@@ -105,7 +123,8 @@ function myHandicap(req, res) {
   });
 
   let allMyNotesPromise = Note.find({
-    owner: query.where.owner || req.user.id
+    owner: query.where.owner || req.user.id,
+    type: 'FIELD'
   });
 
   return Promise.all([specificNotePromise, allMyNotesPromise])

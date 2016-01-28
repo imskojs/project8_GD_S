@@ -1,18 +1,8 @@
-/**
- * Created by andy on 18/12/15
- * As part of ServerBase
- *
- * Copyright (C) Applicat (www.applicat.co.kr) & Andy Yoon Yong Shin - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Andy Yoon Yong Shin <andy.shin@applicat.co.kr>, 18/12/15
- *
- */
-
+'use strict';
 module.exports = {
   subscribeToRoom: subscribeToRoom,
   getMyRooms: getMyRooms,
-}
+};
 
 function subscribeToRoom(req, res) {
   var roomName = req.param('roomName');

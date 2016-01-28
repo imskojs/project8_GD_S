@@ -1,15 +1,10 @@
-/**
- * DeviceController
- *
- * @description :: Server-side logic for managing Devices
- * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
- */
+'use strict';
 
 module.exports = {
   pushAll: pushAll,
   register: register,
   update: update
-}
+};
 
 function pushAll(req, res) {
 
@@ -26,7 +21,7 @@ function pushAll(req, res) {
   Device.find({
       active: true
     })
-    .exec(function (err, devices) {
+    .exec(function(err, devices) {
       sails.log.debug(devices);
       if (err) {
         res.send(500, {
@@ -62,13 +57,13 @@ function register(req, res) {
   Device.findOrCreate({
       deviceId: device.deviceId
     }, device)
-    .then(function (createdDevice) {
+    .then(function(createdDevice) {
 
       res.send(200, {
         device: createdDevice
       });
     })
-    .catch(function (err) {
+    .catch(function(err) {
       sails.log.error(err);
       res.send(500, {
         message: "기기 등록을 실패 했습니다. 서버에러 code: 001"
@@ -96,12 +91,12 @@ function update(req, res) {
   Device.update({
       deviceId: device.deviceId
     }, device)
-    .then(function (updatedDevice) {
+    .then(function(updatedDevice) {
       res.send(200, {
         device: updatedDevice
       });
     })
-    .catch(function (err) {
+    .catch(function(err) {
       sails.log.error(err);
       res.send(500, {
         message: "기기 업데이트를 실패 했습니다. 서버에러 code: 001"

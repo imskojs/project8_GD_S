@@ -48,17 +48,24 @@ module.exports.routes = {
   //  User
   //====================================================
   'GET /user/findOne': 'UserController.findOne',
+  'PUT /user/update': 'UserController.update',
   'POST /user/login': 'AuthController.login',
   'POST /user/register': 'AuthController.register',
-  'PUT /user/update': 'UserController.update',
   'PUT /user/updatePassword': 'AuthController.changePassword',
 
   //====================================================
   //  Post
   //====================================================
   'GET /post/find': 'PostController.find',
+  'GET /post/findLatest': 'PostController.findLatest',
   'GET /post/findOne': 'PostController.findOne',
   'POST /post/create': 'PostController.create',
+
+  //====================================================
+  //  Comment
+  //====================================================
+  'GET /comment/find': 'CommentController.find',
+  'POST /comment/create': 'CommentController.create',
 
   //====================================================
   //  Poll
@@ -71,11 +78,6 @@ module.exports.routes = {
   //====================================================
   'GET /pollAnswer/hasPollAnswer': 'PollAnswerController.hasPollAnswer',
   'POST /pollAnswer/create': 'PollAnswerController.create',
-
-
-
-
-
 
 
   //====================================================
@@ -104,11 +106,9 @@ module.exports.routes = {
    *               Comment
    *************************************/
 
-  'GET /comment/find': 'CommentController.find',
   'GET /comment/findNative': 'CommentController.findNative',
   'GET /comment/findOne': 'CommentController.findOne',
 
-  'POST /comment/create': 'CommentController.create',
   'PUT /comment/update': 'CommentController.update',
   'DELETE /comment/destroy': 'CommentController.destroy',
 

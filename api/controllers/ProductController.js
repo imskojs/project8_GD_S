@@ -30,9 +30,10 @@ module.exports = {
 };
 
 function find(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Product.find  -------------");
   sails.log(queryWrapper);
-  let query = queryWrapper.query;
+  var query = queryWrapper.query;
   let populate = queryWrapper.populate;
   if (!query.limit) {
     query.limit = 100;
@@ -59,9 +60,10 @@ function find(req, res) {
 }
 
 function findOne(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Product.findOne  -------------");
   sails.log(queryWrapper);
-  let query = queryWrapper.query;
+  var query = queryWrapper.query;
   let populate = queryWrapper.populate;
   let productPromise = Product.findOne(query);
   QueryService.applyPopulate(productPromise, populate);
@@ -96,11 +98,10 @@ function findOne(req, res) {
 }
 
 function create(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
-  let query = queryWrapper.query;
-  query.owner = req.user.id;
-  query.createdBy = req.user.id;
-  query.updatedBy = req.user.id;
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Product.create  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
   if (!QueryService.checkParamPassed(query.type)) {
     return res.send(400, {
       message: "no type sent"
@@ -126,8 +127,10 @@ function create(req, res) {
 }
 
 function update(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
-  let query = queryWrapper.query;
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Product.update  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
   delete query.createdBy;
   delete query.updatedBy;
   query.updatedBy = req.user.id;
@@ -161,8 +164,10 @@ function update(req, res) {
 
 
 function destroy(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
-  let query = queryWrapper.query;
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Product.destroy  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
   var id = query.where.id;
   if (!QueryService.checkParamPassed(id)) {
     return res.send(400, {
@@ -181,9 +186,10 @@ function destroy(req, res) {
 }
 
 function withQuestionnaires(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Product.withQuestionnaires  -------------");
   sails.log(queryWrapper);
-  let query = queryWrapper.query;
+  var query = queryWrapper.query;
 
   if (!QueryService.checkParamPassed(query.where.id)) {
     return res.send(400, {
@@ -214,10 +220,10 @@ function withQuestionnaires(req, res) {
 }
 
 function hasQuestionnaireAnswer(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
-  let query = queryWrapper.query;
-  sails.log("-----------  query  -------------");
-  sails.log(query);
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Product.hasQuestionnaireAnswer  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
   // only check one questionnaire answer to determine whether user has it.
   return QuestionnaireAnswer.findOne({
       product: query.where.product,
@@ -245,8 +251,10 @@ function hasQuestionnaireAnswer(req, res) {
 // findOneWithAverage: findOneWithAverage,
 
 function findWithAverage(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
-  let query = queryWrapper.query;
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Product.findWithAverage  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
   // for load more
   let qaUpdatedAt = query.where.id;
   delete query.where.questionnaireAnswer;
@@ -362,11 +370,11 @@ function findWithAverage(req, res) {
 
 
 function findOneWithAverage(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
-  let query = queryWrapper.query;
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Product.findOneWithAverage  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
   let owner = query.where.owner;
-  sails.log("-----------  query  -------------");
-  sails.log(query);
   delete query.where.owner;
   return Product.findOne({
       id: query.where.product
@@ -480,8 +488,10 @@ function findOneWithAverage(req, res) {
 }
 
 function updatePhoto(req, res) { // queryWrapper{query:{id}}, req.files();
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
-  let query = queryWrapper.query;
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Product.updatePhoto  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
   delete query.createdBy;
   delete query.updatedBy;
   query.updatedBy = req.user.id;
@@ -515,8 +525,11 @@ function updatePhoto(req, res) { // queryWrapper{query:{id}}, req.files();
 }
 
 function updateThumbnail(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
-  let query = queryWrapper.query;
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Product.updateThumbnail  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
+
   delete query.createdBy;
   delete query.updatedBy;
   query.updatedBy = req.user.id;
@@ -549,17 +562,14 @@ function updateThumbnail(req, res) {
     });
 }
 
-
-
-
-
-
 //====================================================
 //  One off
 //====================================================
 function getCategories(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Product.getCategories  -------------");
   sails.log(queryWrapper);
+
   let allFieldPromise = Product.find({
     type: 'FIELD'
   });
@@ -607,9 +617,11 @@ function getCategories(req, res) {
 
 function findNative(req, res) {
 
-  var queryWrapper = QueryService.buildQuery({}, req.allParams());
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Product.findNative  -------------");
+  sails.log(queryWrapper);
 
-  Promise.resolve(QueryService.executeNative(Product, queryWrapper))
+  return Promise.resolve(QueryService.executeNative(Product, queryWrapper))
     .spread((products, more, count) => {
       res.ok({
         products: products,

@@ -317,7 +317,7 @@ function registerPassport(req, res) {
                 profile_image: this.createdUser.profile_image,
                 thumbnail_image: this.createdUser.thumbnail_image,
                 role: this.createdUser.role
-              }
+              };
 
               res.send(200, {
                 user: userDetail,
@@ -335,14 +335,22 @@ function registerPassport(req, res) {
                 User.destroy({
                     id: id
                   })
-                  .exec(function(err, user) {});
+                  .exec(function(err, user) {
+                    if (err) {
+                      sails.log("-----------  err  -------------");
+                      sails.log(err);
+                    } else {
+                      sails.log("-----------  user  -------------");
+                      sails.log(user);
+                    }
+                  });
               }
 
 
               res.send(500, {
                 message: "회원가입을 실패 했습니다. 서버에러 code: 001"
               });
-            })
+            });
 
 
         } else {
@@ -360,7 +368,7 @@ function registerPassport(req, res) {
             profile_image: user.profile_image,
             thumbnail_image: user.thumbnail_image,
             role: user.role
-          }
+          };
 
           var newToken = {
             accessToken: access_token,
@@ -388,7 +396,7 @@ function registerPassport(req, res) {
                 token: updatedPassport[0].accessToken,
                 action: 'exist'
               });
-            })
+            });
         }
       });
     });
@@ -427,6 +435,8 @@ function forgotPasswordStart(req, res) {
 
           UserService.sendPasswordResetEmail(req, res, function(code) {
 
+            sails.log("-----------  code  -------------");
+            sails.log(code);
             // Allow up to 10 times a day
             if (req.activator.code === 201) {
 
@@ -458,11 +468,11 @@ function forgotPasswordStart(req, res) {
         });
       }
     })
-    .catch(function(err) {
-      res.send(500, {
+    .catch(function() {
+      return res.send(500, {
         message: "DB Error"
       });
-    })
+    });
 }
 
 
@@ -570,6 +580,8 @@ function forgotPasswordComplete(req, res) {
             password: newPassword
           })
           .then(function(passports) {
+            sails.log("-----------  passports  -------------");
+            sails.log(passports);
             res.send(200, {
               message: "Password reset complete"
             });
@@ -587,7 +599,7 @@ function forgotPasswordComplete(req, res) {
         });
       }
     })
-    .catch(function(err) {
+    .catch(function() {
       return res.send(500, {
         message: "cannot find user info"
       });
@@ -597,7 +609,7 @@ function forgotPasswordComplete(req, res) {
     email: email,
   }, {
     password: newPassword
-  })
+  });
 }
 
 
@@ -610,20 +622,16 @@ function changePassword(req, res) {
   sails.log(queryWrapper);
   let query = queryWrapper.query;
 
-  // Get current logged in user
-
   var oldPassword = query.oldPassword;
   var newPassword = query.newPassword;
 
   if (!QueryService.checkParamPassed(newPassword, oldPassword)) {
-    res.send(400, {
+    return res.send(400, {
       message: "Please pass all the parameters"
     });
-    return;
   }
 
-
-  Passport.find({
+  return Passport.find({
       user: req.user.id,
       protocol: 'local'
     })
@@ -656,6 +664,4 @@ function changePassword(req, res) {
         return;
       }
     });
-
-
 }

@@ -1,22 +1,20 @@
+'use strict';
 var Promise = require('bluebird');
-var _ = require('lodash');
 
 module.exports = {
   find: find,
   findNative: findNative,
   findOne: findOne,
-
   create: create,
   update: update,
   destroy: destroy
-}
+};
 
 
 function find(req, res) {
-
-  var queryWrapper = QueryService.buildQuery({}, req.allParams());
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Booking.find  -------------");
   sails.log(queryWrapper);
-
   var query = queryWrapper.query;
   var populate = queryWrapper.populate;
 
@@ -54,10 +52,11 @@ function find(req, res) {
 }
 
 function findNative(req, res) {
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Booking.findNative  -------------");
+  sails.log(queryWrapper);
 
-  var queryWrapper = QueryService.buildQuery({}, req.allParams());
-
-  Promise.resolve(QueryService.executeNative(Booking, queryWrapper))
+  return Promise.resolve(QueryService.executeNative(Booking, queryWrapper))
     .spread(function(bookings, more, count) {
       res.ok({
         bookings: bookings,
@@ -75,8 +74,8 @@ function findNative(req, res) {
 
 
 function findOne(req, res) {
-
-  var queryWrapper = QueryService.buildQuery({}, req.allParams());
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Booking.findOne  -------------");
   sails.log(queryWrapper);
 
   var query = queryWrapper.query;
@@ -93,7 +92,7 @@ function findOne(req, res) {
 
   QueryService.applyPopulate(bookingPromise, populate);
 
-  bookingPromise
+  return bookingPromise
     .then(function(booking) {
       if (booking && booking[0]) {
         res.send(200, {
@@ -116,8 +115,11 @@ function findOne(req, res) {
 
 
 function create(req, res) {
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Booking.create  -------------");
+  sails.log(queryWrapper);
 
-  var booking = QueryService.buildQuery({}, req.allParams()).query;
+  var booking = queryWrapper.query;
 
   // assign user
   booking.owner = req.user.id;
@@ -126,7 +128,7 @@ function create(req, res) {
 
   sails.log.debug(booking);
 
-  Booking.create(booking)
+  return Booking.create(booking)
     .then(function(booking) {
       res.send(200, booking);
     })
@@ -138,8 +140,11 @@ function create(req, res) {
 }
 
 function update(req, res) {
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Booking.update  -------------");
+  sails.log(queryWrapper);
 
-  var booking = QueryService.buildQuery({}, req.allParams()).query;
+  var booking = queryWrapper.query;
   var id = booking.id;
 
   delete booking.createdBy;
@@ -151,7 +156,7 @@ function update(req, res) {
     return;
   }
 
-  Booking.update({
+  return Booking.update({
       id: id
     }, booking)
     .then(function(booking) {
@@ -168,7 +173,11 @@ function update(req, res) {
 
 
 function destroy(req, res) {
-  var id = req.param("id");
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Booking.destroy  -------------");
+  sails.log(queryWrapper);
+
+  var id = queryWrapper.query.where.id;
 
   // Adding user info
   if (!QueryService.checkParamPassed(id)) {
@@ -178,7 +187,7 @@ function destroy(req, res) {
     return;
   }
 
-  Booking.destroy({
+  return Booking.destroy({
       id: id
     })
     .then(function(removedBookings) {

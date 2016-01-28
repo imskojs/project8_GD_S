@@ -1,18 +1,5 @@
-/**
- * Created by Andy on 7/7/2015
- * As part of applicatplatform
- *
- * Copyright (C) Applicat (www.applicat.co.kr) & Andy Yoon Yong Shin - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Andy Yoon Yong Shin <andy.shin@applicat.co.kr>, 7/7/2015
- *
- */
-
-
+'use strict';
 var Promise = require('bluebird');
-var _ = require('lodash');
-
 module.exports = {
   find: find,
   findNative: findNative,
@@ -21,19 +8,18 @@ module.exports = {
   create: create,
   update: update,
   destroy: destroy
-}
+};
 
 function find(req, res) {
-
-  var queryWrapper = QueryService.buildQuery({}, req.allParams());
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: RoyaltyPoint.find  -------------");
   sails.log(queryWrapper);
-
   var query = queryWrapper.query;
   var populate = queryWrapper.populate;
 
-  if (!query.limit || query.limit > 100)
+  if (!query.limit || query.limit > 100) {
     query.limit = 100;
-
+  }
   query.limit++;
 
   var royaltyPointPromise = RoyaltyPoint.find(query);
@@ -42,17 +28,21 @@ function find(req, res) {
 
   var countPromise = RoyaltyPoint.count(query);
 
-  Promise.all([royaltyPointPromise, countPromise])
-    .spread(function (royaltyPoints, count) {
+  return Promise.all([royaltyPointPromise, countPromise])
+    .spread(function(royaltyPoints, count) {
 
       // See if there's more
       var more = (royaltyPoints[query.limit - 1]) ? true : false;
       // Remove item over 20 (only for check purpose)
-      if (more)royaltyPoints.splice(query.limit - 1, 1);
+      if (more) royaltyPoints.splice(query.limit - 1, 1);
 
-      res.ok({royaltys: royaltyPoints, more: more, total: count});
+      res.ok({
+        royaltys: royaltyPoints,
+        more: more,
+        total: count
+      });
     })
-    .catch(function (err) {
+    .catch(function(err) {
       sails.log.error(err);
       res.send(500, {
         message: "장소 로딩을 실패 했습니다. 서버에러 code: 001"
@@ -61,16 +51,19 @@ function find(req, res) {
 }
 
 function findNative(req, res) {
-
-  var queryWrapper = QueryService.buildQuery({}, req.allParams());
-
-  Promise.resolve(QueryService.executeNative(RoyaltyPoint, queryWrapper))
-    .spread(function (royaltyPoints, more, count) {
-      res.ok({royaltys: royaltyPoints, more: more, total: count});
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: RoyaltyPoint.findNative  -------------");
+  sails.log(queryWrapper);
+  return Promise.resolve(QueryService.executeNative(RoyaltyPoint, queryWrapper))
+    .spread(function(royaltyPoints, more, count) {
+      return res.ok({
+        royaltys: royaltyPoints,
+        more: more,
+        total: count
+      });
     })
-    .catch(function (err) {
-      sails.log.error(err);
-      res.send(500, {
+    .catch(function() {
+      return res.send(500, {
         message: "장소 로딩을 실패 했습니다. 서버에러 code: 001"
       });
     });
@@ -78,39 +71,37 @@ function findNative(req, res) {
 
 
 function findOne(req, res) {
-
-  var queryWrapper = QueryService.buildQuery({}, req.allParams());
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: RoyaltyPoint.findOne  -------------");
   sails.log(queryWrapper);
-
   var query = queryWrapper.query;
   var populate = queryWrapper.populate;
 
   if (!QueryService.checkParamPassed(query.where.id)) {
-    res.send(400, {
+    return res.send(400, {
       message: "모든 매개 변수를 입력해주세요 code: 003"
     });
-    return;
   }
-
 
   var royaltyPointPromise = RoyaltyPoint.find(query);
 
   QueryService.applyPopulate(royaltyPointPromise, populate);
 
-  royaltyPointPromise
-    .then(function (royaltyPoint) {
+  return royaltyPointPromise
+    .then(function(royaltyPoint) {
       if (royaltyPoint && royaltyPoint[0]) {
-        res.send(200, {royalty: royaltyPoint[0]});
+        return res.send(200, {
+          royalty: royaltyPoint[0]
+        });
       } else {
-        res.send(500, {
+        return res.send(500, {
           message: "존재하지 않는 게시글 입니다. 서버에러 code: 001"
         });
       }
 
     })
-    .catch(function (err) {
-      sails.log.error(err);
-      res.send(500, {
+    .catch(function() {
+      return res.send(500, {
         message: "게시물 로딩을 실패 했습니다. 서버에러 code: 001"
       });
     });
@@ -118,73 +109,72 @@ function findOne(req, res) {
 
 
 function create(req, res) {
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: RoyaltyPoint.create  -------------");
+  sails.log(queryWrapper);
+  var royaltyPoint = queryWrapper.query;
 
-  var royaltyPoint = QueryService.buildQuery({}, req.allParams()).query;
-
-  // assign user
-  royaltyPoint.owner = req.user.id;
-  royaltyPoint.createdBy = req.user.id;
-  royaltyPoint.updatedBy = req.user.id;
-
-  sails.log.debug(royaltyPoint);
-
-  RoyaltyPoint.create(royaltyPoint)
-    .then(function (royaltyPoint) {
-      res.send(200, royaltyPoint);
+  return RoyaltyPoint.create(royaltyPoint)
+    .then(function(royaltyPoint) {
+      return res.send(200, royaltyPoint);
     })
-    .catch(function (err) {
-      res.send(500, {
+    .catch(function() {
+      return res.send(500, {
         message: "게시물 로딩을 실패 했습니다. 서버에러 code: 001"
       });
     });
 }
 
 function update(req, res) {
-
-  var royaltyPoint = QueryService.buildQuery({}, req.allParams()).query;
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: RoyaltyPoint.update  -------------");
+  sails.log(queryWrapper);
+  var royaltyPoint = queryWrapper.query;
   var id = royaltyPoint.id;
-
   delete royaltyPoint.createdBy;
 
   if (!QueryService.checkParamPassed(id)) {
-    res.send(400, {
+    return res.send(400, {
       message: "모든 매개 변수를 입력해주세요 code: 003"
     });
-    return;
   }
 
-  RoyaltyPoint.update({id: id}, royaltyPoint)
-    .then(function (royaltyPoint) {
-      res.send(200, royaltyPoint);
+  return RoyaltyPoint.update({
+      id: id
+    }, royaltyPoint)
+    .then(function(royaltyPoint) {
+      return res.send(200, royaltyPoint);
     })
-    .catch(function (err) {
-      sails.log.error(err);
-      res.send(500, {
+    .catch(function() {
+      return res.send(500, {
         message: "Failed to update code: 001"
       });
-      return;
     });
 }
 
 
 function destroy(req, res) {
-  var id = req.param("id");
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: RoyaltyPoint.destroy  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
 
-  // Adding user info
+  var id = query.where.id;
+
   if (!QueryService.checkParamPassed(id)) {
-    res.send(400, {
+    return res.send(400, {
       message: "모든 매개 변수를 입력해주세요 code: 003"
     });
-    return;
   }
 
-  RoyaltyPoint.destroy({id: id})
-    .then(function (removedRoyaltyPoints) {
-      res.send(200, removedRoyaltyPoints);
+  return RoyaltyPoint.destroy({
+      id: id
     })
-    .catch(function (err) {
-      sails.log.error(err);
-      res.send(500, {
+    .then(function(removedRoyaltyPoints) {
+      return res.send(200, removedRoyaltyPoints);
+    })
+    .catch(function() {
+      return res.send(500, {
         message: "게시물 로딩을 실패 했습니다. 서버에러 code: 001"
       });
     });

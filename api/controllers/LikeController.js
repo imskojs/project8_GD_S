@@ -1,5 +1,6 @@
 'use strict';
 var Promise = require('bluebird');
+var _ = require('lodash');
 
 module.exports = {
 
@@ -8,12 +9,12 @@ module.exports = {
   //====================================================
   findOne: findOne,
   create: create,
-  destroy: destroy,
   destroyLikes: destroyLikes,
 
   //====================================================
   //  Not Used
   //====================================================
+  destroy: destroy,
   postLike: postLike,
   postUnlike: postUnlike,
   commentLike: commentLike,
@@ -25,8 +26,8 @@ module.exports = {
 };
 
 function findOne(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
-  sails.log("-----------  queryWrapper -- Like.findOne  -------------");
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Like.findOne  -------------");
   sails.log(queryWrapper);
 
   let query = queryWrapper.query;
@@ -51,8 +52,8 @@ function findOne(req, res) {
 }
 
 function create(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
-  sails.log("-----------  queryWrapper -- Like.create  -------------");
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Like.create  -------------");
   sails.log(queryWrapper);
   let query = queryWrapper.query;
   return Like.findOne({
@@ -102,8 +103,10 @@ function create(req, res) {
 }
 
 function destroy(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Like.destroy  -------------");
   sails.log(queryWrapper);
+
   let query = queryWrapper.query;
   return Like.findOne({
       id: query.where.id
@@ -155,7 +158,8 @@ function destroy(req, res) {
 
 
 function destroyLikes(req, res) {
-  let queryWrapper = QueryService.buildQuery({}, req.allParams());
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Like.destroyLikes  -------------");
   sails.log(queryWrapper);
   let query = queryWrapper.query;
   return Like.findOne({
@@ -207,41 +211,29 @@ function destroyLikes(req, res) {
     });
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function postLike(req, res) {
 
-  var post = req.param('post');
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Like.postLike  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
+
+  var post = query.post;
 
   var likeToCreate = {
-    post: req.param("post"),
+    post: post,
     owner: req.user.id,
     createdBy: req.user.id,
     updatedBy: req.user.id
   };
 
   if (!QueryService.checkParamPassed(likeToCreate.post)) {
-    res.send(400, {
+    return res.send(400, {
       message: "모든 매개 변수를 입력해주세요 code: 003"
     });
-    return;
   }
 
-  Promise.all([Post.findOne({
+  return Promise.all([Post.findOne({
         post: post
       }),
       Like.find({
@@ -293,11 +285,15 @@ function postLike(req, res) {
 }
 
 function postUnlike(req, res) {
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Like.postUnlike  -------------");
+  sails.log(queryWrapper);
 
+  var query = queryWrapper.query;
   var likeToRemove = {
-    post: req.param("post"),
+    post: query.post,
     owner: req.user.id
-  }
+  };
 
   if (!QueryService.checkParamPassed(likeToRemove.post)) {
     res.send(400, {
@@ -363,26 +359,27 @@ function postUnlike(req, res) {
 
 
 function commentLike(req, res) {
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Like.commentLike  -------------");
+  sails.log(queryWrapper);
 
-  var comment = req.param('comment');
+  var query = queryWrapper.query;
+  var comment = query.comment;
   var likeToCreate = {
-    comment: req.param("comment"),
+    comment: query.comment,
     owner: req.user.id,
     createdBy: req.user.id,
     updatedBy: req.user.id
   };
 
-  sails.log.debug(JSON.stringify(likeToCreate));
-
   if (!QueryService.checkParamPassed(likeToCreate.comment)) {
-    res.send(400, {
+    return res.send(400, {
       message: "모든 매개 변수를 입력해주세요 code: 003"
     });
-    return;
   }
 
 
-  Promise.all([Comment.findOne({
+  return Promise.all([Comment.findOne({
         id: comment
       }),
       Like.find({
@@ -434,11 +431,15 @@ function commentLike(req, res) {
 }
 
 function commentUnlike(req, res) {
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Like.commentUnlike  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
 
   var likeToRemove = {
-    comment: req.param("comment"),
+    comment: query.comment,
     owner: req.user.id
-  }
+  };
 
   sails.log.debug(JSON.stringify(likeToRemove));
 
@@ -449,7 +450,7 @@ function commentUnlike(req, res) {
     return;
   }
 
-  Promise.all([Comment.findOne({
+  return Promise.all([Comment.findOne({
         id: likeToRemove.comment
       }),
       Like.find({
@@ -506,26 +507,27 @@ function commentUnlike(req, res) {
 
 
 function placeLike(req, res) {
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Like.placeLike  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
 
-  var place = req.param('place');
+  var place = query.place;
   var likeToCreate = {
-    place: req.param("place"),
+    place: query.place,
     owner: req.user.id,
     createdBy: req.user.id,
     updatedBy: req.user.id
   };
 
-  sails.log.debug(JSON.stringify(likeToCreate));
-
   if (!QueryService.checkParamPassed(likeToCreate.place)) {
-    res.send(400, {
+    return res.send(400, {
       message: "모든 매개 변수를 입력해주세요 code: 003"
     });
-    return;
   }
 
 
-  Promise.all([Place.findOne({
+  return Promise.all([Place.findOne({
         id: place
       }),
       Like.find({
@@ -577,13 +579,15 @@ function placeLike(req, res) {
 }
 
 function placeUnlike(req, res) {
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Like.placeUnlike  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
 
   var likeToRemove = {
-    place: req.param("place"),
+    place: query.place,
     owner: req.user.id
-  }
-
-  sails.log.debug(JSON.stringify(likeToRemove));
+  };
 
   if (!QueryService.checkParamPassed(likeToRemove.place)) {
     res.send(400, {
@@ -592,7 +596,7 @@ function placeUnlike(req, res) {
     return;
   }
 
-  Promise.all([Place.findOne({
+  return Promise.all([Place.findOne({
         id: likeToRemove.place
       }),
       Like.find({
@@ -649,26 +653,26 @@ function placeUnlike(req, res) {
 
 
 function productLike(req, res) {
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Like.productLike  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
 
-  var product = req.param('product');
+  var product = query.product;
   var likeToCreate = {
-    product: req.param("product"),
+    product: query.product,
     owner: req.user.id,
     createdBy: req.user.id,
     updatedBy: req.user.id
   };
 
-  sails.log.debug(JSON.stringify(likeToCreate));
-
   if (!QueryService.checkParamPassed(likeToCreate.product)) {
-    res.send(400, {
+    return res.send(400, {
       message: "모든 매개 변수를 입력해주세요 code: 003"
     });
-    return;
   }
 
-
-  Promise.all([Product.findOne({
+  return Promise.all([Product.findOne({
         id: product
       }),
       Like.find({
@@ -720,13 +724,15 @@ function productLike(req, res) {
 }
 
 function productUnlike(req, res) {
+  var queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Like.productUnlike  -------------");
+  sails.log(queryWrapper);
+  var query = queryWrapper.query;
 
   var likeToRemove = {
-    product: req.param("product"),
+    product: query.product,
     owner: req.user.id
-  }
-
-  sails.log.debug(JSON.stringify(likeToRemove));
+  };
 
   if (!QueryService.checkParamPassed(likeToRemove.product)) {
     res.send(400, {
@@ -735,7 +741,7 @@ function productUnlike(req, res) {
     return;
   }
 
-  Promise.all([Product.findOne({
+  return Promise.all([Product.findOne({
         id: likeToRemove.product
       }),
       Like.find({
