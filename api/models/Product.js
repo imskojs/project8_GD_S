@@ -2,7 +2,7 @@
 module.exports = {
   attributes: {
 
-    type: {
+    type: { // FIELD, CLUB, BALL
       type: 'STRING',
       index: true
     },

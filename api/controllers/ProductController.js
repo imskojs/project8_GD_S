@@ -74,6 +74,8 @@ function findOne(req, res) {
           message: 'no post found'
         });
       }
+      sails.log("-----------  product --product.findOne  -------------");
+      sails.log(product);
       if (product.views === undefined) {
         product.views = 0;
       }
@@ -86,11 +88,16 @@ function findOne(req, res) {
           pendingSave.resolve(savedProduct);
         }
       });
-      return pendingSave.promise;
+      return [product, pendingSave.promise];
     })
-    .then((savedProduct) => {
+    .spread((product, savedProduct) => {
+      sails.log("-----------  product --product.findOne afterSave  -------------");
+      sails.log(product);
       delete savedProduct.comments;
-      return res.ok(savedProduct);
+      sails.log("-----------  savedProduct --product.findOne savedProduct  -------------");
+      sails.log(savedProduct);
+      // return res.ok(savedProduct);
+      return res.ok(product);
     })
     .catch((err) => {
       return res.negotiate(err);

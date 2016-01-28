@@ -2,7 +2,7 @@
 module.exports = {
   attributes: {
 
-    category: { //'EVENT', 'RANK', 'TIP', 'NOTICE', 'REQUEST'
+    category: { //'EVENT', 'RANK', 'TIP', 'NOTICE', 'REQUEST', 'ADS'
       type: 'STRING',
       index: true
     },
