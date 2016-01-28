@@ -66,11 +66,9 @@ function findOne(req, res) {
   var query = queryWrapper.query;
   let populate = queryWrapper.populate;
   let productPromise = Product
-    .findOne(query)
-    .populate('photo')
-    .populate('thumbnail');
+    .findOne(query);
 
-  // QueryService.applyPopulate(productPromise, populate);
+  QueryService.applyPopulate(productPromise, populate);
   return productPromise
     .then((product) => {
       if (!product) {
@@ -78,8 +76,6 @@ function findOne(req, res) {
           message: 'no post found'
         });
       }
-      sails.log("-----------  product --product.findOne  -------------");
-      sails.log(product);
       if (product.views === undefined) {
         product.views = 0;
       }
@@ -95,11 +91,7 @@ function findOne(req, res) {
       return [product, pendingSave.promise];
     })
     .spread((product, savedProduct) => {
-      sails.log("-----------  product --product.findOne afterSave  -------------");
-      sails.log(product);
       delete savedProduct.comments;
-      sails.log("-----------  savedProduct --product.findOne savedProduct  -------------");
-      sails.log(savedProduct);
       // return res.ok(savedProduct);
       return res.ok(product);
     })
