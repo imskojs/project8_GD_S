@@ -69,7 +69,15 @@ function findOne(req, res) {
       return pendingSave.promise;
     })
     .then((savedNote) => {
-      return res.ok(savedNote);
+      var product = Product.finOne({
+        id: savedNote.product && savedNote.product.id
+      }).populate('thumbnail');
+      return [savedNote, product];
+    })
+    .spread((savedNote, product) => {
+      var note = savedNote.toObject();
+      note.product = product;
+      return res.ok(note);
     })
     .catch((err) => {
       return res.negotiate(err);
