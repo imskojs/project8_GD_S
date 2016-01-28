@@ -65,8 +65,12 @@ function findOne(req, res) {
   sails.log(queryWrapper);
   var query = queryWrapper.query;
   let populate = queryWrapper.populate;
-  let productPromise = Product.findOne(query);
-  QueryService.applyPopulate(productPromise, populate);
+  let productPromise = Product
+    .findOne(query)
+    .populate('photo')
+    .populate('thumbnail');
+
+  // QueryService.applyPopulate(productPromise, populate);
   return productPromise
     .then((product) => {
       if (!product) {
