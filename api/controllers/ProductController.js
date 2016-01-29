@@ -19,6 +19,8 @@ module.exports = {
   updatePhoto: updatePhoto,
   updateThumbnail: updateThumbnail,
 
+  updateProduct: updateProduct,
+
 
 
   // One off
@@ -28,6 +30,67 @@ module.exports = {
   //====================================================
   findNative: findNative,
 };
+
+function updateProduct(req, res) {
+  let queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: Product.updateProduct  -------------");
+  sails.log(queryWrapper);
+  let query = queryWrapper.query;
+  query.updatedBy = req.user.id;
+  let id = query.id;
+  delete query.id;
+  if (!QueryService.checkParamPassed(id)) {
+    return res.send(400, {
+      message: "no id sent"
+    });
+  }
+  let propertiesAllowedToUpdate = [
+    'location1', 'location2', 'fullLocation', 'fieldName', 'membershipType',
+    'courseName', 'courseSize', 'greenFee', 'cartFee', 'caddieFee', 'fieldUrl',
+    'contact',
+
+    'modelName', 'clubBrand', 'clubType',
+    'ballBrand', 'ballType',
+
+    'thumbnail', 'photo'
+  ];
+  let updateQuery = {};
+  _.forEach(propertiesAllowedToUpdate, (property) => {
+    if (query[property] !== undefined) { // make sure falsy value is applied.
+      updateQuery[property] = query[property];
+    }
+  });
+
+  return ImageService.createFieldPhotos(['photo', 'thumbnail'], req, ['GOLF_DIC'])
+    .then((fieldObj) => {
+      let photos = fieldObj.photos;
+      let appliedFields = fieldObj.appliedFields;
+      let notAppliedFields = fieldObj.notAppliedFields;
+      _.forEach(appliedFields, (appliedField, i) => {
+        updateQuery[appliedField] = photos[i].id;
+      });
+      _.forEach(notAppliedFields, (notAppliedField) => {
+        if (!updateQuery[notAppliedField]) {
+          updateQuery[notAppliedField] = null; // null deletes current association 
+        }
+      });
+      return Product.update({
+        id: id
+      }, updateQuery);
+    })
+    .then((productInArray) => {
+      let updatedProduct = productInArray[0];
+      return Product.findOne({
+        id: updatedProduct.id
+      });
+    })
+    .then((product) => {
+      return res.ok(product);
+    })
+    .catch((err) => {
+      return res.negotiate(err);
+    });
+}
 
 function find(req, res) {
   var queryWrapper = QueryService.buildQuery(req);

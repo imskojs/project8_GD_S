@@ -256,8 +256,10 @@ function update(req, res) {
     propertiesAllowedToUpdate.push('item' + i);
   }
   let propertiesToUpdate = {};
+  // this does not have any effect see ProductController.updateProduct...
   _.forEach(propertiesAllowedToUpdate, (property) => {
     if (propertiesToUpdate[property]) {
+      // query[property] = propertiesToUpdate[property];
       query[property] = propertiesToUpdate[property];
     }
   });

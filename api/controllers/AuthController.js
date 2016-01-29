@@ -130,6 +130,7 @@ function checkEmail(req, res) {
     });
 }
 
+
 function login(req, res) {
 
   sails.services.passport.callback(req, res, (err, user) => {

@@ -6,10 +6,42 @@ module.exports = {
   //====================================================
   //  App Specific
   //====================================================
+  findQuestionAnswer: findQuestionAnswer,
   updateAnswers: updateAnswers,
   createAnswers: createAnswers,
   createScreenshot: createScreenshot
 };
+
+function findQuestionAnswer(req, res) {
+  let queryWrapper = QueryService.buildQuery(req);
+  sails.log("-----------  queryWrapper: QuestionAnswer.findQuestionAnswer  -------------");
+  sails.log(queryWrapper);
+  let query = queryWrapper.query;
+  let populate = queryWrapper.populate;
+  if (!query.limit || query.limit > 200) {
+    query.limit = 100;
+  }
+  query.limit++;
+  let postPromise = QuestionAnswer.find(query);
+  QueryService.applyPopulate(postPromise, populate);
+  let countPromise = QuestionAnswer.count(query);
+  return Promise.all([postPromise, countPromise])
+    .spread((posts, count) => {
+      let more = (posts[query.limit - 1]) ? true : false;
+      if (more) {
+        posts.pop();
+      }
+      return res.ok({
+        questionanswers: posts,
+        more: more,
+        total: count
+      });
+    })
+    .catch((err) => {
+      return res.negotiate(err);
+    });
+
+}
 
 function updateAnswers(req, res) {
   var queryWrapper = QueryService.buildQuery(req);

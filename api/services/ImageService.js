@@ -8,6 +8,7 @@ var appTags = [];
 
 module.exports = {
   createPhotos: createPhotos,
+  createFieldPhotos: createFieldPhotos,
   updatePhotos: updatePhotos,
   updatePhoto: updatePhoto,
   destroyPhoto: destroyPhoto,
@@ -70,6 +71,61 @@ function createPhotos(req, photoTags) {
     })
     .then(function(createdPhotos) {
       return createdPhotos; //: iPhoto[] | []
+    });
+}
+
+// (fields: string[], req: RequestObj) 
+// => Obj: { 
+//   photos: iPhoto[] | [], 
+//   appliedFields: string[] | [],
+//   notAppliedFields: string[] | []
+// }
+function createFieldPhotos(fields, req, tags) {
+  var tempImageFilesInArray = _.map(fields, function(fieldName) {
+    var deferred = Promise.pending();
+    req.file(fieldName)
+      .upload(function(err, imagesInTempFolder) {
+        if (err) {
+          deferred.reject(err);
+        } else {
+          deferred.resolve(imagesInTempFolder);
+        }
+      });
+    return deferred.promise;
+  });
+  return Promise.all(tempImageFilesInArray)
+    .then(function(tempImageFilesInArray) {
+      // tempImageFilesInArray = [[{fd, filename, field}], [{fd, filename, field}]]
+      let imageFilesInTempFolder = _.flatten(tempImageFilesInArray, true);
+      let imagesInCloudinary = _.map(imageFilesInTempFolder, function(imageObj) {
+        return cloudinary.uploader.upload(imageObj.fd, null, {
+          tags: tags ? tags : []
+        });
+      });
+      return Promise.all([Promise.all(imagesInCloudinary), imageFilesInTempFolder]);
+    })
+    .spread(function(imagesInCloudinary, imageFilesInTempFolder) {
+      let appliedFields = _.pluck(imageFilesInTempFolder, 'field');
+      _.forEach(imageFilesInTempFolder, function(imageObj) {
+        fs.unlink(imageObj.fd);
+      });
+      _.forEach(imagesInCloudinary, function(cloudinaryObj) {
+        if (req.user && req.user.id) {
+          cloudinaryObj.createdBy = req.user.id;
+          cloudinaryObj.updatedBy = req.user.id;
+          cloudinaryObj.owner = req.user.id;
+        }
+      });
+      var createdPhotos = Photo.create(imagesInCloudinary);
+      return [createdPhotos, appliedFields];
+    })
+    .spread((createdPhotos, appliedFields) => {
+      // appliedFields, and createdPhotos have same order
+      return {
+        photos: createdPhotos,
+        appliedFields: appliedFields,
+        notAppliedFields: _.difference(fields, appliedFields)
+      };
     });
 }
 

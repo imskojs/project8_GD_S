@@ -113,22 +113,22 @@ function updateMyInfo(req, res) {
 
 function find(req, res) {
 
-  var queryWrapper = QueryService.buildQuery(req);
+  let queryWrapper = QueryService.buildQuery(req);
   sails.log("-----------  queryWrapper: User.find  -------------");
   sails.log(queryWrapper);
-  var query = queryWrapper.query;
-  var populate = queryWrapper.populate;
-  if (!query.limit || query.limit > 100) {
-    query.limit = 100;
+  let query = queryWrapper.query;
+  let populate = queryWrapper.populate;
+  if (!query.limit || query.limit > 200) {
+    query.limit = 200;
   }
   query.limit++;
-  var userPromise = User.find(query);
+  let userPromise = User.find(query);
   QueryService.applyPopulate(userPromise, populate);
-  var countPromise = User.count(query);
+  let countPromise = User.count(query);
 
   return Promise.all([userPromise, countPromise])
-    .spread(function(users, count) {
-      var more = (users[query.limit - 1]) ? true : false;
+    .spread((users, count) => {
+      let more = (users[query.limit - 1]) ? true : false;
       if (more) {
         users.splice(query.limit - 1, 1);
       }
@@ -139,10 +139,8 @@ function find(req, res) {
         total: count
       });
     })
-    .catch(function() {
-      return res.send(500, {
-        message: "장소 로딩을 실패 했습니다. 서버에러 code: 001"
-      });
+    .catch((err) => {
+      return res.negotiate(err);
     });
 }
 
