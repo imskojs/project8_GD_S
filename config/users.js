@@ -265,8 +265,8 @@ module.exports.users = {
       // Place
       {"name": 'USER 장소 읽기', "model": 'Place', "action": 'read', "relation": 'role'},
       //{"name": 'USER 장소 만들기', "model": 'Place', "action": 'create', "relation": 'role'},
-      {"name": 'USER 장소 수정', "model": 'Place', "action": 'update', "relation": 'role'},
-      {"name": 'USER 장소 지우기', "model": 'Place', "action": 'delete', "relation": 'role'},
+      {"name": 'USER 장소 수정', "model": 'Place', "action": 'update', "relation": 'owner'},
+      {"name": 'USER 장소 지우기', "model": 'Place', "action": 'delete', "relation": 'owner'},
 
 
       // Booking
@@ -297,73 +297,73 @@ module.exports.users = {
       // Like
       {"name": 'USER 좋아요 읽기', "model": 'Like', "action": 'read', "relation": 'role'},
       {"name": 'USER 좋아요 만들기', "model": 'Like', "action": 'create', "relation": 'role'},
-      {"name": 'USER 좋아요 수정', "model": 'Like', "action": 'update', "relation": 'role'},
-      {"name": 'USER 좋아요 지우기', "model": 'Like', "action": 'delete', "relation": 'role'},
+      {"name": 'USER 좋아요 수정', "model": 'Like', "action": 'update', "relation": 'owner'},
+      {"name": 'USER 좋아요 지우기', "model": 'Like', "action": 'delete', "relation": 'owner'},
 
       // User
       {"name": 'USER 사용자 읽기', "model": 'User', "action": 'read', "relation": 'role'},
       {"name": 'USER 사용자 쓰기', "model": 'User', "action": 'create', "relation": 'role'},
-      {"name": 'USER 사용자 수정', "model": 'User', "action": 'update', "relation": 'role'},
-      {"name": 'USER 사용자 지우기', "model": 'User', "action": 'delete', "relation": 'role'},
+      {"name": 'USER 사용자 수정', "model": 'User', "action": 'update', "relation": 'owner'},
+      {"name": 'USER 사용자 지우기', "model": 'User', "action": 'delete', "relation": 'owner'},
 
       // Photo
       {"name": 'USER 사진 읽기', "model": 'Photo', "action": 'read', "relation": 'role'},
       {"name": 'USER 사진 쓰기', "model": 'Photo', "action": 'create', "relation": 'role'},
-      {"name": 'USER 사진 수정', "model": 'Photo', "action": 'update', "relation": 'role'},
-      {"name": 'USER 사진 지우기', "model": 'Photo', "action": 'delete', "relation": 'role'},
+      {"name": 'USER 사진 수정', "model": 'Photo', "action": 'update', "relation": 'owner'},
+      {"name": 'USER 사진 지우기', "model": 'Photo', "action": 'delete', "relation": 'owner'},
 
       // Product
       {"name": 'USER 상품 읽기', "model": 'Product', "action": 'read', "relation": 'role'},
       {"name": 'USER 상품 만들기', "model": 'Product', "action": 'create', "relation": 'role'},
-      {"name": 'USER 상품 수정', "model": 'Product', "action": 'update', "relation": 'role'},
-      {"name": 'USER 상품 지우기', "model": 'Product', "action": 'delete', "relation": 'role'},
+      {"name": 'USER 상품 수정', "model": 'Product', "action": 'update', "relation": 'owner'},
+      {"name": 'USER 상품 지우기', "model": 'Product', "action": 'delete', "relation": 'owner'},
 
       // Post
       {"name": 'USER 글 읽기', "model": 'Post', "action": 'read', "relation": 'role'},
       {"name": 'USER 글 쓰기', "model": 'Post', "action": 'create', "relation": 'role'},
-      {"name": 'USER 글 수정', "model": 'Post', "action": 'update', "relation": 'role'},
-      {"name": 'USER 글 지우기', "model": 'Post', "action": 'delete', "relation": 'role'},
+      {"name": 'USER 글 수정', "model": 'Post', "action": 'update', "relation": 'owner'},
+      {"name": 'USER 글 지우기', "model": 'Post', "action": 'delete', "relation": 'owner'},
 
       // Comment
       {"name": 'USER 댓글 읽기', "model": 'Comment', "action": 'read', "relation": 'role'},
       {"name": 'USER 댓글 쓰기', "model": 'Comment', "action": 'create', "relation": 'role'},
-      {"name": 'USER 댓글 수정', "model": 'Comment', "action": 'update', "relation": 'role'},
-      {"name": 'USER 댓글 지우기', "model": 'Comment', "action": 'delete', "relation": 'role'},
+      {"name": 'USER 댓글 수정', "model": 'Comment', "action": 'update', "relation": 'owner'},
+      {"name": 'USER 댓글 지우기', "model": 'Comment', "action": 'delete', "relation": 'owner'},
 
       {"name": 'Questionnaire Read', "model": 'Questionnaire', "action": 'read', "relation": 'role'},
       {"name": 'Questionnaire Create', "model": 'Questionnaire', "action": 'create', "relation": 'role'},
-      {"name": 'Questionnaire Update', "model": 'Questionnaire', "action": 'update', "relation": 'role'},
-      {"name": 'Questionnaire Delete', "model": 'Questionnaire', "action": 'delete', "relation": 'role'},
+      {"name": 'Questionnaire Update', "model": 'Questionnaire', "action": 'update', "relation": 'owner'},
+      {"name": 'Questionnaire Delete', "model": 'Questionnaire', "action": 'delete', "relation": 'owner'},
 
       {"name": 'QuestionnaireAnswer Read', "model": 'QuestionnaireAnswer', "action": 'read', "relation": 'role'},
       {"name": 'QuestionnaireAnswer Create', "model": 'QuestionnaireAnswer', "action": 'create', "relation": 'role'},
-      {"name": 'QuestionnaireAnswer Update', "model": 'QuestionnaireAnswer', "action": 'update', "relation": 'role'},
-      {"name": 'QuestionnaireAnswer Delete', "model": 'QuestionnaireAnswer', "action": 'delete', "relation": 'role'},
+      {"name": 'QuestionnaireAnswer Update', "model": 'QuestionnaireAnswer', "action": 'update', "relation": 'owner'},
+      {"name": 'QuestionnaireAnswer Delete', "model": 'QuestionnaireAnswer', "action": 'delete', "relation": 'owner'},
 
       {"name": 'Note Read', "model": 'Note', "action": 'read', "relation": 'role'},
       {"name": 'Note Create', "model": 'Note', "action": 'create', "relation": 'role'},
-      {"name": 'Note Update', "model": 'Note', "action": 'update', "relation": 'role'},
-      {"name": 'Note Delete', "model": 'Note', "action": 'delete', "relation": 'role'},
+      {"name": 'Note Update', "model": 'Note', "action": 'update', "relation": 'owner'},
+      {"name": 'Note Delete', "model": 'Note', "action": 'delete', "relation": 'owner'},
 
       {"name": 'Question Read', "model": 'Question', "action": 'read', "relation": 'role'},
       {"name": 'Question Create', "model": 'Question', "action": 'create', "relation": 'role'},
-      {"name": 'Question Update', "model": 'Question', "action": 'update', "relation": 'role'},
-      {"name": 'Question Delete', "model": 'Question', "action": 'delete', "relation": 'role'},
+      {"name": 'Question Update', "model": 'Question', "action": 'update', "relation": 'owner'},
+      {"name": 'Question Delete', "model": 'Question', "action": 'delete', "relation": 'owner'},
 
       {"name": 'QuestionAnswer Read', "model": 'QuestionAnswer', "action": 'read', "relation": 'role'},
       {"name": 'QuestionAnswer Create', "model": 'QuestionAnswer', "action": 'create', "relation": 'role'},
-      {"name": 'QuestionAnswer Update', "model": 'QuestionAnswer', "action": 'update', "relation": 'role'},
-      {"name": 'QuestionAnswer Delete', "model": 'QuestionAnswer', "action": 'delete', "relation": 'role'},
+      {"name": 'QuestionAnswer Update', "model": 'QuestionAnswer', "action": 'update', "relation": 'owner'},
+      {"name": 'QuestionAnswer Delete', "model": 'QuestionAnswer', "action": 'delete', "relation": 'owner'},
 
       {"name": 'Poll Read', "model": 'Poll', "action": 'read', "relation": 'role'},
       {"name": 'Poll Create', "model": 'Poll', "action": 'create', "relation": 'role'},
-      {"name": 'Poll Update', "model": 'Poll', "action": 'update', "relation": 'role'},
-      {"name": 'Poll Delete', "model": 'Poll', "action": 'delete', "relation": 'role'},
+      {"name": 'Poll Update', "model": 'Poll', "action": 'update', "relation": 'owner'},
+      {"name": 'Poll Delete', "model": 'Poll', "action": 'delete', "relation": 'owner'},
 
       {"name": 'PollAnswer Read', "model": 'PollAnswer', "action": 'read', "relation": 'role'},
       {"name": 'PollAnswer Create', "model": 'PollAnswer', "action": 'create', "relation": 'role'},
-      {"name": 'PollAnswer Update', "model": 'PollAnswer', "action": 'update', "relation": 'role'},
-      {"name": 'PollAnswer Delete', "model": 'PollAnswer', "action": 'delete', "relation": 'role'},
+      {"name": 'PollAnswer Update', "model": 'PollAnswer', "action": 'update', "relation": 'owner'},
+      {"name": 'PollAnswer Delete', "model": 'PollAnswer', "action": 'delete', "relation": 'owner'},
     ]
   },
 
