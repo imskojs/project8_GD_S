@@ -12,13 +12,12 @@ function pushAll(req, res) {
   var message = req.param("message");
 
   if (!QueryService.checkParamPassed(title, message)) {
-    res.send(400, {
-      message: "Please pass all the parameters"
+    return res.send(400, {
+      message: "title/message"
     });
-    return;
   }
 
-  Device.find({
+  return Device.find({
       active: true
     })
     .exec(function(err, devices) {
@@ -39,27 +38,29 @@ function pushAll(req, res) {
 
     });
 
-};
+}
 
 function register(req, res) {
 
   var device = req.allParams();
+  console.log("---------- device ----------");
+  console.log(device);
 
   sails.log.debug(JSON.stringify(device));
 
   if (!QueryService.checkParamPassed(device.deviceId, device.platform)) {
-    res.send(400, {
-      message: "모든 매개 변수를 입력해주세요 code: 003"
+    return res.send(400, {
+      message: "deviceId/platform not sent"
     });
-    return;
   }
 
-  Device.findOrCreate({
+  return Device.findOrCreate({
       deviceId: device.deviceId
     }, device)
     .then(function(createdDevice) {
-
-      res.send(200, {
+      sails.log("-----------  createdDevice  -------------");
+      sails.log(createdDevice);
+      return res.send(200, {
         device: createdDevice
       });
     })
@@ -70,7 +71,7 @@ function register(req, res) {
       });
 
     });
-};
+}
 
 function update(req, res) {
 
