@@ -31,20 +31,20 @@ module.exports.connections = {
   })),
 
   //Dev
-  cloudinary: {
-    cloud_name: 'appdev',
-    api_key: '355231636137138',
-    api_secret: 'p_5ViDMlrlNZJFUP91trdUmo904',
-    tags: ['APPLICAT', 'GOLFDIC']
-  },
+  // cloudinary: {
+  //   cloud_name: 'appdev',
+  //   api_key: '355231636137138',
+  //   api_secret: 'p_5ViDMlrlNZJFUP91trdUmo904',
+  //   tags: ['APPLICAT', 'GOLFDIC']
+  // },
 
   //Production
-  //cloudinary: {
-  //  cloud_name: 'applicat',
-  //  api_key: '992351679812158',
-  //  api_secret: 'DHNaG-VHyUE8rVax4ay8YqbeQm8',
-  //  tags: ['APPLICAT', 'SHOWPLA']
-  //},
+  cloudinary: {
+    cloud_name: 'applicat',
+    api_key: '992351679812158',
+    api_secret: 'DHNaG-VHyUE8rVax4ay8YqbeQm8',
+    tags: ['APPLICAT', 'SHOWPLA']
+  },
 
   /*
    *  User activate Service
