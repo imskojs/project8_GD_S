@@ -139,6 +139,16 @@ module.exports.users = {
       {"name": 'PollAnswer Create', "model": 'PollAnswer', "action": 'create', "relation": 'role'},
       {"name": 'PollAnswer Update', "model": 'PollAnswer', "action": 'update', "relation": 'role'},
       {"name": 'PollAnswer Delete', "model": 'PollAnswer', "action": 'delete', "relation": 'role'},
+
+      {"name": 'GolfRecord Read', "model": 'GolfRecord', "action": 'read', "relation": 'role'},
+      {"name": 'GolfRecord Create', "model": 'GolfRecord', "action": 'create', "relation": 'role'},
+      {"name": 'GolfRecord Update', "model": 'GolfRecord', "action": 'update', "relation": 'role'},
+      {"name": 'GolfRecord Delete', "model": 'GolfRecord', "action": 'delete', "relation": 'role'},
+
+      {"name": 'PollComment Read', "model": 'PollComment', "action": 'read', "relation": 'role'},
+      {"name": 'PollComment Create', "model": 'PollComment', "action": 'create', "relation": 'role'},
+      {"name": 'PollComment Update', "model": 'PollComment', "action": 'update', "relation": 'role'},
+      {"name": 'PollComment Delete', "model": 'PollComment', "action": 'delete', "relation": 'role'},
     ],
     OWNER: [
       // Model
@@ -364,6 +374,16 @@ module.exports.users = {
       {"name": 'PollAnswer Create', "model": 'PollAnswer', "action": 'create', "relation": 'role'},
       {"name": 'PollAnswer Update', "model": 'PollAnswer', "action": 'update', "relation": 'owner'},
       {"name": 'PollAnswer Delete', "model": 'PollAnswer', "action": 'delete', "relation": 'owner'},
+
+      {"name": 'GolfRecord Read', "model": 'GolfRecord', "action": 'read', "relation": 'role'},
+      {"name": 'GolfRecord Create', "model": 'GolfRecord', "action": 'create', "relation": 'role'},
+      {"name": 'GolfRecord Update', "model": 'GolfRecord', "action": 'update', "relation": 'owner'},
+      {"name": 'GolfRecord Delete', "model": 'GolfRecord', "action": 'delete', "relation": 'owner'},
+
+      {"name": 'PollComment Read', "model": 'PollComment', "action": 'read', "relation": 'role'},
+      {"name": 'PollComment Create', "model": 'PollComment', "action": 'create', "relation": 'role'},
+      {"name": 'PollComment Update', "model": 'PollComment', "action": 'update', "relation": 'owner'},
+      {"name": 'PollComment Delete', "model": 'PollComment', "action": 'delete', "relation": 'owner'},
     ]
   },
 
