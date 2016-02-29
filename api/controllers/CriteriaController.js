@@ -1,4 +1,9 @@
+/* jshint ignore:start */
 'use strict';
+/* jshint ignore:end */
+
+var _ = require('lodash');
+
 module.exports = {
   getCriterias: getCriterias,
   // getMyCriterias: getMyCriterias,

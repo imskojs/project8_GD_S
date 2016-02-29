@@ -1,4 +1,6 @@
+/* jshint ignore:start */
 'use strict';
+/* jshint ignore:end */
 
 module.exports = {
   pushAll: pushAll,
@@ -102,5 +104,5 @@ function update(req, res) {
       res.send(500, {
         message: "기기 업데이트를 실패 했습니다. 서버에러 code: 001"
       });
-    })
+    });
 }

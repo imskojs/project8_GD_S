@@ -1,10 +1,12 @@
-// api/controllers/AuthController.js
-
+/* jshint ignore:start */
 'use strict';
+var Promise = require('bluebird');
+
+/* jshint ignore:end */
+
 var _ = require('lodash');
 var _super = require('sails-permissions/api/controllers/AuthController');
 var request = require('request');
-var Promise = require('bluebird');
 
 _.merge(exports, _super);
 _.merge(exports, {

@@ -1,6 +1,6 @@
-// api/controllers/PermissionController.js
-
+/* jshint ignore:start */
 'use strict';
+/* jshint ignore:end */
 var _ = require('lodash');
 var _super = require('sails-permissions/api/controllers/PermissionController');
 
@@ -74,18 +74,19 @@ function getPermissions(req, res) {
   if (limit)
     query.limit = ++limit;
 
+  var date;
   if (dateOlderThan) {
-    var date = new Date(dateOlderThan);
+    date = new Date(dateOlderThan);
     query.where.createdAt = {
       '<': date
-    }
+    };
   }
 
   if (dateNewerThan) {
-    var date = new Date(dateNewerThan);
+    date = new Date(dateNewerThan);
     query.where.createdAt = {
       '>': date
-    }
+    };
   }
 
 

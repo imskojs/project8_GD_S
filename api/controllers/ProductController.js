@@ -1,8 +1,8 @@
 /* jshint ignore:start */
 'use strict';
 var Promise = require('bluebird');
-
 /* jshint ignore:end */
+
 var _ = require('lodash');
 
 module.exports = {

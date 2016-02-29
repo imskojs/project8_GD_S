@@ -1,6 +1,6 @@
-// api/controllers/ModelController.js
-
+/* jshint ignore:start */
 'use strict';
+/* jshint ignore:end */
 var _ = require('lodash');
 var _super = require('sails-permissions/api/controllers/ModelController');
 

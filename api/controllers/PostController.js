@@ -1,5 +1,7 @@
+/* jshint ignore:start */
 'use strict';
 var Promise = require('bluebird');
+/* jshint ignore:end */
 var _ = require('lodash');
 var cloudinary = require('cloudinary');
 var fs = require('fs');

@@ -1,4 +1,6 @@
+/* jshint ignore:start */
 'use strict';
+/* jshint ignore:end */
 module.exports = {
   subscribeToRoom: subscribeToRoom,
   getMyRooms: getMyRooms,

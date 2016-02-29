@@ -1,5 +1,7 @@
+/* jshint ignore:start */
 'use strict';
 var Promise = require('bluebird');
+/* jshint ignore:end */
 
 module.exports = {
   find: find,
@@ -133,6 +135,7 @@ function create(req, res) {
       res.send(200, booking);
     })
     .catch(function(err) {
+      sails.log("err :::\n", err);
       res.send(500, {
         message: "게시물 로딩을 실패 했습니다. 서버에러 code: 001"
       });
