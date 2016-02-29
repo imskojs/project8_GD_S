@@ -372,29 +372,24 @@ function findWithAverage(req, res) {
               return qna.product === productId;
             });
 
-            sails.log("qnasOfParticularProductId :::\n", qnasOfParticularProductId);
             _.forEach([0, 1, 2, 3, 4], (position) => {
               let qnasOfParticularPosition = _.filter(qnasOfParticularProductId, (qna) => {
                 return qna.position === position;
               });
 
-              sails.log("qnasOfParticularPosition :::\n", qnasOfParticularPosition);
               let position_i_scores = [];
               _.forEach(qnasOfParticularPosition, (qna) => {
                 let qna_i_scores = _.pluck(qna.questionAnswers, 'score');
-                position_i_scores.concat(qna_i_scores);
+                position_i_scores = position_i_scores.concat(qna_i_scores);
               });
 
-              sails.log("position_i_scores :::\n", position_i_scores);
               let position_i_totalScore = _.reduce(position_i_scores, (mem, score) => {
                 return mem + score;
               }, 0);
 
-              sails.log("position_i_totalScore :::\n", position_i_totalScore);
               let position_i_averageScore = position_i_totalScore / position_i_scores.length;
               totalAverageObj[productId]['totalAverage' + position] = position_i_averageScore;
 
-              sails.log("totalAverageObj :::\n", totalAverageObj);
             });
           });
         });
