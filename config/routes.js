@@ -14,10 +14,12 @@ module.exports.routes = {
   'GET /product/hasQuestionnaireAnswer': 'ProductController.hasQuestionnaireAnswer',
   'GET /product/findWithAverage': 'ProductController.findWithAverage',
   'GET /product/findOneWithAverage': 'ProductController.findOneWithAverage',
-  'POST /product/create': 'ProductController.create',
   'PUT /product/updatePhoto': 'ProductController.updatePhoto',
   'PUT /product/updateThumbnail': 'ProductController.updateThumbnail',
   'DELETE /product/destroy': 'ProductController.destroy',
+
+  'POST /product/create': 'ProductController.create',
+  'PUT /product/update': 'ProductController.update',
   // One off
   'GET /product/getCategories': 'ProductController.getCategories',
 
@@ -83,6 +85,21 @@ module.exports.routes = {
   'POST /pollAnswer/create': 'PollAnswerController.create',
 
   //====================================================
+  //  GolfRecord
+  //====================================================
+  'POST /golfRecord/create': 'GolfRecordController.create',
+  'GET /golfRecord/find': 'GolfRecordController.find',
+  'GET /golfRecord/findOne': 'GolfRecordController.findOne',
+  'GET /golfRecord/findByKeyword': 'GolfRecordController.findByKeyword',
+  'PUT /golfRecord/update': 'GolfRecordController.update',
+  'DELETE /golfRecord/destroy': 'GolfRecordController.destroy',
+
+  'GET /golfRecord/getMaxScoreRecord': 'GolfRecordController.getMaxScoreRecord',
+  'GET /golfRecord/myHandicap': 'GolfRecordController.myHandicap',
+
+
+
+  //====================================================
   //  Photo
   //====================================================
   'POST /photo/createPhotos': 'PhotoController.createPhotos',
@@ -142,8 +159,6 @@ module.exports.routes = {
    *************************************/
 
   'GET /product/findNative': 'ProductController.findNative',
-
-  'PUT /product/update': 'ProductController.update',
 
   'POST /product/like': 'LikeController.productLike',
   'DELETE /product/unlike': 'LikeController.productUnlike',
