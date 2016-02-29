@@ -116,6 +116,9 @@ module.exports = {
       collection: 'User',
       via: 'likedProducts'
     },
+    golfRecord: {
+      model: 'GolfRecord'
+    },
     //====================================================
     //  general info
     //====================================================

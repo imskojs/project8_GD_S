@@ -252,7 +252,7 @@ function update(req, res) {
   let propertiesAllowedToUpdate = [
     'category', 'tags', 'title', 'content', 'photos'
   ];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 20; i++) {
     propertiesAllowedToUpdate.push('item' + i);
   }
   let propertiesToUpdate = {};

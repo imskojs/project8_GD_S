@@ -1,5 +1,7 @@
+/* jshint ignore:start */
 'use strict';
 var Promise = require('bluebird');
+/* jshint ignore:end */
 var _ = require('lodash');
 var cloudinary = require('cloudinary');
 var fs = require('fs');
@@ -7,6 +9,8 @@ var fs = require('fs');
 var appTags = [];
 
 module.exports = {
+  createPhotos2: createPhotos2,
+  destroyPhotos2: destroyPhotos2,
   createPhotos: createPhotos,
   createFieldPhotos: createFieldPhotos,
   updatePhotos: updatePhotos,
@@ -20,6 +24,75 @@ module.exports = {
   createPhoto: createPhoto,
   deletePhoto: deletePhoto
 };
+
+function createPhotos2(req, photoTags, createProperties) {
+  var deferred = Promise.pending();
+  req.file('file')
+    .upload(function(err, imagesInServer) {
+      if (err) {
+        deferred.reject(err);
+      } else {
+        deferred.resolve(imagesInServer);
+      }
+    });
+  return Promise.all([deferred.promise, photoTags])
+    .then(function(array) {
+      var imagesInServer = array[0];
+      var photoTags = array[1];
+      var imagePromises = _.map(imagesInServer, function(image) {
+        return cloudinary.uploader.upload(image.fd, null, {
+          tags: photoTags
+        });
+      });
+      return [Promise.all(imagePromises), imagesInServer];
+    })
+    .spread(function(imagesInCloudinary, imagesInServer) {
+      // Remove temp file
+      for (var i = 0; i < imagesInServer.length; ++i) {
+        sails.log("Removing temp file: " + imagesInServer[i].fd);
+        fs.unlink(imagesInServer[i].fd);
+      }
+      return imagesInCloudinary;
+    })
+    .then(function(imagesInCloudinary) {
+      sails.log("-----------  imagesInCloudinary  -------------");
+      sails.log(imagesInCloudinary);
+      _.forEach(imagesInCloudinary, function(cloudinaryObj, i) {
+        if (req.user && req.user.id) {
+          cloudinaryObj.createdBy = req.user.id;
+          cloudinaryObj.updatedBy = req.user.id;
+          cloudinaryObj.owner = req.user.id;
+        }
+        if (createProperties && createProperties[i]) {
+          _.extend(cloudinaryObj, createProperties[i]);
+        }
+      });
+
+      if (imagesInCloudinary.length > 0) {
+        return Photo.create(imagesInCloudinary /*: CloudinaryImage[] */ );
+      } else {
+        return [];
+      }
+    })
+    .then(function(createdPhotos) {
+      return createdPhotos; //: iPhoto[] | []
+    });
+}
+
+function destroyPhotos2(photoIds) {
+  return Photo.destroy({ id: photoIds })
+    .then((destroyedPhotos) => {
+      let destroyedCloudinaryPhotos = _.map(destroyedPhotos, (photo) => {
+        return cloudinary.uploader.destroy(photo.public_id, null);
+      });
+      return [destroyedPhotos, Promise.all(destroyedCloudinaryPhotos)];
+    })
+    .spread((destroyedPhotos /*, pubicIds*/ ) => {
+      let photoIds = _.pluck(destroyedPhotos, 'id');
+      return photoIds || [];
+    });
+}
+
 
 // (req: requestObject, photoTags: string[])
 // => createdPhotos: iPhoto[] | []

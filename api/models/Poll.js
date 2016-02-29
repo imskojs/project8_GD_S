@@ -1,4 +1,6 @@
+/* jshint ignore:start */
 'use strict';
+/* jshint ignore:end */
 module.exports = {
 
   attributes: {
@@ -6,7 +8,16 @@ module.exports = {
     title: {
       type: 'STRING'
     },
+
     content: {
+      type: 'STRING'
+    },
+
+    description0: {
+      type: 'STRING'
+    },
+
+    description1: {
       type: 'STRING'
     },
     //====================================================
@@ -22,6 +33,11 @@ module.exports = {
 
     pollAnswers: {
       collection: 'PollAnswer',
+      via: 'poll'
+    },
+
+    pollComments: {
+      collection: 'PollComment',
       via: 'poll'
     },
     //====================================================

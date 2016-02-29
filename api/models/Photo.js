@@ -12,9 +12,6 @@ module.exports = {
     name: {
       type: 'STRING'
     },
-    url: {
-      type: 'STRING'
-    },
     https: {
       type: 'STRING'
     },
@@ -49,6 +46,9 @@ module.exports = {
     },
     product: {
       model: 'Product'
+    },
+    golfRecord: {
+      model: 'GolfRecord'
     },
     user: {
       model: 'User'

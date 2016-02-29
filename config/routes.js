@@ -82,6 +82,11 @@ module.exports.routes = {
   'GET /pollAnswer/hasPollAnswer': 'PollAnswerController.hasPollAnswer',
   'POST /pollAnswer/create': 'PollAnswerController.create',
 
+  //====================================================
+  //  Photo
+  //====================================================
+  'POST /photo/createPhotos': 'PhotoController.createPhotos',
+  'PUT /photo/updatePhotos': 'PhotoController.updatePhotos',
 
   //====================================================
   //  NOT USED

@@ -1,8 +1,12 @@
+/* jshint ignore:start */
 'use strict';
 var Promise = require('bluebird');
+/* jshint ignore:end */
 var _ = require('lodash');
 
 module.exports = {
+  createPhotos: createPhotos,
+  updatePhotos: updatePhotos,
   find: find,
   findNative: findNative,
   findOne: findOne,
@@ -11,6 +15,80 @@ module.exports = {
   update: update,
   destroy: destroy
 };
+
+function createPhotos(req, res) {
+  let queryWrapper = QueryService.buildQuery(req);
+  sails.log("queryWrapper --Photo.createPhotos-- :::\n", queryWrapper);
+  let query = queryWrapper.query;
+  // let query = { 
+  //   destroy: iPhoto.id[], 
+  //   create: Object[],
+  //   update: {
+  //     'iPhoto.id': Object,
+  //     ...
+  //     'iPhoto.id': Object
+  //   }
+  // }
+  return ImageService.createPhotos2(req, ['GOLDIC'], query.create)
+    .then((createdPhotos) => {
+      sails.log("createdPhotos :::\n", createdPhotos);
+      let photoIds = _.pluck(createdPhotos, 'id');
+      return res.ok({
+        ids: photoIds
+      });
+    })
+    .catch((err) => {
+      return res.negotiate(err);
+    });
+}
+
+function updatePhotos(req, res) {
+  let queryWrapper = QueryService.buildQuery(req);
+  sails.log("queryWrapper --Photo.updatePhotos-- :::\n", queryWrapper);
+  let query = queryWrapper.query;
+  // let query = { 
+  //
+  //   destroy: iPhoto.id[], 
+  //
+  //   create: Object[], // data to create to photos with req.files array eg {index: 1}
+  //
+  //   // update is used to change non-cloudinary properties only
+  //   // need to send already existing photos 'iPhoto.id': {index: number}
+  //   // rarely used
+  //   update: { 
+  //     'iPhoto.id': Object,
+  //     ...
+  //     'iPhoto.id': Object
+  //   }
+  // }
+  let destroy = query.destroy;
+  let create = query.create;
+  let update = query.update;
+  return ImageService.destroyPhotos2(destroy)
+    .then((destroyedPhotoids) => {
+      sails.log("destroyedPhotoids --Photo.updatePhotos-- :::\n", destroyedPhotoids);
+      let updatedPhotos = _.map(update, (updateObj, photoId) => {
+        return Photo.update({ id: photoId }, updateObj);
+      });
+      return Promise.all(updatedPhotos);
+    })
+    .then((updatedPhotos) => {
+      sails.log("updatedPhotos --Photo.updatePhotos-- :::\n", updatedPhotos);
+      return [updatedPhotos, ImageService.createPhotos2(req, ['GOLDIC'], create)];
+    })
+    .spread((updatedPhotos, createdPhotos) => {
+      let photos = updatedPhotos.concat(createdPhotos);
+      let photoIds = _.pluck(photos, 'id');
+      return res.ok({
+        ids: photoIds
+      });
+    })
+    .catch((err) => {
+      return res.negotiate(err);
+    });
+}
+
+
 
 
 function find(req, res) {

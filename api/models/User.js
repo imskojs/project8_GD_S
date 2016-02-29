@@ -72,6 +72,10 @@ _.merge(exports, {
       via: 'user'
     },
 
+    pollComment: {
+      model: 'PollComment'
+    },
+
     owner: {
       model: 'User'
     },

@@ -1,5 +1,8 @@
+/* jshint ignore:start */
 'use strict';
 var Promise = require('bluebird');
+
+/* jshint ignore:end */
 var _ = require('lodash');
 
 module.exports = {
@@ -334,14 +337,61 @@ function findWithAverage(req, res) {
   delete query.sort;
   let qaSkip = query.skip;
   delete query.skip;
+
   let qaOwner = query.where.owner;
   delete query.where.owner;
+
   let more;
+  let totalAverageObj = {};
 
   return Product.find(query)
     .then((products) => {
       // pluck product Ids
       let productIds = _.pluck(products, 'id');
+      //====================================================
+      //  createTotalAverageObj
+      //====================================================
+      // totalAverageObj = {
+      //   productId: {
+      //     totalAverage0: int,
+      //     totalAverage1: int,
+      //     totalAverage2: int,
+      //     totalAverage3: int,
+      //     totalAverage4: int
+      //   }
+      // }
+      let createTotalAverageObjPromise = QuestionnaireAnswer.find({
+          product: productIds
+        })
+        .populate('questionAnswers')
+        .then((qnas) => {
+          // find questionnaire answers with each productId
+          _.forEach(productIds, (productId) => {
+            totalAverageObj[productId] = {};
+            let qnasOfParticularProductId = _.filter(qnas, (qna) => {
+              return qna.product === productId;
+            });
+            _.forEach([0, 1, 2, 3, 4], (position) => {
+              let qnasOfParticularPosition = _.filter(qnasOfParticularProductId, (qna) => {
+                return qna.position === position;
+              });
+              let position_i_scores = [];
+              _.forEach(qnasOfParticularPosition, (qna) => {
+                let qna_i_scores = _.pluck(qna.questionAnswers, 'score');
+                position_i_scores.concat(qna_i_scores);
+              });
+              let position_i_totalScore = _.reduce(position_i_scores, (mem, score) => {
+                return mem + score;
+              }, 0);
+              let position_i_averageScore = position_i_totalScore / position_i_scores.length;
+              totalAverageObj[productId]['totalAverage' + position] = position_i_averageScore;
+            });
+          });
+        });
+      //====================================================
+      //  createTotalAverageObj end
+      //====================================================
+
       // find questionnaireAnswers with productIds and position 0 sort by updatedAt DESC
       let tempQuery = {
         where: {
@@ -366,11 +416,14 @@ function findWithAverage(req, res) {
       if (qaSkip) {
         tempQuery.skip = qaSkip;
       }
-      sails.log("-----------  tempQuery  -------------");
-      sails.log(tempQuery);
-      return [QuestionnaireAnswer
+      sails.log("tempQuery --Product.findWithAverage-- :::\n", tempQuery);
+      let qna0s = QuestionnaireAnswer
         .find(tempQuery)
-        .populate('product'), tempQuery.limit
+        .populate('product');
+      return [
+        qna0s,
+        tempQuery.limit,
+        createTotalAverageObjPromise /* side effect*/
       ];
     })
     .spread((qna0s, limit) => {
@@ -393,6 +446,7 @@ function findWithAverage(req, res) {
       let tempProducts = _.pluck(qna0s, 'product');
       // forEach createdByIds create tempResult tempProduct, and find questionnaireAnswers sortBy position and populate questionAnswers
       let tempResultsPromise = _.map(tempProducts, (tempProduct, i) => {
+        // find questionnaireAnswers for created particular user and product
         return QuestionnaireAnswer
           .find({
             where: {
@@ -422,6 +476,13 @@ function findWithAverage(req, res) {
             _.forEach(averageScores, (averageScore, i) => {
               tempProduct['average' + i] = averageScore;
             });
+            //====================================================
+            //  Append total Object
+            //====================================================
+            _.extend(tempProduct, totalAverageObj[tempProduct.id]);
+            //====================================================
+            //  Append total object ends
+            //====================================================
             return tempProduct;
           });
       });
@@ -437,7 +498,6 @@ function findWithAverage(req, res) {
       return res.negotiate(err);
     });
 }
-
 
 function findOneWithAverage(req, res) {
   var queryWrapper = QueryService.buildQuery(req);

@@ -62,6 +62,33 @@ module.exports = {
     item10: {
       type: 'JSON'
     },
+    item11: {
+      type: 'JSON'
+    },
+    item12: {
+      type: 'JSON'
+    },
+    item13: {
+      type: 'JSON'
+    },
+    item14: {
+      type: 'JSON'
+    },
+    item15: {
+      type: 'JSON'
+    },
+    item16: {
+      type: 'JSON'
+    },
+    item17: {
+      type: 'JSON'
+    },
+    item18: {
+      type: 'JSON'
+    },
+    item19: {
+      type: 'JSON'
+    },
     //====================================================
     //  Association
     //====================================================
