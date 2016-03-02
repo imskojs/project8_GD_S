@@ -89,6 +89,7 @@ function findOne(req, res) {
     })
     .spread((golfRecord, product) => {
       golfRecord.product = product;
+      sails.log("golfRecord :::\n", golfRecord);
       return res.ok(golfRecord);
     })
     .catch((err) => {
@@ -105,7 +106,7 @@ function findByKeyword(req, res) {
   return Product.find({
       where: {
         or: [
-          { name: { contains: query.where.keyword } }
+          { fieldName: { contains: query.where.keyword } }
         ]
       }
     })
