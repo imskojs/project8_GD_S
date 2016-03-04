@@ -1,0 +1,113 @@
+@import url("common.css");
+
+@media (max-width: 300px) {
+  .navbar-brand{
+    display: none;
+  }
+  .navbar-collapse{
+    display: block;
+  }
+  .collapse .navbar-nav{
+    display: none;
+  }
+  .in .navbar-nav{
+    display: block !important;
+  }
+}
+@media (min-width: 301px) and (max-width: 767px) {
+  .navbar{
+    padding: 0px;
+    border: none;
+  }
+  .navbar .container{
+    padding: 0px;
+  }
+  .navbar .container > .navbar-header{
+    margin: 0px;
+    text-align: center;
+  }
+  .navbar-header > .navbar-toggle{
+    display: none;
+  }
+  .navbar-header > .navbar-brand{
+    float: none;
+    margin: 0px;
+  }
+  .navbar .container > .navbar-collapse{
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    background-color: #284f8a;
+  }
+  .navbar-nav{
+    margin: 0px;
+    border: 0px;
+  }
+  .navbar-nav > li{
+    float: left;
+    width: 33%;
+  }
+  .navbar-nav > li:first-child{
+    width: 34%;
+  }
+  .navbar-nav > li > a{
+    padding: 10px 0 !important;
+    text-align: center;
+  }
+}
+
+@media (max-width: 767px){
+  html, body{
+   font-size: 12px;
+  }
+  .navbar-header .navbar-brand img{
+    max-height: 30px;
+  }
+  .navbar-right > li > a{
+    color: #fff;
+  }
+  .navbar-right > li > a:hover{
+    color: #284f8a;
+    font-weight: bold;
+    background-color: #fff;
+  }
+  .navbar-right > li.active > a{
+    color: #284f8a;
+    font-weight: bold;
+    background-color: #fff;
+  }
+  .container-wrap{
+    margin-top: 90px;
+  }
+  .container-wrap section{
+    padding-top: 90px;
+  }
+  .container-wrap section > div{
+    padding: 5% !important;
+  }
+  section > div .left-wrap, section > div .right-wrap{
+    display: block;
+    float: none;
+    width: 100% !important;
+    padding: 0px !important;
+  }
+  section > div .left-wrap img, section > div .right-wrap img{
+    width: auto;
+    max-width: 312px;
+    max-height: 524px;
+  }
+  section > div .text-wrap{
+    margin: 5% 0;
+  }
+  .info-wrap .right-wrap .btn-wrap{
+    margin-top: 5%;
+    text-align: center;
+  }
+  .info-wrap .right-wrap .btn-wrap img{
+    max-width: 200px;
+  }
+
+  footer .tel-wrap{
+    display: none;
+  }
+}

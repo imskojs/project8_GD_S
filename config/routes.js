@@ -5,6 +5,9 @@ module.exports.routes = {
   '/': {
     assets: 'index.html'
   },
+  '/admin': {
+    assets: 'admin.html'
+  },
   //====================================================
   //  Product
   //====================================================
@@ -105,13 +108,16 @@ module.exports.routes = {
   'GET /golfRecord/getMaxScoreRecord': 'GolfRecordController.getMaxScoreRecord',
   'GET /golfRecord/myHandicap': 'GolfRecordController.myHandicap',
 
-
-
   //====================================================
   //  Photo
   //====================================================
   'POST /photo/createPhotos': 'PhotoController.createPhotos',
   'PUT /photo/updatePhotos': 'PhotoController.updatePhotos',
+
+  //====================================================
+  //  Contact Admin
+  //====================================================
+  'POST /contact/admin': 'UserController.contactFromWeb',
 
   //====================================================
   //  NOT USED

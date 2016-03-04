@@ -1,0 +1,127 @@
+/**************************
+ *      Info
+ **************************/
+.info-wrap{
+  background-color: #f8f7f7;
+}
+.info-content .left-wrap{
+  width: 40%;
+  text-align: center;
+}
+.info-content .right-wrap{
+  width: 60%;
+  padding: 5% 0px 5% 5%;
+}
+.info-content .text-wrap{
+  color: #666;
+}
+.info-content .btn-wrap{
+  display: inline-block;
+  width: 100%;
+  margin-top: 70%;
+}
+.info-content .btn-wrap a{
+  display: block;
+  float: left;
+  width: 48%
+}
+.info-content .btn-wrap img{
+  width: 100%;
+}
+.btn-wrap a.btn-playStore{
+  margin-right: 2%;
+}
+
+/**************************
+ *      Service
+ **************************/
+.first-service-wrap{
+  background-image: url("../img/bg_01.png");
+  background-size: cover;
+}
+.first-service-wrap .left-wrap{
+  width: 60%;
+  padding: 5% 5% 5% 0px;
+}
+.first-service-wrap .right-wrap{
+  width: 40%;
+  text-align: center;
+}
+.first-service-wrap .text-wrap{
+  color: #666;
+}
+.second-service-wrap{
+  background-color: #f8f7f7;
+}
+.second-service-wrap .left-wrap{
+  width: 40%;
+  text-align: center;
+}
+.second-service-wrap .right-wrap{
+  width: 60%;
+  padding: 5% 0px 5% 5%;
+}
+.second-service-wrap .text-wrap{
+  color: #666;
+}
+.third-service-wrap{
+  background-image: url("../img/bg_02.png");
+  background-size: cover;
+}
+.third-service-wrap .left-wrap{
+  width: 60%;
+  padding: 5% 5% 5% 0px;
+}
+.third-service-wrap .right-wrap{
+  width: 40%;
+  text-align: center;
+}
+.third-service-wrap .text-wrap{
+  color: #fff;
+}
+
+/**************************
+ *      Contact
+ **************************/
+.contact-wrap{
+  background-color: #fff;
+}
+.contact-content .left-wrap{
+  width: 50%;
+  text-align: center;
+}
+.contact-content .left-wrap p{
+  margin-bottom: 10px;
+  font-size: 2rem;
+  line-height: 2rem;
+}
+.contact-content .left-wrap .form-wrap input, .contact-content .left-wrap .form-wrap textarea{
+  width: 100%;
+  height: 50px;
+  margin-bottom: 10px;
+  padding: 0 10px;
+  border: 1px solid #666;
+}
+.contact-content .left-wrap .form-wrap textarea{
+  height: 200px;
+  padding: 10px;
+}
+.contact-content .left-wrap .form-wrap button{
+  width: 100%;
+  height: 50px;
+  background-color: #284f8a;
+  color: #fff;
+}
+.contact-content .right-wrap{
+  width: 50%;
+  padding: 5% 0px 5% 5%;
+}
+.contact-content .text-wrap{
+  color: #666;
+}
+.contact-content .text-wrap .title{
+  display: block;
+  margin-bottom: 5%;
+  font-size: 1.6rem;
+  font-weight: bold;
+}

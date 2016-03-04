@@ -29,7 +29,8 @@ module.exports.policies = {
     'create': ['passport'],
     'checknickname': true,
     'checkemail': true,
-    'contactAdmin': true
+    'contactAdmin': true,
+    'contactFromWeb': true
       //'*': true
   },
 

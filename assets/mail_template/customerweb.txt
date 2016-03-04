@@ -1,0 +1,66 @@
+[GolfDic] <%= data.name || "홍길동"  %>님의 문의 이메일이 도착하였습니다.
+----------
+
+GolfDic 문의 이메일 입니다.
+
+문의자: <%= data.name %>
+
+문의자 이메일: <%= data.mail || "없음" %>
+
+문의자 전화번호: <%= data.tel %>
+
+문의 제목: <%= data.title %>
+
+문의 내용: <%= data.content %>
+
+
+-애플리켓 Team-
+WE MAKE APPS
+html:
+<div style="background: #e6ebfc">
+   <img style="width: 100%; display:block" src='cid:applicat-mailheader'/>
+   <div style="padding: 50px 30%; font-size: 1.2em; color:black;">
+      <div style="width:100%; text-align: center; font-size: 1.2em; font-weight: bold;"> 
+       GolfDic 문의 이메일 입니다.</div>
+      <br/>
+
+      <br/>
+        <span style="color:black">
+           문의자: <%= data.name || "없음"  %>
+        </span>
+      <br/>
+
+      <br/>
+        <span style="color:black">
+          문의자 이메일: <%= data.mail || "없음" %>
+        </span>
+      <br/>
+
+      <br/>
+        <span style="color:black">
+          문의자 전화번호: <%= data.tel || "없음"  %>
+        </span>
+      <br/>
+
+      <br/>
+        <span style="color:black">
+          문의 제목: <%= data.title || "없음"  %>
+        </span>
+      <br/>
+
+      <br/>
+        <span style="color:black">
+          문의 내용: <%= data.content || "없음"  %>
+        </span>
+      <br/>
+
+      <br/>
+      <br/>
+      <br/>
+      -<span style="color: #2d4b65; font-weight:bold">애플리켓</span> Team-
+      <br/>
+      <span style="color: #ed1e79; font-weight: bold"> WE MAKE APPS
+  </div>
+  <img style="width: 100%; display:block" src='cid:applicat-mailfooter'/>
+  <br/>
+</div>

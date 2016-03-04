@@ -3,7 +3,7 @@
 module.exports.bootstrap = function(cb) {
   //UserService.init();
   ImageService.init();
-  //MailService.init();
+  MailService.init();
 
   return Place.native((err, placeColl) => {
     placeColl.ensureIndex({

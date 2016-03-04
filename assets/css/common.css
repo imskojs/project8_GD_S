@@ -1,0 +1,169 @@
+@import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+html, body{
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  line-height: 1rem;
+}
+
+p, span,
+ul, ol, li, dl, dt, dd{
+  margin: 0px;
+  padding: 0px;
+}
+
+input, textarea, button{
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+  background: none;
+  outline: none;
+}
+
+ul, ol, li, dl, dt, dd{
+  list-style: none;
+}
+
+p{
+  font-weight: 300;
+}
+
+a{
+  text-decoration: none;
+}
+
+/**************************
+ *      Layout
+ **************************/
+section{
+  padding:70px 0;
+}
+section img{
+  width: 100%;
+}
+.container-wrap{
+  margin-top: 70px;
+}
+.container-wrap > section > div{
+  width: 100%;
+  padding: 5% 10%;
+}
+.container-wrap > section > div{
+  display: inline-block;
+}
+
+/**************************
+ *      class
+ **************************/
+
+.left-wrap{
+  float: left;
+}
+.right-wrap{
+  float: right;
+}
+.positive{
+  color: #284f8a;
+  font-weight: 400;
+}
+.light-positive{
+  color: #4588c5;
+  font-weight: 400;
+}
+.title-text{
+  font-size: 2rem;
+  line-height: 2.5rem;
+  margin-bottom: 5%;
+}
+.desc-text{
+  font-size: 1.4rem;
+  line-height: 2.5rem;
+}
+.logo{
+  width: 10rem;
+  height: 2rem;
+  margin-top: -5px;
+}
+
+/**************************
+ *      Custom Navbar
+ **************************/
+.navbar{
+  margin: 0px !important;
+  padding: 10px 0;
+  border-width: 0px 0px 1px;
+  border-color: #ccc;
+  border-style: solid;
+  background-color: #e8eef3;
+}
+.navbar-toggle{
+  background-color: #fff;
+}
+.navbar-toggle .icon-bar{
+  background-color: #57dad8;
+}
+.navbar-brand{
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  margin-left: 15px;
+  padding: 0px !important;
+}
+.navbar-collapse{
+  border: 0px;
+}
+.navbar-right > li > a{
+  color: #272c6e;
+}
+.navbar-right > li > a:hover{
+  font-weight: bold;
+  background-color: #e8eef3;
+}
+.navbar-right > li.active > a{
+  font-weight: bold;
+}
+
+/**************************
+ *      Footer
+ **************************/
+footer{
+  width: 100%;
+  padding: 5% 0;
+  color: #666;
+  text-align: center;
+  background-color: #eee;
+}
+footer .tel-wrap{
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  margin-bottom: 5%;
+  text-align: center;
+}
+footer .tel-wrap .address{
+  margin: 0 5%;
+}
+footer .tel-wrap span{
+  font-size: 2rem;
+  color: #272c6e;
+}
+footer .tel-wrap p{
+  height: 20px;
+  margin-top: 10px;
+  line-height: 1.3rem;
+}
+footer .copyright-wrap{
+  line-height: 2rem;
+}

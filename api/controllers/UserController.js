@@ -23,7 +23,32 @@ _.merge(exports, {
   destroy: destroy,
 
   contactAdmin: contactAdmin,
+  contactFromWeb: contactFromWeb
 });
+
+function contactFromWeb(req, res) {
+  let data = req.body; // {name, mail, tel, title, content}
+
+  return Promise.resolve()
+    .then((imagesInServer) => {
+      let sendToUsersPromise = MailService.sendToUsers(
+        [{ email: 'master@golfdic.com' }],
+        // [{ email: 'imskojs@gmail.com' }],
+        'customerweb', { data: data },
+        data.mail || 'admin@applicat.co.kr',
+        imagesInServer
+      );
+      return sendToUsersPromise;
+    })
+    .then((sentMessages) => {
+      return res.ok({ messages: sentMessages });
+    })
+    .catch((err) => {
+      return res.negotiate(err);
+    });
+}
+
+
 
 
 function getMyUserInfo(req, res) {
