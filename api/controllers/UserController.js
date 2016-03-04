@@ -32,8 +32,8 @@ function contactFromWeb(req, res) {
   return Promise.resolve()
     .then((imagesInServer) => {
       let sendToUsersPromise = MailService.sendToUsers(
-        [{ email: 'master@golfdic.com' }],
-        // [{ email: 'imskojs@gmail.com' }],
+        // [{ email: 'master@golfdic.com' }],
+        [{ email: 'applicatteam@naver.com' }],
         'customerweb', { data: data },
         data.mail || 'admin@applicat.co.kr',
         imagesInServer

@@ -18,7 +18,6 @@ GolfDic 문의 이메일 입니다.
 WE MAKE APPS
 html:
 <div style="background: #e6ebfc">
-   <img style="width: 100%; display:block" src='cid:applicat-mailheader'/>
    <div style="padding: 50px 30%; font-size: 1.2em; color:black;">
       <div style="width:100%; text-align: center; font-size: 1.2em; font-weight: bold;"> 
        GolfDic 문의 이메일 입니다.</div>
@@ -61,6 +60,5 @@ html:
       <br/>
       <span style="color: #ed1e79; font-weight: bold"> WE MAKE APPS
   </div>
-  <img style="width: 100%; display:block" src='cid:applicat-mailfooter'/>
   <br/>
 </div>
