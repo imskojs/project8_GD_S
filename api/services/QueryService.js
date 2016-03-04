@@ -57,8 +57,14 @@ function applyPopulate(queryPromise, populate) {
   if (!populate) {
     return false;
   }
-  _.each(populate, function(populateProp) {
-    queryPromise = queryPromise.populate(populateProp);
+  _.forEach(populate, function(populateProp) {
+    // queryPromise = queryPromise.populate(populateProp);
+    if (typeof populateProp === 'string') {
+      queryPromise = queryPromise.populate(populateProp);
+    } else {
+      queryPromise = queryPromise.populate(populateProp.property, populateProp.criteria);
+    }
+
   });
 }
 

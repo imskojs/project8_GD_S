@@ -185,29 +185,24 @@ function update(req, res) {
 }
 
 function destroy(req, res) {
-  var queryWrapper = QueryService.buildQuery(req);
-  sails.log("-----------  queryWrapper: Comment.destroy  -------------");
-  sails.log(queryWrapper);
+  var queryWrapper = req.allParams();
+  sails.log("queryWrapper --Comment.destroy-- :::\n", queryWrapper);
 
-  var id = queryWrapper.query.where.id;
+  var id = queryWrapper.id;
 
   // Adding user info
   if (!QueryService.checkParamPassed(id)) {
-    return res.send(400, {
-      message: "모든 매개 변수를 입력해주세요 code: 003"
-    });
+    return res.send(400, { message: "!id" });
   }
 
   return Comment.destroy({
       id: id
     })
-    .then(function(removedComments) {
-      res.send(200, removedComments);
+    .then((comments) => {
+      let comment = comments[0];
+      return res.ok(comment);
     })
-    .catch(function(err) {
-      sails.log.error(err);
-      res.send(500, {
-        message: "게시물 로딩을 실패 했습니다. 서버에러 code: 001"
-      });
+    .catch((err) => {
+      return res.negotiate(err);
     });
 }

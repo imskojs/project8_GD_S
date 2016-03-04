@@ -26,7 +26,7 @@ var transport, from, templates, mailer;
 module.exports = {
 
 
-  init: function () {
+  init: function() {
 
     transport = sails.config.connections.email;
     from = "Applicatteam <applicatteam@applicat.co.kr>";
@@ -36,9 +36,9 @@ module.exports = {
   },
 
 
-  sendEmail: function (template, lang, data, from, to, callback) {
+  sendEmail: function(template, lang, data, from, to, attachments, callback) {
 
-    mailer(template, lang || "kr", data, from, to, callback);
+    mailer(template, lang || "kr", data, from, to, callback, attachments);
 
   }
 };

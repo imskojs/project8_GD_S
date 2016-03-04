@@ -71,12 +71,20 @@ module.exports.routes = {
   //====================================================
   'GET /comment/find': 'CommentController.find',
   'POST /comment/create': 'CommentController.create',
+  'DELETE /comment/destroy': 'CommentController.destroy',
 
   //====================================================
   //  Poll
   //====================================================
   'GET /poll/findLatest': 'PollController.findLatest',
   'POST /poll/create': 'PollController.create',
+
+  //====================================================
+  //  Poll
+  //====================================================
+  'POST /pollComment/create': 'PollCommentController.create',
+  'GET /pollComment/find': 'PollCommentController.find',
+  'DELETE /pollComment/destroy': 'PollCommentController.destroy',
 
   //====================================================
   //  PollAnswer
@@ -134,7 +142,6 @@ module.exports.routes = {
   'GET /comment/findOne': 'CommentController.findOne',
 
   'PUT /comment/update': 'CommentController.update',
-  'DELETE /comment/destroy': 'CommentController.destroy',
 
   'POST /comment/like': 'LikeController.commentLike',
   'DELETE /comment/unlike': 'LikeController.commentUnlike',

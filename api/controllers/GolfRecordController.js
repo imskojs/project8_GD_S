@@ -152,7 +152,7 @@ function update(req, res) {
 
   let propertiesAllowedToUpdate = [
     'product', 'playDate', 'friend1', 'friend2', 'friend3', 'myScore1', 'myScore2', 'memo',
-    'photos'
+    'photos', 'myScoreTotal'
   ];
   let propertiesToUpdate = {};
   _.forEach(propertiesAllowedToUpdate, (property) => {
@@ -199,6 +199,7 @@ function destroy(req, res) {
 function getMaxScoreRecord(req, res) {
   var queryWrapper = QueryService.buildQuery(req);
   sails.log("queryWrapper --GofRecord.getMaxScoreRecord-- :::\n", queryWrapper);
+  sails.log("req.user.id :::\n", req.user.id);
 
   return GolfRecord.findOne({
       where: {

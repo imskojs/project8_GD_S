@@ -2,9 +2,8 @@
 'use strict';
 var Promise = require('bluebird');
 /* jshint ignore:end */
-
 var _ = require('lodash');
-var async = require('async');
+// var async = require('async');
 
 
 var _super = require('sails-permissions/api/controllers/UserController');
@@ -303,6 +302,49 @@ function destroy(req, res) {
       }
     });
 }
+
+// Test
+//----------------------------------------------------
+
+// function contactAdmin(req, res) {
+//   var queryWrapper = QueryService.buildQuery(req);
+//   sails.log("queryWrapper --User.contactAdmin-- :::\n", queryWrapper);
+//   var query = queryWrapper.query;
+
+//   if (!QueryService.checkParamPassed(query.content)) {
+//     return res.send(400, { message: "!title || !content" });
+//   }
+
+
+//   return User.findOne({
+//       role: 'ADMIN'
+//     })
+//     .then((user) => {
+//       let deferred = Promise.pending();
+//       if (user.email) {
+//         MailService.sendMail('admin', 'kr', {
+//           user: req.user,
+//           content: query.content
+//         }, 'admin@applicat.co.kr', user.email, function(err) {
+//           if (err) {
+//             deferred.reject(err);
+//           } else {
+//             deferred.resolove();
+//           }
+//         });
+//       } else {
+//         return Promise.reject({ message: '!user.email' });
+//       }
+//       return deferred.promise;
+//     })
+//     .then(() => {
+//       return res.ok({ message: 'emailSent' });
+//     })
+//     .catch((err) => {
+//       return res.negotiate(err);
+//     });
+// }
+
 
 function contactAdmin(req, res) {
   var queryWrapper = QueryService.buildQuery(req);

@@ -14,6 +14,15 @@ module.exports = {
     },
     poll: {
       model: 'Poll'
+    },
+    owner: {
+      model: 'User'
+    },
+    createdBy: {
+      model: 'User'
+    },
+    updatedBy: {
+      model: 'User'
     }
   }
 };

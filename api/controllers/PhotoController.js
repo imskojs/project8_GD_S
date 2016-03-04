@@ -68,7 +68,11 @@ function updatePhotos(req, res) {
     .then((destroyedPhotoids) => {
       sails.log("destroyedPhotoids --Photo.updatePhotos-- :::\n", destroyedPhotoids);
       let updatedPhotos = _.map(update, (updateObj, photoId) => {
-        return Photo.update({ id: photoId }, updateObj);
+        sails.log("photoId --update-- :::\n", photoId);
+        return Photo.update({ id: photoId }, updateObj)
+          .then((photos) => {
+            return photos[0];
+          });
       });
       return Promise.all(updatedPhotos);
     })

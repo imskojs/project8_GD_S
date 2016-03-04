@@ -34,6 +34,15 @@ module.exports = {
     },
     product: {
       model: 'Product'
+    },
+    owner: {
+      model: 'User'
+    },
+    createdBy: {
+      model: 'User'
+    },
+    updatedBy: {
+      model: 'User'
     }
   }
 };
