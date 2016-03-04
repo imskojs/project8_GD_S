@@ -27,7 +27,7 @@ angular.module('myApp', [])
 
         $http({
             method: 'POST',
-            url: 'http://192.168.0.65:1337/contact/admin',
+            url: 'http://52.68.146.246/contact/admin',
             data: data,
             headers: {
               'Content-Type': 'application/json; charset=utf-8'
