@@ -14,8 +14,6 @@ GolfDic 문의 이메일 입니다.
 문의 내용: <%= data.content %>
 
 
--애플리켓 Team-
-WE MAKE APPS
 html:
 <div style="background: #e6ebfc">
    <div style="padding: 50px 30%; font-size: 1.2em; color:black;">
@@ -56,9 +54,6 @@ html:
       <br/>
       <br/>
       <br/>
-      -<span style="color: #2d4b65; font-weight:bold">애플리켓</span> Team-
-      <br/>
-      <span style="color: #ed1e79; font-weight: bold"> WE MAKE APPS
   </div>
   <br/>
 </div>
