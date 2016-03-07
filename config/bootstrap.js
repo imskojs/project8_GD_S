@@ -1,4 +1,6 @@
+/* jshint ignore:start */
 'use strict';
+/* jshint ignore:end */
 
 module.exports.bootstrap = function(cb) {
   //UserService.init();
@@ -15,7 +17,7 @@ module.exports.bootstrap = function(cb) {
 
   //====================================================
   //  !!!!  Create CSV DANGER  !!!! only used at server start up.
-  // Note: this requires more than 1.5GB of RAM, AWS has 1GB
+  // Note: this requires more than 2.5GB of RAM, AWS has 1GB
   //====================================================
 
   // var Converter = require("csvtojson").Converter;

@@ -22,6 +22,8 @@ module.exports.routes = {
   'DELETE /product/destroy': 'ProductController.destroy',
 
   'POST /product/create': 'ProductController.create',
+  'POST /product/createProduct': 'ProductController.createProduct',
+  'PUT /product/updateProduct': 'ProductController.updateProduct',
   'PUT /product/update': 'ProductController.update',
   // One off
   'GET /product/getCategories': 'ProductController.getCategories',

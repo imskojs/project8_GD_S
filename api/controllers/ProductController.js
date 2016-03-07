@@ -22,6 +22,7 @@ module.exports = {
   updatePhoto: updatePhoto,
   updateThumbnail: updateThumbnail,
 
+  createProduct: createProduct,
   updateProduct: updateProduct,
 
 
@@ -33,6 +34,66 @@ module.exports = {
   //====================================================
   findNative: findNative,
 };
+
+
+function createProduct(req, res) {
+  let queryWrapper = QueryService.buildQuery(req);
+  sails.log("queryWrapper --Product.createProduct :::\n", queryWrapper);
+  let query = queryWrapper.query;
+  if (!QueryService.checkParamPassed(query.type)) {
+    return res.send(400, { message: "!type" });
+  }
+
+  return ImageService.createFieldPhotos(['photo', 'thumbnail'], req, ['GOLF_DIC'])
+    .then((fieldObj) => {
+      let photos = fieldObj.photos;
+      let appliedFields = fieldObj.appliedFields;
+      // let notAppliedFields = fieldObj.notAppliedFields;
+      _.forEach(appliedFields, (appliedField, i) => {
+        query[appliedField] = photos[i].id;
+      });
+      return Product.create(query);
+    })
+    .then((createdProduct) => {
+      let qnsNQuestionsPromises = _.map([0, 1, 2, 3, 4], function(i) {
+        return Questionnaire.create({
+            position: i,
+            type: createdProduct.type,
+            category: 'SURVEY',
+            product: createdProduct.id
+          })
+          .then((createdQuestionnaire) => {
+            var subProductQuestions = _.where(QuestionService[createdProduct.type], {
+              position: i
+            });
+
+            var questionPromise = _.map(subProductQuestions, function(subProductQuestion) {
+              return Question.create({
+                position: i,
+                type: createdProduct.type,
+                title: subProductQuestion.title,
+                description: subProductQuestion.description || null,
+                options: subProductQuestion.options,
+                questionnaire: createdQuestionnaire.id
+              });
+            });
+            return Promise.all(questionPromise);
+          });
+      });
+      return [createdProduct, Promise.all(qnsNQuestionsPromises)];
+    })
+    .spread((product, questionsArray) => {
+      // questionsArray = [[question_1_1, question_1_2,.. ], [question_position_ith, ...]]
+      sails.log("questionsArray :::\n", questionsArray);
+      return res.ok(product);
+    })
+    .catch((err) => {
+      return res.negotiate(err);
+    });
+}
+
+
+
 
 function updateProduct(req, res) {
   let queryWrapper = QueryService.buildQuery(req);

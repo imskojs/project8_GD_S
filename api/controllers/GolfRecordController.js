@@ -115,8 +115,15 @@ function findByKeyword(req, res) {
         return Promise.reject({ message: '!product' });
       }
       let productIds = _.pluck(products, 'id');
-      let golfRecordPromise = GolfRecord.find({ product: productIds });
-      let countPromise = GolfRecord.count({ product: productIds });
+      let criteria = {
+        product: productIds
+      };
+      if (query.where.owner) {
+        criteria.owner = query.where.owner;
+      }
+
+      let golfRecordPromise = GolfRecord.find(criteria);
+      let countPromise = GolfRecord.count(criteria);
       QueryService.applyPopulate(golfRecordPromise, populate);
       return [golfRecordPromise, countPromise];
     })

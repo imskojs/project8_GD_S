@@ -1,4 +1,6 @@
+/* jshint ignore:start */
 'use strict';
+/* jshint ignore:end */
 module.exports = {
   attributes: {
 
@@ -15,6 +17,10 @@ module.exports = {
     //====================================================
     //  Field Only
     //====================================================
+    fieldName: {
+      type: 'STRING'
+    },
+
     location1: {
       type: 'STRING'
     },
@@ -27,11 +33,11 @@ module.exports = {
       type: 'STRING'
     },
 
-    fieldName: {
+    contact: {
       type: 'STRING'
     },
 
-    membershipType: {
+    fieldUrl: {
       type: 'STRING'
     },
 
@@ -55,13 +61,10 @@ module.exports = {
       type: 'STRING'
     },
 
-    fieldUrl: {
+    membershipType: {
       type: 'STRING'
     },
 
-    contact: {
-      type: 'STRING'
-    },
     //====================================================
     //  BALL && CLUB only
     //====================================================
