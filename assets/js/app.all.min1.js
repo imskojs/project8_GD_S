@@ -229,15 +229,24 @@
       }
     })
 
-    .state('Main.Product.ProductUpdate', {
-      url: '/ProductUpdate/:id',
-      views: {
-        Product: {
-          templateUrl: 'state/Product/ProductUpdate/ProductUpdate.html',
-          controller: 'ProductUpdateController as ProductUpdate'
+    .state('Main.Product.ProductCreate', {
+        url: '/ProductCreate/:id',
+        views: {
+          Product: {
+            templateUrl: 'state/Product/ProductCreate/ProductCreate.html',
+            controller: 'ProductCreateController as ProductCreate'
+          }
         }
-      }
-    })
+      })
+      .state('Main.Product.ProductUpdate', {
+        url: '/ProductUpdate/:id',
+        views: {
+          Product: {
+            templateUrl: 'state/Product/ProductUpdate/ProductUpdate.html',
+            controller: 'ProductUpdateController as ProductUpdate'
+          }
+        }
+      })
 
     //====================================================
     //  QuestionAnswer
@@ -3606,8 +3615,6 @@
   }
 })(angular);
 
-
-
 (function() {
   'use strict';
 
@@ -4128,6 +4135,8 @@
 
   }
 })();
+
+
 
 (function() {
   'use strict';
@@ -4679,265 +4688,6 @@
 (function() {
   'use strict';
   angular.module('app')
-    .controller('PostUpdateController', PostUpdateController);
-
-  PostUpdateController.$inject = [
-    '$scope', '$q', '$timeout', '$window', '$state',
-    'PostUpdateModel', 'Posts', 'U', 'Message', 'Upload',
-    'SERVER_URL'
-  ];
-
-  function PostUpdateController(
-    $scope, $q, $timeout, $window, $state,
-    PostUpdateModel, Posts, U, Message, Upload,
-    SERVER_URL
-  ) {
-    var _ = $window._;
-    var initPromise;
-    var noLoadingStates = [];
-    var PostUpdate = this;
-    PostUpdate.Model = PostUpdateModel;
-
-    $scope.$on('$ionicView.beforeEnter', onBeforeEnter);
-    $scope.$on('$ionicView.afterEnter', onAfterEnter);
-    $scope.$on('$ionicView.beforeLeave', onBeforeLeave);
-
-    PostUpdate.updatePost = updatePost;
-    PostUpdate.destroyPost = destroyPost;
-    PostUpdate.deselectPhoto = deselectPhoto;
-
-    //====================================================
-    //  View Events
-    //====================================================
-    function onBeforeEnter() {
-      if (!U.hasPreviousStates(noLoadingStates)) {
-        U.loading(PostUpdateModel);
-        initPromise = init();
-      }
-    }
-
-    function onAfterEnter() {
-      if (!U.hasPreviousStates(noLoadingStates)) {
-        return initPromise
-          .then(function(post) {
-            console.log("---------- post ----------");
-            console.log(post);
-            U.bindData(post, PostUpdateModel, 'post');
-            $timeout(function() {
-              if (PostUpdateModel.post.category === 'EVENT') {
-                PostUpdateModel.post.files = [];
-              }
-            }, 0);
-            console.log("----------  ----------");
-            console.log(PostUpdateModel.post.files.length);
-          })
-          .catch(function(err) {
-            U.error(err);
-          });
-      } else {
-        U.freeze(false);
-      }
-    }
-
-    function onBeforeLeave() {
-      return reset();
-    }
-
-    //====================================================
-    //  Implementation
-    //====================================================
-    function updatePost() {
-      Message.loading();
-      return postUpdate()
-        .then(function(updatedPost) {
-          console.log("---------- updatedPost ----------");
-          console.log(updatedPost);
-          U.bindData(updatedPost, PostUpdateModel, 'post');
-          $timeout(function() {
-            if (PostUpdateModel.post.category === 'EVENT') {
-              PostUpdateModel.post.files = [];
-            }
-          }, 2);
-          return Message.alert('글수정 알림', '글을 성공적으로 수정하였습니다.');
-        })
-        .then(function() {
-          // U.goToState('Main.zPostList', null, 'back');
-        })
-        .catch(function(err) {
-          U.error(err);
-        });
-    }
-
-    function destroyPost() {
-      Message.loading();
-      return postDestroy()
-        .then(function(post) {
-          console.log("---------- post ----------");
-          console.log(post);
-          return Message.alert('글 지우기 알림', '글을 성공적으로 지웠습니다.');
-        })
-        .then(function() {
-          U.goBack();
-        })
-        .catch(function(err) {
-          U.error(err);
-        });
-    }
-
-    function deselectPhoto(photo, $index) {
-      if (Array.isArray(PostUpdateModel.post.files)) {
-        PostUpdateModel.post.files.splice($index, 1);
-      } else {
-        $timeout(function() {
-          delete PostUpdateModel.post.files[photo];
-        }, 0);
-
-      }
-    }
-
-    //====================================================
-    //  Helper
-    //====================================================
-    function init() {
-      return postFindOne();
-    }
-
-    function reset() {
-      var category = PostUpdateModel.post.category;
-      var files;
-      if (category === 'RANK') {
-        files = { /* item0, ..., item9 */ };
-      } else {
-        files = [];
-      }
-      /* beautify preserve:start */
-      PostUpdateModel.post = {
-        category: category,
-        title: '',
-        content: '',
-        files: files,
-        item0: {title: '', content: '', link: ''},
-        item1: {title: '', content: '', link: ''},
-        item2: {title: '', content: '', link: ''},
-        item3: {title: '', content: '', link: ''},
-        item4: {title: '', content: '', link: ''},
-        item5: {title: '', content: '', link: ''},
-        item6: {title: '', content: '', link: ''},
-        item7: {title: '', content: '', link: ''},
-        item8: {title: '', content: '', link: ''},
-        item9: {title: '', content: '', link: ''}
-      };
-      /* beautify preserve:end */
-    }
-
-    //====================================================
-    //  REST
-    //====================================================
-    function postFindOne(extraQuery, extraOperation) {
-      var queryWrapper = {
-        query: {
-          where: {
-            id: $state.params.id,
-          },
-          populate: ['owner', 'photos']
-        }
-      };
-      angular.extend(queryWrapper.query.where, extraQuery);
-      angular.extend(queryWrapper.query, extraOperation);
-      return Posts.findOne(queryWrapper).$promise
-        .then(function(post) {
-          return post;
-        });
-
-    }
-
-
-    function postUpdate() {
-      var files = _.clone(PostUpdateModel.post.files);
-      delete PostUpdateModel.post.files;
-      if (PostUpdateModel.post.category === 'EVENT') {
-        if (files.length > 0) {
-          PostUpdateModel.post.photos = [];
-        }
-      }
-      var promise = Upload.upload({
-        url: SERVER_URL + '/post/update',
-        method: 'PUT',
-        file: files,
-        fields: {
-          query: PostUpdateModel.post
-        },
-        headers: {
-          enctype: "multipart/form-data"
-        }
-      });
-      return promise
-        .then(function(dataWrapper) {
-          var updatedPost = dataWrapper.data;
-          return updatedPost;
-        });
-    }
-
-    function postDestroy(extraQuery) {
-      var queryWrapper = {
-        query: {
-          where: {
-            id: $state.params.id
-          }
-        }
-      };
-      angular.extend(queryWrapper.query.where, extraQuery);
-      return Posts.destroy(queryWrapper).$promise
-        .then(function(postsWrapper) {
-          return postsWrapper;
-        });
-    }
-
-  }
-})();
-
-(function() {
-  'use strict';
-
-  angular.module('app')
-    .factory('PostUpdateModel', PostUpdateModel);
-
-  PostUpdateModel.$inject = [
-
-  ];
-
-  function PostUpdateModel(
-
-  ) {
-
-    var Model = {
-      /* beautify preserve:start */
-      post: {
-        category: 'RANK',
-        title: '',
-        content: '',
-        files: [],
-        item0: {title: '', content: '', link: ''},
-        item1: {title: '', content: '', link: ''},
-        item2: {title: '', content: '', link: ''},
-        item3: {title: '', content: '', link: ''},
-        item4: {title: '', content: '', link: ''},
-        item5: {title: '', content: '', link: ''},
-        item6: {title: '', content: '', link: ''},
-        item7: {title: '', content: '', link: ''},
-        item8: {title: '', content: '', link: ''},
-        item9: {title: '', content: '', link: ''}
-      }
-      /* beautify preserve:end */
-    };
-
-    return Model;
-  }
-})();
-
-(function() {
-  'use strict';
-  angular.module('app')
     .controller('PostListController', PostListController);
 
   PostListController.$inject = [
@@ -5253,6 +5003,526 @@
 (function() {
   'use strict';
   angular.module('app')
+    .controller('PostUpdateController', PostUpdateController);
+
+  PostUpdateController.$inject = [
+    '$scope', '$q', '$timeout', '$window', '$state',
+    'PostUpdateModel', 'Posts', 'U', 'Message', 'Upload',
+    'SERVER_URL'
+  ];
+
+  function PostUpdateController(
+    $scope, $q, $timeout, $window, $state,
+    PostUpdateModel, Posts, U, Message, Upload,
+    SERVER_URL
+  ) {
+    var _ = $window._;
+    var initPromise;
+    var noLoadingStates = [];
+    var PostUpdate = this;
+    PostUpdate.Model = PostUpdateModel;
+
+    $scope.$on('$ionicView.beforeEnter', onBeforeEnter);
+    $scope.$on('$ionicView.afterEnter', onAfterEnter);
+    $scope.$on('$ionicView.beforeLeave', onBeforeLeave);
+
+    PostUpdate.updatePost = updatePost;
+    PostUpdate.destroyPost = destroyPost;
+    PostUpdate.deselectPhoto = deselectPhoto;
+
+    //====================================================
+    //  View Events
+    //====================================================
+    function onBeforeEnter() {
+      if (!U.hasPreviousStates(noLoadingStates)) {
+        U.loading(PostUpdateModel);
+        initPromise = init();
+      }
+    }
+
+    function onAfterEnter() {
+      if (!U.hasPreviousStates(noLoadingStates)) {
+        return initPromise
+          .then(function(post) {
+            console.log("---------- post ----------");
+            console.log(post);
+            U.bindData(post, PostUpdateModel, 'post');
+            $timeout(function() {
+              if (PostUpdateModel.post.category === 'EVENT') {
+                PostUpdateModel.post.files = [];
+              }
+            }, 0);
+            console.log("----------  ----------");
+            console.log(PostUpdateModel.post.files.length);
+          })
+          .catch(function(err) {
+            U.error(err);
+          });
+      } else {
+        U.freeze(false);
+      }
+    }
+
+    function onBeforeLeave() {
+      return reset();
+    }
+
+    //====================================================
+    //  Implementation
+    //====================================================
+    function updatePost() {
+      Message.loading();
+      return postUpdate()
+        .then(function(updatedPost) {
+          console.log("---------- updatedPost ----------");
+          console.log(updatedPost);
+          U.bindData(updatedPost, PostUpdateModel, 'post');
+          $timeout(function() {
+            if (PostUpdateModel.post.category === 'EVENT') {
+              PostUpdateModel.post.files = [];
+            }
+          }, 2);
+          return Message.alert('글수정 알림', '글을 성공적으로 수정하였습니다.');
+        })
+        .then(function() {
+          // U.goToState('Main.zPostList', null, 'back');
+        })
+        .catch(function(err) {
+          U.error(err);
+        });
+    }
+
+    function destroyPost() {
+      Message.loading();
+      return postDestroy()
+        .then(function(post) {
+          console.log("---------- post ----------");
+          console.log(post);
+          return Message.alert('글 지우기 알림', '글을 성공적으로 지웠습니다.');
+        })
+        .then(function() {
+          U.goBack();
+        })
+        .catch(function(err) {
+          U.error(err);
+        });
+    }
+
+    function deselectPhoto(photo, $index) {
+      if (Array.isArray(PostUpdateModel.post.files)) {
+        PostUpdateModel.post.files.splice($index, 1);
+      } else {
+        $timeout(function() {
+          delete PostUpdateModel.post.files[photo];
+        }, 0);
+
+      }
+    }
+
+    //====================================================
+    //  Helper
+    //====================================================
+    function init() {
+      return postFindOne();
+    }
+
+    function reset() {
+      var category = PostUpdateModel.post.category;
+      var files;
+      if (category === 'RANK') {
+        files = { /* item0, ..., item9 */ };
+      } else {
+        files = [];
+      }
+      /* beautify preserve:start */
+      PostUpdateModel.post = {
+        category: category,
+        title: '',
+        content: '',
+        files: files,
+        item0: {title: '', content: '', link: ''},
+        item1: {title: '', content: '', link: ''},
+        item2: {title: '', content: '', link: ''},
+        item3: {title: '', content: '', link: ''},
+        item4: {title: '', content: '', link: ''},
+        item5: {title: '', content: '', link: ''},
+        item6: {title: '', content: '', link: ''},
+        item7: {title: '', content: '', link: ''},
+        item8: {title: '', content: '', link: ''},
+        item9: {title: '', content: '', link: ''}
+      };
+      /* beautify preserve:end */
+    }
+
+    //====================================================
+    //  REST
+    //====================================================
+    function postFindOne(extraQuery, extraOperation) {
+      var queryWrapper = {
+        query: {
+          where: {
+            id: $state.params.id,
+          },
+          populate: ['owner', 'photos']
+        }
+      };
+      angular.extend(queryWrapper.query.where, extraQuery);
+      angular.extend(queryWrapper.query, extraOperation);
+      return Posts.findOne(queryWrapper).$promise
+        .then(function(post) {
+          return post;
+        });
+
+    }
+
+
+    function postUpdate() {
+      var files = _.clone(PostUpdateModel.post.files);
+      delete PostUpdateModel.post.files;
+      if (PostUpdateModel.post.category === 'EVENT') {
+        if (files.length > 0) {
+          PostUpdateModel.post.photos = [];
+        }
+      }
+      var promise = Upload.upload({
+        url: SERVER_URL + '/post/update',
+        method: 'PUT',
+        file: files,
+        fields: {
+          query: PostUpdateModel.post
+        },
+        headers: {
+          enctype: "multipart/form-data"
+        }
+      });
+      return promise
+        .then(function(dataWrapper) {
+          var updatedPost = dataWrapper.data;
+          return updatedPost;
+        });
+    }
+
+    function postDestroy(extraQuery) {
+      var queryWrapper = {
+        query: {
+          where: {
+            id: $state.params.id
+          }
+        }
+      };
+      angular.extend(queryWrapper.query.where, extraQuery);
+      return Posts.destroy(queryWrapper).$promise
+        .then(function(postsWrapper) {
+          return postsWrapper;
+        });
+    }
+
+  }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('app')
+    .factory('PostUpdateModel', PostUpdateModel);
+
+  PostUpdateModel.$inject = [
+
+  ];
+
+  function PostUpdateModel(
+
+  ) {
+
+    var Model = {
+      /* beautify preserve:start */
+      post: {
+        category: 'RANK',
+        title: '',
+        content: '',
+        files: [],
+        item0: {title: '', content: '', link: ''},
+        item1: {title: '', content: '', link: ''},
+        item2: {title: '', content: '', link: ''},
+        item3: {title: '', content: '', link: ''},
+        item4: {title: '', content: '', link: ''},
+        item5: {title: '', content: '', link: ''},
+        item6: {title: '', content: '', link: ''},
+        item7: {title: '', content: '', link: ''},
+        item8: {title: '', content: '', link: ''},
+        item9: {title: '', content: '', link: ''}
+      }
+      /* beautify preserve:end */
+    };
+
+    return Model;
+  }
+})();
+
+(function() {
+  'use strict';
+  angular.module('app')
+    .controller('PushSendController', PushSendController);
+
+  PushSendController.$inject = [
+    '$scope', '$q', '$timeout', '$window', '$state',
+    'PushSendModel', 'Devices', 'U', 'Message'
+  ];
+
+  function PushSendController(
+    $scope, $q, $timeout, $window, $state,
+    PushSendModel, Devices, U, Message
+  ) {
+    var PushSend = this;
+    PushSend.Model = PushSendModel;
+
+    $scope.$on('$ionicView.beforeEnter', onBeforeEnter);
+    $scope.$on('$ionicView.afterEnter', onAfterEnter);
+    $scope.$on('$ionicView.beforeLeave', onBeforeLeave);
+
+
+    PushSend.sendPush = sendPush;
+    //====================================================
+    //  View Events
+    //====================================================
+    function onBeforeEnter() {
+      U.freeze(false);
+    }
+
+    function onAfterEnter() {}
+
+    function onBeforeLeave() {
+      return reset();
+    }
+
+    //====================================================
+    //  Implementation
+    //====================================================
+
+
+    //====================================================
+    //  Helper
+    //====================================================
+
+    function reset() {
+      PushSendModel.post.title = '';
+      PushSendModel.post.message = '';
+    }
+
+    //====================================================
+    //  REST
+    //====================================================
+    function sendPush() {
+      return Devices.push({
+          title: PushSendModel.post.title,
+          message: PushSendModel.post.message
+        }).$promise
+        .then(function(message) {
+          Message.alert('전송 알림', '푸쉬 전송 성공');
+          reset();
+          console.log("---------- message ----------");
+          console.log(message);
+        })
+        .catch(function(err) {
+          console.log("---------- err ----------");
+          console.log(err);
+        });
+    }
+
+  }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('app')
+    .factory('PushSendModel', PushSendModel);
+
+  PushSendModel.$inject = [];
+
+  function PushSendModel() {
+
+    var Model = {
+      post: {
+        title: '',
+        message: ''
+      }
+    };
+
+    return Model;
+  }
+})();
+
+(function() {
+  'use strict';
+  angular.module('app')
+    .controller('ProductCreateController', ProductCreateController);
+
+  ProductCreateController.$inject = [
+    '$scope', '$q', '$timeout', '$window', '$state',
+    'ProductCreateModel', 'Products', 'U', 'Message', 'Upload',
+    'SERVER_URL'
+  ];
+
+  function ProductCreateController(
+    $scope, $q, $timeout, $window, $state,
+    ProductCreateModel, Products, U, Message, Upload,
+    SERVER_URL
+  ) {
+    var initPromise;
+    var noLoadingStates = [];
+    var ProductCreate = this;
+    ProductCreate.Model = ProductCreateModel;
+
+    $scope.$on('$ionicView.beforeEnter', onBeforeEnter);
+    $scope.$on('$ionicView.afterEnter', onAfterEnter);
+    $scope.$on('$ionicView.beforeLeave', onBeforeLeave);
+
+    ProductCreate.createProduct = createProduct;
+    ProductCreate.deselectPhoto = deselectPhoto;
+    ProductCreate.removePhoto = removePhoto;
+    ProductCreate.onFileSelect = onFileSelect;
+    ProductCreate.resize = U.resize;
+
+    //====================================================
+    //  View Events
+    //====================================================
+    function onBeforeEnter() {
+      if (!U.hasPreviousStates(noLoadingStates)) {
+        // U.loading(ProductCreateModel);
+        initPromise = init();
+      }
+    }
+
+    function onAfterEnter() {
+      if (!U.hasPreviousStates(noLoadingStates)) {
+        return initPromise
+          .then(function(message) {
+            console.log("message :::\n", message);
+            U.freeze(false);
+          })
+          .catch(function(err) {
+            U.error(err);
+          });
+      } else {
+        U.freeze(false);
+      }
+    }
+
+    function onBeforeLeave() {
+      return reset();
+    }
+
+    //====================================================
+    //  Implementation
+    //====================================================
+    function createProduct() {
+      Message.loading();
+      return productCreate()
+        .then(function(createdProduct) {
+          console.log("createdProduct :::\n", createdProduct);
+          U.bindData(createdProduct, ProductCreateModel, 'product');
+          return Message.alert('상품등록 알림', '상품등록을 성공적으로 하였습니다.');
+        })
+        .then(function() {
+          return U.goToState('Main.Product.ProductList', null, 'back');
+        })
+        .catch(function(err) {
+          U.error(err);
+        });
+    }
+
+    function removePhoto(name) {
+      if (name === 'photo') {
+        $timeout(function() {
+          delete ProductCreateModel.product.photo;
+        }, 0);
+      } else if (name === 'thumbnail') {
+        delete ProductCreateModel.product.thumbnail;
+      }
+    }
+
+    function deselectPhoto(photo) {
+      $timeout(function() {
+        delete ProductCreateModel.files[photo];
+      }, 0);
+    }
+
+    function onFileSelect($event) {
+      // remove product.photo or product.thumbnail
+      if ($event.target.name === 'photo') {
+        ProductCreateModel.product.photo = undefined;
+      } else if ($event.target.name === 'thumbnail') {
+        delete ProductCreateModel.product.thumbnail;
+      }
+    }
+
+    //====================================================
+    //  Helper
+    //====================================================
+    function init() {
+      return $q.resolve({ message: 'empty' });
+    }
+
+    function reset() {
+      /* beautify preserve:start */
+      ProductCreateModel.files = {};
+      ProductCreateModel.product = {};
+      /* beautify preserve:end */
+    }
+
+    //====================================================
+    //  REST
+    //====================================================
+
+    function productCreate() {
+      var promise = Upload.upload({
+        url: SERVER_URL + '/product/createProduct',
+        method: 'PUT',
+        file: ProductCreateModel.files,
+        fields: {
+          query: ProductCreateModel.product
+        },
+        headers: {
+          enctype: "multipart/form-data"
+        }
+      });
+      return promise
+        .then(function(dataWrapper) {
+          var createdProduct = dataWrapper.data;
+          return createdProduct;
+        });
+    }
+
+  }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('app')
+    .factory('ProductCreateModel', ProductCreateModel);
+
+  ProductCreateModel.$inject = [
+
+  ];
+
+  function ProductCreateModel(
+
+  ) {
+
+    var Model = {
+      product: {},
+      files: {}
+    };
+
+    return Model;
+  }
+})();
+
+(function() {
+  'use strict';
+  angular.module('app')
     .controller('ProductListController', ProductListController);
 
   ProductListController.$inject = [
@@ -5267,7 +5537,7 @@
     var _ = $window._;
     var initPromise;
     var noLoadingStates = [
-      'Main.Product.ProductCreate', 'Main.Product.ProductUpdate'
+      'Main.Product.ProductUpdate'
     ];
     var ProductList = this;
     ProductList.Model = ProductListModel;
@@ -5570,6 +5840,7 @@
           {name: 'courseSize', show: true },
           {name: 'greenFee', show: false },
           {name: 'cartFee', show: false },
+          {name: 'caddieFee', show: true },
           {name: 'membershipType', show: false },
           {name: 'likes', show: true },
           {name: 'owner', show: false },
@@ -5821,100 +6092,6 @@
     var Model = {
       product: {},
       files: {}
-    };
-
-    return Model;
-  }
-})();
-
-(function() {
-  'use strict';
-  angular.module('app')
-    .controller('PushSendController', PushSendController);
-
-  PushSendController.$inject = [
-    '$scope', '$q', '$timeout', '$window', '$state',
-    'PushSendModel', 'Devices', 'U', 'Message'
-  ];
-
-  function PushSendController(
-    $scope, $q, $timeout, $window, $state,
-    PushSendModel, Devices, U, Message
-  ) {
-    var PushSend = this;
-    PushSend.Model = PushSendModel;
-
-    $scope.$on('$ionicView.beforeEnter', onBeforeEnter);
-    $scope.$on('$ionicView.afterEnter', onAfterEnter);
-    $scope.$on('$ionicView.beforeLeave', onBeforeLeave);
-
-
-    PushSend.sendPush = sendPush;
-    //====================================================
-    //  View Events
-    //====================================================
-    function onBeforeEnter() {
-      U.freeze(false);
-    }
-
-    function onAfterEnter() {}
-
-    function onBeforeLeave() {
-      return reset();
-    }
-
-    //====================================================
-    //  Implementation
-    //====================================================
-
-
-    //====================================================
-    //  Helper
-    //====================================================
-
-    function reset() {
-      PushSendModel.post.title = '';
-      PushSendModel.post.message = '';
-    }
-
-    //====================================================
-    //  REST
-    //====================================================
-    function sendPush() {
-      return Devices.push({
-          title: PushSendModel.post.title,
-          message: PushSendModel.post.message
-        }).$promise
-        .then(function(message) {
-          Message.alert('전송 알림', '푸쉬 전송 성공');
-          reset();
-          console.log("---------- message ----------");
-          console.log(message);
-        })
-        .catch(function(err) {
-          console.log("---------- err ----------");
-          console.log(err);
-        });
-    }
-
-  }
-})();
-
-(function() {
-  'use strict';
-
-  angular.module('app')
-    .factory('PushSendModel', PushSendModel);
-
-  PushSendModel.$inject = [];
-
-  function PushSendModel() {
-
-    var Model = {
-      post: {
-        title: '',
-        message: ''
-      }
     };
 
     return Model;
@@ -6593,189 +6770,6 @@
 (function() {
   'use strict';
   angular.module('app')
-    .controller('RankCreateController', RankCreateController);
-
-  RankCreateController.$inject = [
-    '$scope', '$q', '$timeout', '$window',
-    'RankCreateModel', 'U', 'Message', 'Upload',
-    'SERVER_URL'
-  ];
-
-  function RankCreateController(
-    $scope, $q, $timeout, $window,
-    RankCreateModel, U, Message, Upload,
-    SERVER_URL
-  ) {
-    var _ = $window._;
-    var initPromise;
-    var noLoadingStates = [];
-    var RankCreate = this;
-    RankCreate.Model = RankCreateModel;
-
-    $scope.$on('$ionicView.beforeEnter', onBeforeEnter);
-    $scope.$on('$ionicView.afterEnter', onAfterEnter);
-    $scope.$on('$ionicView.beforeLeave', onBeforeLeave);
-
-    RankCreate.createRank = createRank;
-    RankCreate.deselectPhoto = deselectPhoto;
-
-    //====================================================
-    //  View Events
-    //====================================================
-    function onBeforeEnter() {
-      if (!U.hasPreviousStates(noLoadingStates)) {
-        U.loading(RankCreateModel);
-        initPromise = init();
-      }
-    }
-
-    function onAfterEnter() {
-      if (!U.hasPreviousStates(noLoadingStates)) {
-        return initPromise
-          .then(function(message) {
-            console.log("---------- message ----------");
-            console.log(message);
-            U.freeze(false);
-          })
-          .catch(function(err) {
-            U.error(err);
-          });
-      } else {
-        U.freeze(false);
-      }
-    }
-
-    function onBeforeLeave() {
-      return reset();
-    }
-
-    //====================================================
-    //  Implementation
-    //====================================================
-    function createRank() {
-      Message.loading();
-      return rankCreate()
-        .then(function(createdRank) {
-          console.log("---------- createdRank ----------");
-          console.log(createdRank);
-          return Message.alert('글작성 알림', '글을 성공적으로 작성하였습니다.');
-        })
-        .then(function() {
-          // U.goToState('Main.zRankList', null, 'back');
-        })
-        .catch(function(err) {
-          U.error(err);
-        })
-        .finally(function() {
-          reset();
-        });
-    }
-
-    function deselectPhoto(photo, $index) {
-      if (Array.isArray(RankCreateModel.post.files)) {
-        RankCreateModel.post.files.splice($index, 1);
-      } else {
-        $timeout(function() {
-          delete RankCreateModel.post.files[photo];
-        }, 0);
-
-      }
-    }
-
-    //====================================================
-    //  Helper
-    //====================================================
-    function init() {
-      return $q.resolve({
-        message: 'empty'
-      });
-    }
-
-    function reset() {
-      /* beautify preserve:start */
-      RankCreateModel.post = {
-        category: 'RANK',
-        title: '',
-        content: '',
-        files: {},
-        item0: {title: '', content: '', link: ''},
-        item1: {title: '', content: '', link: ''},
-        item2: {title: '', content: '', link: ''},
-        item3: {title: '', content: '', link: ''},
-        item4: {title: '', content: '', link: ''},
-        item5: {title: '', content: '', link: ''},
-        item6: {title: '', content: '', link: ''},
-        item7: {title: '', content: '', link: ''},
-        item8: {title: '', content: '', link: ''},
-        item9: {title: '', content: '', link: ''}
-      };
-      /* beautify preserve:end */
-    }
-
-    //====================================================
-    //  REST
-    //====================================================
-    function rankCreate() {
-      var files = _.clone(RankCreateModel.post.files);
-      delete RankCreateModel.post.files;
-      var promise = Upload.upload({
-        url: SERVER_URL + '/post/create',
-        method: 'POST',
-        file: files,
-        fields: {
-          query: RankCreateModel.post
-        },
-        headers: {
-          enctype: "multipart/form-data"
-        }
-      });
-      return promise;
-    }
-  }
-})();
-
-(function() {
-  'use strict';
-
-  angular.module('app')
-    .factory('RankCreateModel', RankCreateModel);
-
-  RankCreateModel.$inject = [
-
-  ];
-
-  function RankCreateModel(
-
-  ) {
-
-    var Model = {
-      /* beautify preserve:start */
-      post: {
-        category: 'RANK',
-        title: '',
-        content: '',
-        files: {/* item0, item9*/},
-        item0: {title: '', content: '', link: ''},
-        item1: {title: '', content: '', link: ''},
-        item2: {title: '', content: '', link: ''},
-        item3: {title: '', content: '', link: ''},
-        item4: {title: '', content: '', link: ''},
-        item5: {title: '', content: '', link: ''},
-        item6: {title: '', content: '', link: ''},
-        item7: {title: '', content: '', link: ''},
-        item8: {title: '', content: '', link: ''},
-        item9: {title: '', content: '', link: ''}
-      }
-      /* beautify preserve:end */
-    };
-
-    return Model;
-  }
-})();
-
-(function() {
-  'use strict';
-  angular.module('app')
     .controller('UserListController', UserListController);
 
   UserListController.$inject = [
@@ -7069,6 +7063,189 @@
 })();
 /* beautify preserve:end */
 
+(function() {
+  'use strict';
+  angular.module('app')
+    .controller('RankCreateController', RankCreateController);
+
+  RankCreateController.$inject = [
+    '$scope', '$q', '$timeout', '$window',
+    'RankCreateModel', 'U', 'Message', 'Upload',
+    'SERVER_URL'
+  ];
+
+  function RankCreateController(
+    $scope, $q, $timeout, $window,
+    RankCreateModel, U, Message, Upload,
+    SERVER_URL
+  ) {
+    var _ = $window._;
+    var initPromise;
+    var noLoadingStates = [];
+    var RankCreate = this;
+    RankCreate.Model = RankCreateModel;
+
+    $scope.$on('$ionicView.beforeEnter', onBeforeEnter);
+    $scope.$on('$ionicView.afterEnter', onAfterEnter);
+    $scope.$on('$ionicView.beforeLeave', onBeforeLeave);
+
+    RankCreate.createRank = createRank;
+    RankCreate.deselectPhoto = deselectPhoto;
+
+    //====================================================
+    //  View Events
+    //====================================================
+    function onBeforeEnter() {
+      if (!U.hasPreviousStates(noLoadingStates)) {
+        U.loading(RankCreateModel);
+        initPromise = init();
+      }
+    }
+
+    function onAfterEnter() {
+      if (!U.hasPreviousStates(noLoadingStates)) {
+        return initPromise
+          .then(function(message) {
+            console.log("---------- message ----------");
+            console.log(message);
+            U.freeze(false);
+          })
+          .catch(function(err) {
+            U.error(err);
+          });
+      } else {
+        U.freeze(false);
+      }
+    }
+
+    function onBeforeLeave() {
+      return reset();
+    }
+
+    //====================================================
+    //  Implementation
+    //====================================================
+    function createRank() {
+      Message.loading();
+      return rankCreate()
+        .then(function(createdRank) {
+          console.log("---------- createdRank ----------");
+          console.log(createdRank);
+          return Message.alert('글작성 알림', '글을 성공적으로 작성하였습니다.');
+        })
+        .then(function() {
+          // U.goToState('Main.zRankList', null, 'back');
+        })
+        .catch(function(err) {
+          U.error(err);
+        })
+        .finally(function() {
+          reset();
+        });
+    }
+
+    function deselectPhoto(photo, $index) {
+      if (Array.isArray(RankCreateModel.post.files)) {
+        RankCreateModel.post.files.splice($index, 1);
+      } else {
+        $timeout(function() {
+          delete RankCreateModel.post.files[photo];
+        }, 0);
+
+      }
+    }
+
+    //====================================================
+    //  Helper
+    //====================================================
+    function init() {
+      return $q.resolve({
+        message: 'empty'
+      });
+    }
+
+    function reset() {
+      /* beautify preserve:start */
+      RankCreateModel.post = {
+        category: 'RANK',
+        title: '',
+        content: '',
+        files: {},
+        item0: {title: '', content: '', link: ''},
+        item1: {title: '', content: '', link: ''},
+        item2: {title: '', content: '', link: ''},
+        item3: {title: '', content: '', link: ''},
+        item4: {title: '', content: '', link: ''},
+        item5: {title: '', content: '', link: ''},
+        item6: {title: '', content: '', link: ''},
+        item7: {title: '', content: '', link: ''},
+        item8: {title: '', content: '', link: ''},
+        item9: {title: '', content: '', link: ''}
+      };
+      /* beautify preserve:end */
+    }
+
+    //====================================================
+    //  REST
+    //====================================================
+    function rankCreate() {
+      var files = _.clone(RankCreateModel.post.files);
+      delete RankCreateModel.post.files;
+      var promise = Upload.upload({
+        url: SERVER_URL + '/post/create',
+        method: 'POST',
+        file: files,
+        fields: {
+          query: RankCreateModel.post
+        },
+        headers: {
+          enctype: "multipart/form-data"
+        }
+      });
+      return promise;
+    }
+  }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('app')
+    .factory('RankCreateModel', RankCreateModel);
+
+  RankCreateModel.$inject = [
+
+  ];
+
+  function RankCreateModel(
+
+  ) {
+
+    var Model = {
+      /* beautify preserve:start */
+      post: {
+        category: 'RANK',
+        title: '',
+        content: '',
+        files: {/* item0:, item9*/},
+        item0: {title: '', content: '', link: ''},
+        item1: {title: '', content: '', link: ''},
+        item2: {title: '', content: '', link: ''},
+        item3: {title: '', content: '', link: ''},
+        item4: {title: '', content: '', link: ''},
+        item5: {title: '', content: '', link: ''},
+        item6: {title: '', content: '', link: ''},
+        item7: {title: '', content: '', link: ''},
+        item8: {title: '', content: '', link: ''},
+        item9: {title: '', content: '', link: ''}
+      }
+      /* beautify preserve:end */
+    };
+
+    return Model;
+  }
+})();
+
 (function(angular) {
   'use strict';
   angular.module('app')
@@ -7231,6 +7408,144 @@
   }
 })(angular);
 
+(function() {
+  'use strict';
+  angular.module('app')
+    .controller('zLoginController', zLoginController);
+
+  zLoginController.$inject = [
+    '$cordovaOauth',
+    'zLoginModel', 'Users', 'U', 'Message',
+    'FACEBOOK_KEY', 'TWITTER_CONSUMER_KEY', 'TWITTER_CONSUMER_SECRET', 'GOOGLE_OAUTH_CLIENT_ID', 'AppStorage'
+  ];
+
+  function zLoginController(
+    $cordovaOauth,
+    zLoginModel, Users, U, Message,
+    FACEBOOK_KEY, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, GOOGLE_OAUTH_CLIENT_ID, AppStorage
+  ) {
+
+    var Login = this;
+    Login.Model = zLoginModel;
+
+    Login.localLogin = localLogin;
+    Login.loginWithFacebook = loginWithFacebook;
+    Login.loginWithTwitter = loginWithTwitter;
+    Login.loginWithGoogle = loginWithGoogle;
+
+    //====================================================
+    //  Implementation
+    //====================================================
+    function localLogin() {
+      Message.loading();
+      return userLogin()
+        .then(function(userWrapper) {
+          Message.hide();
+          console.log("---------- userWrapper ----------");
+          console.log(userWrapper);
+          AppStorage.user = userWrapper.user;
+          AppStorage.token = userWrapper.token;
+          AppStorage.isFirstTime = false;
+          U.goToState('Main.MainTab.PostList.PostListRecent', null, 'forward');
+        })
+        .catch(function(err) {
+          console.log("---------- err ----------");
+          console.log(err);
+          if (err.status === 403) {
+            return Message.alert('로그인 알림', '비밀번호/이메일이 틀렸습니다. 다시 입력해주세요');
+          } else {
+            return Message.alert();
+          }
+        });
+    }
+
+    function loginWithFacebook() {
+      return $cordovaOauth.facebook(FACEBOOK_KEY, ["email", "public_profile"])
+        .then(function(res) {
+          console.log("---------- res ----------");
+          console.log(res);
+          //====================================================
+          //  TODO: send token to our server
+          //====================================================
+        })
+        .catch(function(err) {
+          console.log("---------- err ----------");
+          console.log(err);
+        });
+    }
+
+    function loginWithTwitter() {
+      return $cordovaOauth.twitter(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+        .then(function(res) {
+          console.log("---------- res ----------");
+          console.log(res);
+          //====================================================
+          //  TODO: send token to our server
+          //====================================================
+        })
+        .catch(function(err) {
+          console.log("---------- err ----------");
+          console.log(err);
+          console.log("HAS TYPE: " + typeof err);
+        });
+    }
+
+    function loginWithGoogle() {
+      return $cordovaOauth.google(GOOGLE_OAUTH_CLIENT_ID, [
+          "https://www.googleapis.com/auth/urlshortener", "https://www.googleapis.com/auth/userinfo.email",
+          "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/plus.me"
+        ])
+        .then(function(res) {
+          console.log("---------- res ----------");
+          console.log(res);
+          //====================================================
+          //  TODO: send token to our server
+          //====================================================
+        })
+        .catch(function(err) {
+          console.log("---------- err ----------");
+          console.log(err);
+          console.log("HAS TYPE: " + typeof err);
+        });
+    }
+
+    //====================================================
+    //  REST
+    //====================================================
+    function userLogin() {
+      return Users.login({}, {
+          identifier: zLoginModel.form.identifier,
+          password: zLoginModel.form.password
+        }).$promise
+        .then(function(userWrapper) {
+          return userWrapper;
+        });
+    }
+
+  }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('app')
+    .factory('zLoginModel', zLoginModel);
+
+  zLoginModel.$inject = [];
+
+  function zLoginModel() {
+
+    var model = {
+      form: {
+        identifier: null,
+        password: null
+      }
+    };
+    return model;
+
+  }
+})();
+
 (function(angular) {
   'use strict';
   angular.module('app')
@@ -7374,144 +7689,6 @@
 
   }
 })(angular);
-
-(function() {
-  'use strict';
-  angular.module('app')
-    .controller('zLoginController', zLoginController);
-
-  zLoginController.$inject = [
-    '$cordovaOauth',
-    'zLoginModel', 'Users', 'U', 'Message',
-    'FACEBOOK_KEY', 'TWITTER_CONSUMER_KEY', 'TWITTER_CONSUMER_SECRET', 'GOOGLE_OAUTH_CLIENT_ID', 'AppStorage'
-  ];
-
-  function zLoginController(
-    $cordovaOauth,
-    zLoginModel, Users, U, Message,
-    FACEBOOK_KEY, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, GOOGLE_OAUTH_CLIENT_ID, AppStorage
-  ) {
-
-    var Login = this;
-    Login.Model = zLoginModel;
-
-    Login.localLogin = localLogin;
-    Login.loginWithFacebook = loginWithFacebook;
-    Login.loginWithTwitter = loginWithTwitter;
-    Login.loginWithGoogle = loginWithGoogle;
-
-    //====================================================
-    //  Implementation
-    //====================================================
-    function localLogin() {
-      Message.loading();
-      return userLogin()
-        .then(function(userWrapper) {
-          Message.hide();
-          console.log("---------- userWrapper ----------");
-          console.log(userWrapper);
-          AppStorage.user = userWrapper.user;
-          AppStorage.token = userWrapper.token;
-          AppStorage.isFirstTime = false;
-          U.goToState('Main.MainTab.PostList.PostListRecent', null, 'forward');
-        })
-        .catch(function(err) {
-          console.log("---------- err ----------");
-          console.log(err);
-          if (err.status === 403) {
-            return Message.alert('로그인 알림', '비밀번호/이메일이 틀렸습니다. 다시 입력해주세요');
-          } else {
-            return Message.alert();
-          }
-        });
-    }
-
-    function loginWithFacebook() {
-      return $cordovaOauth.facebook(FACEBOOK_KEY, ["email", "public_profile"])
-        .then(function(res) {
-          console.log("---------- res ----------");
-          console.log(res);
-          //====================================================
-          //  TODO: send token to our server
-          //====================================================
-        })
-        .catch(function(err) {
-          console.log("---------- err ----------");
-          console.log(err);
-        });
-    }
-
-    function loginWithTwitter() {
-      return $cordovaOauth.twitter(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
-        .then(function(res) {
-          console.log("---------- res ----------");
-          console.log(res);
-          //====================================================
-          //  TODO: send token to our server
-          //====================================================
-        })
-        .catch(function(err) {
-          console.log("---------- err ----------");
-          console.log(err);
-          console.log("HAS TYPE: " + typeof err);
-        });
-    }
-
-    function loginWithGoogle() {
-      return $cordovaOauth.google(GOOGLE_OAUTH_CLIENT_ID, [
-          "https://www.googleapis.com/auth/urlshortener", "https://www.googleapis.com/auth/userinfo.email",
-          "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/plus.me"
-        ])
-        .then(function(res) {
-          console.log("---------- res ----------");
-          console.log(res);
-          //====================================================
-          //  TODO: send token to our server
-          //====================================================
-        })
-        .catch(function(err) {
-          console.log("---------- err ----------");
-          console.log(err);
-          console.log("HAS TYPE: " + typeof err);
-        });
-    }
-
-    //====================================================
-    //  REST
-    //====================================================
-    function userLogin() {
-      return Users.login({}, {
-          identifier: zLoginModel.form.identifier,
-          password: zLoginModel.form.password
-        }).$promise
-        .then(function(userWrapper) {
-          return userWrapper;
-        });
-    }
-
-  }
-})();
-
-(function() {
-  'use strict';
-
-  angular.module('app')
-    .factory('zLoginModel', zLoginModel);
-
-  zLoginModel.$inject = [];
-
-  function zLoginModel() {
-
-    var model = {
-      form: {
-        identifier: null,
-        password: null
-      }
-    };
-    return model;
-
-  }
-})();
 
 (function() {
   'use strict';
