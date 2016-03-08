@@ -1,4 +1,6 @@
+/* jshint ignore:start */
 'use strict';
+/* jshint ignore:end */
 var gcm = require('push-notify');
 var nodemailer = require("nodemailer");
 var smtpTransport = require('nodemailer-smtp-transport');

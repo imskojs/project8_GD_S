@@ -1,5 +1,9 @@
 // api/hooks/sails-permissions.js
 
+/* jshint ignore:start */
+'use strict';
+/* jshint ignore:end */
+var _ = require('lodash');
 
 module.exports = function(sails) {
   return {
@@ -18,6 +22,7 @@ module.exports = function(sails) {
       });
 
       sails.after('hook:orm:loaded', function() {
+        console.log("hook:orm:loaded :::\n", 'hook:orm:loaded');
 
         Model.count()
           .then(function(count) {

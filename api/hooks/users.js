@@ -9,9 +9,12 @@
  *
  */
 
+/* jshint ignore:start */
+'use strict'
 var Promise = require('bluebird');
+/* jshint ignore:end */
 
-module.exports = function (sails) {
+module.exports = function(sails) {
 
   return {
     identity: 'users',
@@ -20,22 +23,23 @@ module.exports = function (sails) {
      */
     _modelCache: {},
 
-    initialize: function (next) {
+    initialize: function(next) {
 
       sails.log('UsersHook : initializing users hook');
 
-      sails.after('hook:permissions:loaded', function () {
+      sails.after('hook:permissions:loaded', function() {
+        console.log("'hook:permissions:loaded' :::\n", 'hook:permissions:loaded');
         return injectRole()
-          .then(function () {
+          .then(function() {
             return injectPermission();
           })
-          .then(function () {
+          .then(function() {
             return injectUser();
           })
-          .then(function () {
+          .then(function() {
             next();
           })
-          .catch(function (error) {
+          .catch(function(error) {
             sails.log.error("error", error);
             next(error);
           });
@@ -59,10 +63,10 @@ function injectRole() {
     promises.push(Role.destroy());
 
   Promise.all(promises)
-    .spread(function (roles) {
-      return Role.find({name: roleNames});
+    .spread(function(roles) {
+      return Role.find({ name: roleNames });
     })
-    .then(function (roles) {
+    .then(function(roles) {
       if (roles && roles.length > 0) {
         return null;
       } else {
@@ -70,10 +74,10 @@ function injectRole() {
       }
 
     })
-    .then(function (roles) {
+    .then(function(roles) {
       deferred.resolve(roles);
     })
-    .catch(function (err) {
+    .catch(function(err) {
       deferred.reject(err);
     });
 
@@ -96,26 +100,26 @@ function injectPermission() {
   promises.push(Permission.destroy());
 
   Promise.all(promises)
-    .spread(function (roles, models) {
+    .spread(function(roles, models) {
       var roles = roles;
       var models = models;
 
       var permissionsToCreate = [];
 
-      _.each(roles, function (role) {
-        _.each(permissionConfigs[role.name], function (permission) {
+      _.each(roles, function(role) {
+        _.each(permissionConfigs[role.name], function(permission) {
           permission.role = role.id;
-          permission.model = _.find(models, {name: permission.model}, 'id')
+          permission.model = _.find(models, { name: permission.model }, 'id')
           permissionsToCreate.push(permission);
         });
       });
 
       return Permission.create(permissionsToCreate);
     })
-    .then(function (permissions) {
+    .then(function(permissions) {
       deferred.resolve(permissions);
     })
-    .catch(function (err) {
+    .catch(function(err) {
       deferred.reject(err);
     });
 
@@ -139,30 +143,30 @@ function injectUser() {
     promises.push(User.destroy());
 
   Promise.all(promises)
-    .spread(function (roles) {
+    .spread(function(roles) {
 
       var roles = roles;
 
       var userPromise = [];
 
-      _.each(roles, function (role) {
-        _.each(initialUserConfig[role.name], function (userToCreate) {
+      _.each(roles, function(role) {
+        _.each(initialUserConfig[role.name], function(userToCreate) {
 
-          var promise = new Promise(function (resolve, reject) {
+          var promise = new Promise(function(resolve, reject) {
 
             userToCreate.roles = [role.id];
 
-            User.find({username: userToCreate.username})
-              .then(function (users) {
+            User.find({ username: userToCreate.username })
+              .then(function(users) {
                 if (users && users.length > 0)
                   return null;
                 else
                   return User.register(userToCreate);
               })
-              .then(function (user) {
+              .then(function(user) {
                 resolve(user);
               })
-              .catch(function (err) {
+              .catch(function(err) {
                 reject(err);
               });
           });
@@ -174,14 +178,12 @@ function injectUser() {
 
       return Promise.all(userPromise);
     })
-    .spread(function (user) {
+    .spread(function(user) {
       deferred.resolve(user);
     })
-    .catch(function (err) {
+    .catch(function(err) {
       deferred.reject(err);
     });
 
   return deferred.promise;
 }
-
-
