@@ -258,7 +258,7 @@ function update(req, res) {
   params.updatedBy = req.user.id;
   var propertiesAllowedToUpdate = [
     'nickname', 'phone', 'gender', 'height', 'weight', 'age',
-    'averageHit', 'playYear', 'strength'
+    'averageHit', 'playYear', 'strength', 'name'
   ];
   _.forEach(propertiesAllowedToUpdate, function(property) {
     if (query[property]) {

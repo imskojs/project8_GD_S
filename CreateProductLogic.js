@@ -32,18 +32,3 @@
 //     });
 //     return [createdProduct, Promise.all(questionnairePromises)];
 //   })
-function loadLiveRe() {
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-
-    if (typeof LivereTower === 'function') {
-      return; }
-
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script')
-};
-[출처] onclick 한번만 가능하게 하려면 어떻게 해야하나요.ㅠ_ㅠ(하드코딩하는사람들) | 작성자 슈퍼팀
