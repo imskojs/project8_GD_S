@@ -26,13 +26,13 @@ angular.module('myApp', [])
         };
 
         $http({
-            method: 'POST',
-            url: 'http://52.68.146.246/contact/admin',
-            data: data,
-            headers: {
-              'Content-Type': 'application/json; charset=utf-8'
-            }
-          })
+          method: 'POST',
+          url: 'contact/admin',
+          data: data,
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8'
+          }
+        })
           .success(function(data, status, headers, config) {
             if (data) {
               console.log("success" + JSON.stringify(data));
@@ -59,7 +59,7 @@ angular.module('myApp', [])
 
 
     function CheckUndefined(text) {
-      if (!text) {
+      if (text == '' || text == null || text == undefined) {
         return '';
       } else {
         return text;
