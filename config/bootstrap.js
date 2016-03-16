@@ -7,13 +7,13 @@ module.exports.bootstrap = function(cb) {
   ImageService.init();
   MailService.init();
 
-  // return Place.native((err, placeColl) => {
-  //   placeColl.ensureIndex({
-  //     geoJSON: '2dsphere'
-  //   }, () => {
-  //     cb();
-  //   });
-  // });
+  return Place.native((err, placeColl) => {
+    placeColl.ensureIndex({
+      geoJSON: '2dsphere'
+    }, () => {
+      cb();
+    });
+  });
 
   //====================================================
   //  !!!!  Create CSV DANGER  !!!! only used at server start up.
