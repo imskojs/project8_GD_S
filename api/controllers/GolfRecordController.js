@@ -223,7 +223,8 @@ function getMaxScoreRecord(req, res) {
             where: {
               owner: req.user.id,
             },
-            sort: 'myScoreTotal DESC',
+            // lowest value is maxScore in golf
+            sort: 'myScoreTotal ASC',
             limit: 1
           })
           .populate('product')
