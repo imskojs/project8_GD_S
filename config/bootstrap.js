@@ -10,7 +10,7 @@ module.exports.bootstrap = function(cb) {
 
   return Promise.resolve()
     .then(function() {
-      var placeNativePro = Promise.pending;
+      var placeNativePro = Promise.pending();
       Place.native((err, placeColl) => {
         placeColl.ensureIndex({
           geoJSON: '2dsphere'
