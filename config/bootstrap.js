@@ -25,38 +25,38 @@ module.exports.bootstrap = function(cb) {
       return placeNativePro.promise;
     })
     .then(function() {
-      return Question.update({
-        type: 'CLUB',
-        position: 0,
-        title: '비거리',
-      }, {
-        type: 'CLUB',
-        position: 0,
-        title: '비거리',
-        options: [
-          { label: '5%이상 증가', score: 5 },
-          { label: '0~5% 증가', score: 4 },
-          { label: '기존과 동일', score: 3 },
-          { label: '0~5% 감소', score: 2 },
-          { label: '5% 이상 감소', score: 1 }
-        ]
-      });
-    })
-    .then(function(clubDistanceQuestions) {
-      sails.log("clubDistanceQuestions :::\n", clubDistanceQuestions);
-      sails.log("clubDistanceQuestions.length :::\n", clubDistanceQuestions.length);
-    })
-
-
-
-
-  .then(function() {
       cb();
     })
     .catch(function(err) {
       sails.log("err :::\n", err);
       return Promise.reject(err);
     });
+
+  //====================================================
+  //  Update 비거리 only Once 
+  //====================================================
+  // .then(function() {
+  //   return Question.update({
+  //     type: 'CLUB',
+  //     position: 0,
+  //     title: '비거리',
+  //   }, {
+  //     type: 'CLUB',
+  //     position: 0,
+  //     title: '비거리',
+  //     options: [
+  //       { label: '5%이상 증가', score: 5 },
+  //       { label: '0~5% 증가', score: 4 },
+  //       { label: '기존과 동일', score: 3 },
+  //       { label: '0~5% 감소', score: 2 },
+  //       { label: '5% 이상 감소', score: 1 }
+  //     ]
+  //   });
+  // })
+  // .then(function(clubDistanceQuestions) {
+  //   sails.log("clubDistanceQuestions :::\n", clubDistanceQuestions);
+  //   sails.log("clubDistanceQuestions.length :::\n", clubDistanceQuestions.length);
+  // })
 
   //====================================================
   //  !!!!  Create CSV DANGER  !!!! only used at server start up.
