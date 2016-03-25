@@ -29,23 +29,23 @@ module.exports.bootstrap = function(cb) {
         type: 'CLUB',
         position: 0,
         title: '비거리',
-        options: [
-            { label: '10% 이상 증가', score: 5 },
-            { label: '10% 증가', score: 4 },
-            { label: '5% 증가', score: 3 },
-            { label: '변화없음', score: 2 },
-            { label: '이전만 못함', score: 1 }
-        ]
-          // label0: '10% 이상 증가',
-          // score0: 5,
-          // label1: '10% 증가',
-          // score1: 4,
-          // label2: '5% 증가',
-          // score2: 3,
-          // label3: '변화없음',
-          // score3: 2,
-          // label4: '이전만 못함',
-          // score4: 1
+        // options: [
+        //     { label: '10% 이상 증가', score: 5 },
+        //     { label: '10% 증가', score: 4 },
+        //     { label: '5% 증가', score: 3 },
+        //     { label: '변화없음', score: 2 },
+        //     { label: '이전만 못함', score: 1 }
+        // ]
+        // label0: '10% 이상 증가',
+        // score0: 5,
+        // label1: '10% 증가',
+        // score1: 4,
+        // label2: '5% 증가',
+        // score2: 3,
+        // label3: '변화없음',
+        // score3: 2,
+        // label4: '이전만 못함',
+        // score4: 1
       });
     })
     .then(function(clubDistanceQuestions) {
