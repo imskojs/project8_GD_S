@@ -1,4 +1,4 @@
-'use strict';
+'use strict'; // jshint ignore:line
 module.exports = {
 
   attributes: {

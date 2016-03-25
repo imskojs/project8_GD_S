@@ -1,19 +1,89 @@
-/* jshint ignore:start */
-'use strict';
-/* jshint ignore:end */
+/* globals ImageService, MailService */
+/* globals Question, Place */
+'use strict'; // jshint ignore:line
+var Promsie = require('bluebird'); // jshint ignore:line
 
 module.exports.bootstrap = function(cb) {
   //UserService.init();
   ImageService.init();
   MailService.init();
 
-  return Place.native((err, placeColl) => {
-    placeColl.ensureIndex({
-      geoJSON: '2dsphere'
-    }, () => {
+  return Promise.resolve()
+    .then(function() {
+      var placeNativePro = Promise.pending;
+      Place.native((err, placeColl) => {
+        placeColl.ensureIndex({
+          geoJSON: '2dsphere'
+        }, () => {
+          if (err) {
+            placeNativePro.reject();
+          } else {
+            placeNativePro.resolve();
+          }
+        });
+      });
+      return placeNativePro.promise;
+    })
+    .then(function() {
+      return Question.find({
+        type: 'CLUB',
+        position: 0,
+        title: '비거리',
+        label0: '10% 이상 증가',
+        score0: 5,
+        label1: '10% 증가',
+        score1: 4,
+        label2: '5% 증가',
+        score2: 3,
+        label3: '변화없음',
+        score3: 2,
+        label4: '이전만 못함',
+        score4: 1
+      });
+    })
+    .then(function(clubDistanceQuestions) {
+      sails.log("clubDistanceQuestions :::\n", clubDistanceQuestions);
+      // return Question.update({
+      //   type: 'CLUB',
+      //   position: 0,
+      //   title: '비거리',
+      //   label0: '10% 이상 증가',
+      //   score0: 5,
+      //   label1: '10% 증가',
+      //   score1: 4,
+      //   label2: '5% 증가',
+      //   score2: 3,
+      //   label3: '변화없음',
+      //   score3: 2,
+      //   label4: '이전만 못함',
+      //   score4: 1
+      // }, {
+      //   type: 'CLUB',
+      //   position: 0,
+      //   title: '비거리',
+      //   label0: '5%이상 증가',
+      //   score0: 5,
+      //   label1: '0~5% 증가',
+      //   score1: 4,
+      //   label2: '기존과 동일',
+      //   score2: 3,
+      //   label3: '0~5% 감소',
+      //   score3: 2,
+      //   label4: '5% 이상 감소',
+      //   score4: 1
+      // });
+    })
+
+
+
+
+  .then(function() {
       cb();
+    })
+    .catch(function(err) {
+      sails.log("err :::\n", err);
+      return Promise.reject(err);
     });
-  });
 
   //====================================================
   //  !!!!  Create CSV DANGER  !!!! only used at server start up.
