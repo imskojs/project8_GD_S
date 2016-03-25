@@ -25,61 +25,26 @@ module.exports.bootstrap = function(cb) {
       return placeNativePro.promise;
     })
     .then(function() {
-      return Question.find({
+      return Question.update({
         type: 'CLUB',
         position: 0,
         title: '비거리',
-        // options: [
-        //     { label: '10% 이상 증가', score: 5 },
-        //     { label: '10% 증가', score: 4 },
-        //     { label: '5% 증가', score: 3 },
-        //     { label: '변화없음', score: 2 },
-        //     { label: '이전만 못함', score: 1 }
-        // ]
-        // label0: '10% 이상 증가',
-        // score0: 5,
-        // label1: '10% 증가',
-        // score1: 4,
-        // label2: '5% 증가',
-        // score2: 3,
-        // label3: '변화없음',
-        // score3: 2,
-        // label4: '이전만 못함',
-        // score4: 1
+      }, {
+        type: 'CLUB',
+        position: 0,
+        title: '비거리',
+        options: [
+          { label: '5%이상 증가', score: 5 },
+          { label: '0~5% 증가', score: 4 },
+          { label: '기존과 동일', score: 3 },
+          { label: '0~5% 감소', score: 2 },
+          { label: '5% 이상 감소', score: 1 }
+        ]
       });
     })
     .then(function(clubDistanceQuestions) {
       sails.log("clubDistanceQuestions :::\n", clubDistanceQuestions);
       sails.log("clubDistanceQuestions.length :::\n", clubDistanceQuestions.length);
-      // return Question.update({
-      //   type: 'CLUB',
-      //   position: 0,
-      //   title: '비거리',
-      //   label0: '10% 이상 증가',
-      //   score0: 5,
-      //   label1: '10% 증가',
-      //   score1: 4,
-      //   label2: '5% 증가',
-      //   score2: 3,
-      //   label3: '변화없음',
-      //   score3: 2,
-      //   label4: '이전만 못함',
-      //   score4: 1
-      // }, {
-      //   type: 'CLUB',
-      //   position: 0,
-      //   title: '비거리',
-      //   label0: '5%이상 증가',
-      //   score0: 5,
-      //   label1: '0~5% 증가',
-      //   score1: 4,
-      //   label2: '기존과 동일',
-      //   score2: 3,
-      //   label3: '0~5% 감소',
-      //   score3: 2,
-      //   label4: '5% 이상 감소',
-      //   score4: 1
-      // });
     })
 
 
