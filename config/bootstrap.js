@@ -1,7 +1,7 @@
 /* globals ImageService, MailService */
 /* globals Question, Place */
 'use strict'; // jshint ignore:line
-var Promsie = require('bluebird'); // jshint ignore:line
+var Promise = require('bluebird'); // jshint ignore:line
 
 module.exports.bootstrap = function(cb) {
   //UserService.init();
