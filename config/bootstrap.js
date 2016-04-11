@@ -9,28 +9,177 @@ module.exports.bootstrap = function(cb) {
   MailService.init();
 
   return Promise.resolve()
-    .then(function() {
-      var placeNativePro = Promise.pending();
-      Place.native((err, placeColl) => {
-        placeColl.ensureIndex({
-          geoJSON: '2dsphere'
-        }, () => {
-          if (err) {
-            placeNativePro.reject();
-          } else {
-            placeNativePro.resolve();
-          }
-        });
-      });
-      return placeNativePro.promise;
+    // .then(function() {
+    //   var placeNativePro = Promise.pending();
+    //   Place.native((err, placeColl) => {
+    //     placeColl.ensureIndex({
+    //       geoJSON: '2dsphere'
+    //     }, () => {
+    //       if (err) {
+    //         placeNativePro.reject();
+    //       } else {
+    //         placeNativePro.resolve();
+    //       }
+    //     });
+    //   });
+    //   return placeNativePro.promise;
+    // })
+    // .then(function() {
+    //   cb();
+    // })
+    // .catch(function(err) {
+    //   sails.log("err :::\n", err);
+    //   return Promise.reject(err);
+    // });
+
+
+    //====================================================
+    //  Update FIELD only once
+    //====================================================
+    .then(function(){
+      return Promise.all([Question.findOne({
+        type: 'FIELD',
+        position: 0,
+        title: '코스난이도(홀배치 적절성)'
+      }),
+      Question.findOne({
+        type: 'FIELD',
+        position: 0,
+        title: '코스디자인'
+      }),
+      Question.findOne({
+        type: 'FIELD',
+        position: 0,
+        title: '코스 전장/넓이'
+      }),
+      Question.findOne({
+        type: 'FIELD',
+        position: 1,
+        title: '티오프 간격'
+      }),
+      Question.findOne({
+        type: 'FIELD',
+        position: 1,
+        title: 'Par3 사인 플레이'
+      }),
+      Question.findOne({
+        type: 'FIELD',
+        position: 3,
+        title: "드라이빙레인지 유무\n(시뮬레이터 포함)"
+      }),
+      Question.findOne({
+        type: 'FIELD',
+        position: 4,
+        title: '예약 편의성,인터넷/전화/모바일예약'
+      }),
+      Question.findOne({
+        type: 'CLUB',
+        position: 2,
+        title: '헤드디자인'
+      }),
+       Question.findOne({
+         type: 'CLUB',
+         position: 2,
+         title: '헤드커버디자인'
+       }),
+       Question.findOne({
+         type: 'CLUB',
+         position: 3,
+         title: '브랜드 디자인'
+       })
+      ]);
     })
-    .then(function() {
+    .then(function(questions){
+      console.log("questions :::\n", questions);
       cb();
     })
-    .catch(function(err) {
-      sails.log("err :::\n", err);
-      return Promise.reject(err);
+    .catch(function(err){
+      console.log("err :::\n", err);
+      cb();
     });
+
+    // 코스난이도
+    // {
+    //   options: [
+    //     {label:'매우 도전적', score: 5},
+    //     {label:'재미있음', score: 4},
+    //     {label:'평범함', score: 3},
+    //     {label: '단조로움', score: 2},
+    //     {label: '매우 단조로움', score: 1}
+    //   ]
+    // }
+
+    // 코스디자인
+    // {
+    //   options: [
+    //     {label:'매우 아름다움', score: 5},
+    //     {label:'괜찮은 편', score: 4},
+    //     {label:'평범함', score: 3},
+    //     {label: '단조로움', score: 2},
+    //     {label: '어거지', score: 1}
+    //   ]
+    // }
+
+    //  '코스 전장/넓이' 
+    // {
+    //   options: [
+    //     {label:'매우 편안한 플레이', score: 5},
+    //     {label:'넓고 적당함', score: 4},
+    //     {label:'평범함', score: 3},
+    //     {label: '짧고 좁음 or 짧고 길음', score: 2},
+    //     {label: '정상적 플레이 어려움', score: 1}
+    //   ]
+    // }
+
+    //  '티오프 간격' 
+    // {
+    //   options: [
+    //     {label:'9분 이상', score: 5},
+    //     {label:'8분', score: 4},
+    //     {label:'7분/모름', score: 3},
+    //     {label: '6분', score: 2},
+    //     {label: '6분 미만', score: 1}
+    //   ]
+    // }
+
+    // 'Par3 사인플레이'
+    // {
+    //   options: [
+    //     {label:'없다', score: 5},
+    //     {label:'복불복/기억 안남', score: 3},
+    //     {label:'Par3 홀마다 있음', score: 1},
+    //   ]
+    // }
+
+    // "드라이빙레인지 유무\n(시뮬레이터 포함)"
+    // {
+    //    options: [
+    //     {label:'있음', score: 5},
+    //     {label:'모름', score: 3},
+    //     {label:'없음', score: 1},
+    //    ]
+    // }
+
+    // '예약 편의성,인터넷/전화/모바일예약'
+    // {
+    //   options: [
+    //     {label: '인터넷/모바일/전화/누구나', score: 5},
+    //     {label: '인터넷/모바일/누구나', score: 3},
+    //     {label: '인터넷/모바일/전화/회원만', score: 1},
+    //   ]
+    // }
+
+    // '헤드디자인'
+    // {title: '헤드/헤드커버 디자인'}
+
+    // '헤드커버디자인'
+    // {title: '제품 로고 디자인'}
+
+    // '브랜드 디자인'
+    // {title: '브랜드 이미지'}
+
+
+
 
   //====================================================
   //  Update 비거리 only Once 
