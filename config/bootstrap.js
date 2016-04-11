@@ -70,7 +70,7 @@ module.exports.bootstrap = function(cb) {
       Question.findOne({
         type: 'FIELD',
         position: 4,
-        title: '예약 편의성,인터넷/전화/모바일예약'
+        title: '예약 편의성'
       }),
       Question.findOne({
         type: 'CLUB',
@@ -160,7 +160,7 @@ module.exports.bootstrap = function(cb) {
     //    ]
     // }
 
-    // '예약 편의성,인터넷/전화/모바일예약'
+    // '예약 편의성'
     // {
     //   options: [
     //     {label: '인터넷/모바일/전화/누구나', score: 5},
