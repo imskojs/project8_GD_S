@@ -102,17 +102,19 @@ module.exports.bootstrap = function(cb) {
   //           { label: 'Par3 홀마다 있음', score: 1 },
   //         ]
   //       }),
-      Question.update({
-          type: 'FIELD',
-          position: 3,
-          title: "드라이빙레인지 유무\n(시뮬레이터 포함)"
-        }, {
-          options: [
-            { label: '있음', score: 5 },
-            { label: '모름', score: 3 },
-            { label: '없음', score: 1 },
-          ]
-        }),
+      Question.find({
+            type: 'FIELD',
+            position: 3,
+            title: { contains: '드라이빙' }
+            // title: "드라이빙레인지 유무\n(시뮬레이터 포함)"
+          }
+          // , 
+          // {options: [
+          //     { label: '있음', score: 5 },
+          //     { label: '모름', score: 3 },
+          //     { label: '없음', score: 1 },
+          //   ] }
+        ),
   //     Question.update({
   //         type: 'FIELD',
   //         position: 4,
