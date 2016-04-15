@@ -1,5 +1,5 @@
 /* globals ImageService, MailService */
-/* globals  Place */
+/* globals  Place, Question */
 'use strict'; // jshint ignore:line
 var Promise = require('bluebird'); // jshint ignore:line
 // var _ = require('lodash');
@@ -10,35 +10,36 @@ module.exports.bootstrap = function(cb) {
   MailService.init();
 
   return Promise.resolve()
-    .then(function() {
-      var placeNativePro = Promise.pending();
-      Place.native((err, placeColl) => {
-        placeColl.ensureIndex({
-          geoJSON: '2dsphere'
-        }, () => {
-          if (err) {
-            placeNativePro.reject();
-          } else {
-            placeNativePro.resolve();
-          }
-        });
-      });
-      return placeNativePro.promise;
-    })
-    .then(function() {
-      cb();
-    })
-    .catch(function(err) {
-      sails.log("err :::\n", err);
-      return Promise.reject(err);
-    });
+    // .then(function() {
+    //   var placeNativePro = Promise.pending();
+    //   Place.native((err, placeColl) => {
+    //     placeColl.ensureIndex({
+    //       geoJSON: '2dsphere'
+    //     }, () => {
+    //       if (err) {
+    //         placeNativePro.reject();
+    //       } else {
+    //         placeNativePro.resolve();
+    //       }
+    //     });
+    //   });
+    //   return placeNativePro.promise;
+    // })
+    // .then(function() {
+    //   cb();
+    // })
+    // .catch(function(err) {
+    //   sails.log("err :::\n", err);
+    //   return Promise.reject(err);
+    // });
 
 
   //====================================================
   //  Update FIELD only once
   //====================================================
-  // .then(function() {
-  //     return Promise.all([Question.update({
+  .then(function() {
+      return Promise.all([
+  //       Question.update({
   //         type: 'FIELD',
   //         position: 0,
   //         title: '코스난이도(홀배치 적절성)'
@@ -143,21 +144,36 @@ module.exports.bootstrap = function(cb) {
   //         title: '브랜드 디자인'
   //       }, {
   //         title: '브랜드 이미지'
-  //       })
-  //     ]);
-  //   })
-  //   .then(function(questions) {
-  //     var x = _.map(questions, function(question) {
-  //       return question[0];
-  //     });
-  //     sails.log("x :::\n", x);
+  //       }),
+        Question.update({
+          type: 'CLUB',
+          position: 3,
+          title: 'A/S 편의성'
+        }, {
+          options: [
+            { label: '매우 우수', score: 5 },
+            { label: '우수', score: 4 },
+            { label: '보통/미이용', score: 3 },
+            { label: '별로', score: 2 },
+            { label: '매우 별로', score: 1 },
+            ]
+        }),
 
-  //     cb();
-  //   })
-  //   .catch(function(err) {
-  //     console.log("err :::\n", err);
-  //     cb();
-  //   });
+      ]); // Promise.all ends.
+    })
+    .then(function(questions) {
+      // var x = _.map(questions, function(question) {
+      //   return question[0];
+      // });
+      sails.log("questions[0] :::\n", questions[0]);
+      // sails.log("x :::\n", x);
+
+      cb();
+    })
+    .catch(function(err) {
+      console.log("err :::\n", err);
+      cb();
+    });
 
   //====================================================
   //  Update 비거리 only Once 
