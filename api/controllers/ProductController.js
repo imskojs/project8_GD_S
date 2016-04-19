@@ -1,3 +1,5 @@
+/* globals QueryService, ImageService, QuestionService */
+/* globals Product, Questionnaire, Question, QuestionnaireAnswer, QuestionAnswer */
 /* jshint ignore:start */
 'use strict';
 var Promise = require('bluebird');
@@ -384,6 +386,7 @@ function hasQuestionnaireAnswer(req, res) {
 // findWithAverage: findWithAverage,
 // findOneWithAverage: findOneWithAverage,
 
+// query.sortProduct =  'name ASC'
 function findWithAverage(req, res) {
   var queryWrapper = QueryService.buildQuery(req);
   sails.log("-----------  queryWrapper: Product.findWithAverage  -------------");
@@ -392,10 +395,15 @@ function findWithAverage(req, res) {
   // for load more
   let qaUpdatedAt = query.where.id;
   delete query.where.questionnaireAnswer;
+  delete query.where.id;
   let qaLimit = query.limit;
   delete query.limit;
   let qaSort = query.sort;
   delete query.sort;
+  if (query.sortProduct /*: 'name ASC'*/ ) {
+    query.sort = query.sortProduct;
+    delete query.sortProduct;
+  }
   let qaSkip = query.skip;
   delete query.skip;
 
@@ -405,6 +413,7 @@ function findWithAverage(req, res) {
   let more;
   let totalAverageObj = {};
 
+  // Finds all products of given location1
   return Product.find(query)
     .then((products) => {
       // pluck product Ids
