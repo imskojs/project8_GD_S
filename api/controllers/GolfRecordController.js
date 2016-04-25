@@ -65,6 +65,8 @@ function find(req, res) {
     });
 }
 
+
+
 function findOne(req, res) {
   let queryWrapper = QueryService.buildQuery(req);
   sails.log("queryWrapper --GolfRecord.findOne-- :::\n", queryWrapper);

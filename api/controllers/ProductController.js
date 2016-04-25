@@ -474,9 +474,10 @@ function findWithAverage(req, res) {
           position: 0
         }
       };
-      if (qaLimit) {
-        tempQuery.limit = qaLimit;
-      }
+      // No limit
+      // if (qaLimit) {
+      //   tempQuery.limit = qaLimit;
+      // }
       if (qaUpdatedAt) {
         tempQuery.where.id = qaUpdatedAt;
       }
@@ -533,6 +534,7 @@ function findWithAverage(req, res) {
           .populate('questionAnswers')
           .populate('createdBy')
           .then((questionnaireAnswers) => {
+            // questionnaireAnswers 
             // questionAnswers sort by position by default created from 0 to 4 in order.
             tempProduct = tempProduct.toObject();
             tempProduct.questionnaireAnswers = questionnaireAnswers;

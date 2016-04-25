@@ -65,6 +65,14 @@ module.exports = {
       type: 'STRING'
     },
 
+    eventTitle: {
+      type: 'STRING'
+    },
+
+    eventContent: {
+      type: 'STRING'
+    },
+
     //====================================================
     //  BALL && CLUB only
     //====================================================
@@ -80,6 +88,14 @@ module.exports = {
     },
 
     clubType: {
+      type: 'STRING'
+    },
+
+    lowestPrice: {
+      type: 'STRING'
+    },
+
+    shopUrl: {
       type: 'STRING'
     },
 
