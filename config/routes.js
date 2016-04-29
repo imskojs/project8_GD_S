@@ -95,6 +95,7 @@ module.exports.routes = {
   //  PollAnswer
   //====================================================
   'GET /pollAnswer/hasPollAnswer': 'PollAnswerController.hasPollAnswer',
+  'GET /pollAnswer/find': 'PollAnswerController.find',
   'POST /pollAnswer/create': 'PollAnswerController.create',
 
   //====================================================
