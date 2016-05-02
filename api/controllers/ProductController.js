@@ -566,6 +566,7 @@ function findWithAverage(req, res) {
       return Promise.all(tempResultsPromise);
     })
     .then((results) => {
+      sails.log("results :::\n", results);
       return res.ok({
         products: results,
         more: more
