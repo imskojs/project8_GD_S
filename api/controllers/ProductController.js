@@ -113,7 +113,7 @@ function updateProduct(req, res) {
   let propertiesAllowedToUpdate = [
     'location1', 'location2', 'fullLocation', 'fieldName', 'membershipType',
     'courseName', 'courseSize', 'greenFee', 'cartFee', 'caddieFee', 'fieldUrl',
-    'contact',
+    'contact', 'lowestPrice', 'price', 'shopUrl',
 
     'modelName', 'clubBrand', 'clubType',
     'ballBrand', 'ballType',
